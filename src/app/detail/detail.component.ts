@@ -17,7 +17,15 @@ export class DetailComponent implements OnInit {
   affirmation$: Observable<Affirmation | undefined>;
 
   constructor(private route: ActivatedRoute, public router: Router, private store: Store<State>) {
-    this.affirmation$ = this.store.pipe(
+    this.affirmation$ = this.getCurrentAffirmation();
+  }
+
+
+  ngOnInit(): void {
+  }
+
+  private getCurrentAffirmation(): Observable<Affirmation | undefined> {
+    return this.store.pipe(
       select(getAffirmations),
       mergeMap(af => af),
       find((af: Affirmation) => {
@@ -29,10 +37,6 @@ export class DetailComponent implements OnInit {
         }
       })
     );
-  }
-
-
-  ngOnInit(): void {
   }
 
 }

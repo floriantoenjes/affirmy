@@ -22,6 +22,12 @@ export function reducer(state: State | undefined, action: Action): State {
   return affirmationReducer(state, action);
 }
 
-export const getAffirmations = (state: State) => state.affirmations;
+export const getAffirmations = (state: State) => {
+  console.log(state);
+  return state.affirmations;
+};
 
-export const selectAffirmations = createSelector(getAffirmations, (affirmations) => affirmations);
+export const selectAffirmations = createSelector(getAffirmations, (affirmations) => {
+  console.log('logit', affirmations);
+  return affirmations;
+});

@@ -4,6 +4,7 @@ import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {State} from '../reducers';
 import {getAffirmations} from '../reducers/affirmation.reducer';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -14,7 +15,7 @@ export class ListComponent implements OnInit {
 
   affirmations$: Observable<Affirmation[]>;
 
-  constructor(store: Store<State>) {
+  constructor(public router: Router, store: Store<State>) {
     this.affirmations$ = store.select(getAffirmations);
   }
 

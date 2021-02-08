@@ -8,6 +8,8 @@ import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
 import { ListComponent } from './list/list.component';
 import {MatButtonModule} from '@angular/material/button';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,8 @@ import {MatButtonModule} from '@angular/material/button';
     StoreModule.forRoot(reducers, {
       metaReducers
     }),
-    MatButtonModule
+    MatButtonModule,
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]

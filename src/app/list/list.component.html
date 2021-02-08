@@ -6,7 +6,7 @@
   <main class="h-full">
     <article>
       <ul>
-        <li *ngFor="let affirmation of affirmations$ | async" class="my-4">
+        <li *ngFor="let affirmation of affirmations$ | async" class="my-4" (click)="router.navigate(['detail', affirmation.id])">
           <p class="text-center text-xl">{{affirmation.title}}</p>
           <hr>
         </li>

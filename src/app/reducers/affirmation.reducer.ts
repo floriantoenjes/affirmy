@@ -1,36 +1,33 @@
-import {Action, createReducer, createSelector, on} from '@ngrx/store';
-import {createAffirmation, updateAffirmation, deleteAffirmation} from '../actions/affirmation.actions';
+import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
+import {createAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
+import {State} from './index';
 
-export interface State {
+export interface AffirmationState {
   affirmations: Affirmation[];
 }
 
 export const initialState = {
   affirmations: [
-    new Affirmation(1, 'Do the Dishes', 'Das Geschirr aufräumen')
+    new Affirmation(1, 'Do the Dishes', 'Das Geschirr aufräumen'),
+    new Affirmation(2, 'Walk the Dog', 'Mit dem Hund rausgehen'),
+    new Affirmation(3, 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
   ] as Affirmation[]
 };
 
 const affirmationReducer = createReducer(
   initialState,
-  // on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]}))
+  on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]}))
 );
 
-
-export function reducer(state: State | undefined, action: Action): State {
-  console.log('STATE', state);
+export function reducer(state: AffirmationState | undefined, action: Action): AffirmationState {
   return affirmationReducer(state, action);
 }
 
-export const getAffirmations = (state: State) => {
-  // TODO: Hier scheint das Problem zu sein
-  console.log('INITIAL', initialState);
-  console.log(state);
-  return state.affirmations;
-};
 
-export const selectAffirmations = createSelector(getAffirmations, (affirmations) => {
-  console.log('logit', affirmations);
-  return affirmations;
+export const getAffirmationsState = createFeatureSelector<State, AffirmationState>('affirmationsFeature');
+
+export const getAffirmations = createSelector(getAffirmationsState, (affirmationState: AffirmationState) => {
+  return affirmationState.affirmations;
 });
+

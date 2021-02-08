@@ -1,21 +1,15 @@
-import {
-  ActionReducer,
-  ActionReducerMap,
-  createFeatureSelector,
-  createSelector,
-  MetaReducer
-} from '@ngrx/store';
-import { environment } from '../../environments/environment';
+import {ActionReducerMap, MetaReducer} from '@ngrx/store';
+import {environment} from '../../environments/environment';
 import * as fromAffirmations from './affirmation.reducer';
 
 console.log('FROM AFFIRM', fromAffirmations);
 
 export interface State {
-  affirmations2: fromAffirmations.State;
+  affirmationsFeature: fromAffirmations.AffirmationState;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  affirmations2: fromAffirmations.reducer
+  affirmationsFeature: fromAffirmations.reducer
 };
 
 

@@ -1,7 +1,12 @@
-<div class="container">
+<div *ngIf="affirmation$ | async as affirmation" class="container">
   <header class="flex flex-row">
     <mat-icon class="arrow-back ml-3 mt-3" (click)="router.navigate(['/'])">arrow_back</mat-icon>
-    <h1 class="text-center pt-4 flex-1 pr-12">{{ (affirmation$ | async)?.title }}</h1>
+    <h1 class="text-center pt-4 flex-1 pr-12">{{ affirmation.title }}</h1>
   </header>
   <hr>
+  <main>
+    <article>
+      <p>{{affirmation.text}}</p>
+    </article>
+  </main>
 </div>

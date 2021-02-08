@@ -14,13 +14,13 @@ import {filter, find, mergeMap} from 'rxjs/operators';
 })
 export class DetailComponent implements OnInit {
 
-  affirmation$: Observable<Affirmation>;
+  affirmation$: Observable<Affirmation | undefined>;
 
   constructor(private route: ActivatedRoute, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.store.pipe(
       select(getAffirmations),
       mergeMap(af => af),
-      filter((af: Affirmation) => {
+      find((af: Affirmation) => {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
           return af.id === +id;

@@ -14,15 +14,18 @@ export const initialState = {
 
 const affirmationReducer = createReducer(
   initialState,
-  on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]}))
+  // on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]}))
 );
 
 
 export function reducer(state: State | undefined, action: Action): State {
+  console.log('STATE', state);
   return affirmationReducer(state, action);
 }
 
 export const getAffirmations = (state: State) => {
+  // TODO: Hier scheint das Problem zu sein
+  console.log('INITIAL', initialState);
   console.log(state);
   return state.affirmations;
 };

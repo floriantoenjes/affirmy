@@ -8,12 +8,14 @@ import {
 import { environment } from '../../environments/environment';
 import * as fromAffirmations from './affirmation.reducer';
 
+console.log('FROM AFFIRM', fromAffirmations);
+
 export interface State {
-  affirmations: fromAffirmations.State;
+  affirmations2: fromAffirmations.State;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  affirmations: fromAffirmations.reducer
+  affirmations2: fromAffirmations.reducer
 };
 
 

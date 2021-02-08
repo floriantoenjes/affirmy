@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Affirmation} from '../shared/models/Affirmation';
+import {Store} from '@ngrx/store';
+import * as fromAffirmations from '../reducers/affirmation.reducer';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -7,7 +11,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListComponent implements OnInit {
 
-  constructor() { }
+  affirmations$: Observable<Affirmation[]>;
+
+  constructor(store: Store<fromAffirmations.State>) {
+    this.affirmations$ = store.select(fromAffirmations.selectAffirmations);
+    console.log( typeof this.affirmations$);
+  }
 
   ngOnInit(): void {
   }

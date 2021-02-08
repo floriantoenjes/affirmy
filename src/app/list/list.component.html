@@ -3,4 +3,11 @@
     <h1 class="text-center pt-4">Your Affirmations</h1>
   </header>
   <hr>
+  <main>
+    <article>
+      <ul>
+        <li *ngFor="let affirmation of affirmations$ | async">{{affirmation.title}}</li>
+      </ul>
+    </article>
+  </main>
 </div>

@@ -6,13 +6,14 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
+import * as fromAffirmations from './affirmation.reducer';
 
 export interface State {
-
+  affirmations: fromAffirmations.State;
 }
 
 export const reducers: ActionReducerMap<State> = {
-
+  affirmations: fromAffirmations.reducer
 };
 
 

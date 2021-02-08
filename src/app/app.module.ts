@@ -10,6 +10,11 @@ import { ListComponent } from './list/list.component';
 import {MatButtonModule} from '@angular/material/button';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -24,7 +29,12 @@ import { environment } from '../environments/environment';
       metaReducers
     }),
     MatButtonModule,
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    MatNativeDateModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -24,7 +24,7 @@ export class EditComponent implements OnInit {
       find((af: Affirmation) => {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
-          return af.id === +id;
+          return af.id === id;
         } else {
           return false;
         }

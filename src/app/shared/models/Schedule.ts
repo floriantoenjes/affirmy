@@ -7,8 +7,8 @@ export enum ScheduleType {
 }
 
 export class Schedule {
-  id: number;
-  affirmationId: number;
+  id: string;
+  affirmationId: string;
   active: boolean;
   scheduleType: ScheduleType;
   scheduleDays: string[];
@@ -16,7 +16,7 @@ export class Schedule {
   hourlyInterval: number | undefined;
 
 
-  constructor(id: number, affirmationId: number, active: boolean,
+  constructor(id: string, affirmationId: string, active: boolean,
               scheduleType: ScheduleType, scheduleDays: string[], scheduleTime: string) {
     this.id = id;
     this.affirmationId = affirmationId;

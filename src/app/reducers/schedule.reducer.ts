@@ -9,7 +9,7 @@ export interface ScheduleState {
 
 export const initialState = {
   schedules: [
-    new Schedule(1, 1, true, ScheduleType.DAILY, [], '18:45')
+    new Schedule('1', '1', true, ScheduleType.DAILY, [], '18:45')
   ] as Schedule[]
 };
 
@@ -33,5 +33,5 @@ export const getSchedules = createSelector(getSchedulesState, (scheduleState: Sc
 
 export const getScheduleById = createSelector(
   getSchedules,
-  (schedules: Schedule[], props: any) => schedules.find(sc => sc.affirmationId === +props.id)
+  (schedules: Schedule[], props: any) => schedules.find(sc => sc.affirmationId === props.id)
 );

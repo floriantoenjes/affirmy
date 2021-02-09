@@ -11,6 +11,7 @@ import {createSchedule, updateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
+import {DateTime} from 'luxon';
 
 @Component({
   selector: 'app-schedule',
@@ -21,11 +22,12 @@ import {MatListOption} from '@angular/material/list';
 export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
-  affirmationId: number | undefined;
+  affirmationId: string | undefined;
   schedule: Schedule | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
+  scheduleDays: string[] = [];
 
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
@@ -49,6 +51,7 @@ export class ScheduleComponent implements OnInit {
           this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
           this.selectedType = result.scheduleType;
           this.form.get('hourlyInterval')?.patchValue(result.hourlyInterval);
+          this.scheduleDays = result.scheduleDays;
         }
         this.schedule = result;
       })
@@ -59,7 +62,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   createSchedule(): void {
-    if (this.schedule) {
+    if (this.schedule?.id) {
       const updatedSchedule = {
         ...this.schedule,
         scheduleType: this.selectedType,
@@ -72,11 +75,11 @@ export class ScheduleComponent implements OnInit {
         return;
       }
       const newSchedule = new Schedule(
-        1,
+        new Date().toISOString(),
         this.affirmationId,
         true,
         this.selectedType,
-        [],
+        this.scheduleDays,
         this.form.get('time')?.value
       );
       this.store.dispatch(createSchedule({schedule: newSchedule}));
@@ -90,6 +93,7 @@ export class ScheduleComponent implements OnInit {
       this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
     }
     this.showDaySelect = false;
+    this.scheduleDays = weekDays;
   }
 
   isSelected(weekday: string): boolean {
@@ -97,7 +101,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   selectedWeekDaysAsString(): string | undefined {
-    return this.schedule?.scheduleDays.join(', ');
+    return this.scheduleDays.join(', ');
   }
 
   switchType(): void {

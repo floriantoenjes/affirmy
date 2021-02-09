@@ -35,7 +35,7 @@ export class CreateComponent implements OnInit {
   createAffirmation(): void {
     if (this.form.valid) {
       const newAffirmation = new Affirmation(
-        10,
+        new Date().toISOString(),
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );

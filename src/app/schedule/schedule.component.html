@@ -20,7 +20,7 @@
             Select Days
           </button>
           <p *ngIf="selectedWeekDaysAsString()" class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
-          <p *ngIf="!selectedWeekDaysAsString()" class="mb-4 text-lg">No week days selected</p>
+          <p *ngIf="scheduleDays.length === 0" class="mb-4 text-lg">No week days selected</p>
 
           <mat-form-field class="text-xl">
             <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"

@@ -24,6 +24,8 @@ import {EditComponent} from './edit/edit.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import { EffectsModule } from '@ngrx/effects';
+import {ScheduleEffects} from './effects/schedule.effects';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,8 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
     MatDividerModule,
     MatRadioModule,
     ReactiveFormsModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    EffectsModule.forRoot([ScheduleEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

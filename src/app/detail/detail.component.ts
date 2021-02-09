@@ -4,7 +4,7 @@ import {Affirmation} from '../shared/models/Affirmation';
 import {Observable, of} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {getAffirmations} from '../reducers/affirmation.reducer';
+import {getAffirmationById, getAffirmations} from '../reducers/affirmation.reducer';
 import {filter, find, mergeMap} from 'rxjs/operators';
 
 @Component({
@@ -25,18 +25,7 @@ export class DetailComponent implements OnInit {
   }
 
   private getCurrentAffirmation(): Observable<Affirmation | undefined> {
-    return this.store.pipe(
-      select(getAffirmations),
-      mergeMap(af => af),
-      find((af: Affirmation) => {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (id) {
-          return af.id === +id;
-        } else {
-          return false;
-        }
-      })
-    );
+    return this.store.select(getAffirmationById, {id: this.route.snapshot.paramMap.get('id')});
   }
 
   navigateToEdit(): void {

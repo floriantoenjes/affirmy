@@ -35,6 +35,6 @@ export const getAffirmations = createSelector(getAffirmationsState, (affirmation
 
 export const getAffirmationById = createSelector(
   getAffirmations,
-  (affirmations: Affirmation[], props: any) => affirmations.find(af => af.id === props.id)
+  (affirmations: Affirmation[], props: any) => affirmations.find(af => af.id === +props.id)
 );
 

@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {Affirmation} from '../shared/models/Affirmation';
+import {State} from '../reducers';
+import {Store} from '@ngrx/store';
+import {getAffirmationById} from '../reducers/affirmation.reducer';
 
 @Component({
   selector: 'app-schedule',
@@ -8,7 +13,11 @@ import {Router} from '@angular/router';
 })
 export class ScheduleComponent implements OnInit {
 
-  constructor(public router: Router) { }
+  affirmation$: Observable<Affirmation | undefined>;
+
+  constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
+    this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')});
+  }
 
   ngOnInit(): void {
   }

@@ -17,6 +17,8 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
 import { CreateComponent } from './create/create.component';
 import { DetailComponent } from './detail/detail.component';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { DetailComponent } from './detail/detail.component';
     MatDatepickerModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

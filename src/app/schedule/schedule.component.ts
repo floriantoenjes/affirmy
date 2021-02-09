@@ -11,7 +11,6 @@ import {createSchedule, updateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
-import {DateTime} from 'luxon';
 
 @Component({
   selector: 'app-schedule',
@@ -42,11 +41,9 @@ export class ScheduleComponent implements OnInit {
 
     this.affirmation$.pipe(
       mergeMap(affirmation => {
-        console.log('AFFIRM', affirmation);
         return this.store.select(getScheduleById, {id: affirmation?.id});
       }),
       map(result => {
-        console.log('RESULT', result);
         if (result) {
           this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
           this.selectedType = result.scheduleType;

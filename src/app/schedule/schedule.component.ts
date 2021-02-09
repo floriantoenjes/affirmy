@@ -28,7 +28,8 @@ export class ScheduleComponent implements OnInit {
 
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
-    time: new FormControl()
+    time: new FormControl(),
+    hourlyInterval: new FormControl(),
   });
 
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
@@ -43,6 +44,8 @@ export class ScheduleComponent implements OnInit {
         console.log('RESULT', result);
         if (result) {
           this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
+          this.selectedType = result.scheduleType;
+          this.form.get('hourlyInterval')?.patchValue(result.hourlyInterval);
         }
         this.schedule = result;
       })
@@ -56,7 +59,9 @@ export class ScheduleComponent implements OnInit {
     if (this.schedule) {
       const updatedSchedule = {
         ...this.schedule,
+        scheduleType: this.selectedType,
         scheduleTime: this.form.get('time')?.value,
+        hourlyInterval: this.form.get('hourlyInterval')?.value
       } as Schedule;
       this.store.dispatch(updateSchedule({schedule: updatedSchedule}));
     } else {
@@ -64,7 +69,7 @@ export class ScheduleComponent implements OnInit {
         1,
         1,
         true,
-        ScheduleType.HOURLY,
+        this.selectedType,
         [],
         this.form.get('time')?.value
       );

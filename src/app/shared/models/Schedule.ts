@@ -13,6 +13,7 @@ export class Schedule {
   scheduleType: ScheduleType;
   scheduleDays: string[];
   scheduleTime: string;
+  hourlyInterval: number | undefined;
 
 
   constructor(id: number, affirmationId: number, active: boolean,

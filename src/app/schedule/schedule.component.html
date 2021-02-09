@@ -10,8 +10,8 @@
       <form [formGroup]="form">
         <div class="mb-4">
           <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg" (change)="switchType()">
-            <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
-            <mat-radio-button value="hourly">Hourly</mat-radio-button>
+            <mat-radio-button value="daily" class="mr-4" [checked]="selectedType === types.DAILY">Daily</mat-radio-button>
+            <mat-radio-button value="hourly" [checked]="selectedType === types.HOURLY">Hourly</mat-radio-button>
           </mat-radio-group>
         </div>
 
@@ -26,10 +26,6 @@
                    placeholder="Daily reminder time">
             <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
           </mat-form-field>
-
-          <mat-form-field>
-            <input matInput type="number" placeholder="Interval" min="1" max="23">
-          </mat-form-field>
         </ng-container>
 
         <ng-container *ngIf="selectedType === types.HOURLY">
@@ -37,6 +33,10 @@
             <input formControlName="time" matInput [ngxTimepicker]="hourlyTime" [format]="24"
                    placeholder="Start time">
             <ngx-material-timepicker #hourlyTime></ngx-material-timepicker>
+          </mat-form-field>
+
+          <mat-form-field class="text-xl">
+            <input formControlName="hourlyInterval" matInput type="number" placeholder="Hourly interval" min="1" max="23">
           </mat-form-field>
         </ng-container>
       </form>

@@ -1,4 +1,4 @@
-import {Schedule} from '../shared/models/Schedule';
+import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
 import {createSchedule} from '../actions/schedule.actions';
 import {State} from './index';
@@ -8,7 +8,9 @@ export interface ScheduleState {
 }
 
 export const initialState = {
-  schedules: [] as Schedule[]
+  schedules: [
+    new Schedule(1, 1, true, ScheduleType.DAILY, [], '18:45')
+  ] as Schedule[]
 };
 
 const scheduleReducer = createReducer(

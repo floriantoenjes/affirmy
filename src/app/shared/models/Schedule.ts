@@ -12,11 +12,11 @@ export class Schedule {
   active: boolean;
   scheduleType: ScheduleType;
   scheduleDays: Date[];
-  scheduleTime: Time;
+  scheduleTime: string;
 
 
   constructor(id: number, affirmationId: number, active: boolean,
-              scheduleType: ScheduleType, scheduleDays: Date[], scheduleTime: Time) {
+              scheduleType: ScheduleType, scheduleDays: Date[], scheduleTime: string) {
     this.id = id;
     this.affirmationId = affirmationId;
     this.active = active;

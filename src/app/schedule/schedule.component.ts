@@ -39,7 +39,7 @@ export class ScheduleComponent implements OnInit {
       map(result => {
         console.log('RESULT', result);
         if (result) {
-          this.form.patchValue(result);
+          this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
         }
         this.schedule = result;
       })
@@ -60,6 +60,7 @@ export class ScheduleComponent implements OnInit {
       this.form.get('time')?.value
     );
     this.store.dispatch(createSchedule({schedule: newSchedule}));
+    this.router.navigate(['..'], {relativeTo: this.route});
   }
 
   setScheduleFromAffirmation(): void {

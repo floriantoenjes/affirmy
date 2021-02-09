@@ -3,5 +3,22 @@
     <mat-icon class="arrow-back ml-3 mt-3" (click)="router.navigate(['/'])">arrow_back</mat-icon>
     <h1 class="text-center pt-4 flex-1 pr-3">Create an Affirmation</h1>
   </header>
-  <hr>
+  <mat-divider></mat-divider>
+  <main class="p-6">
+    <form [formGroup]="form">
+      <mat-form-field class="w-full">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title">
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Affirmation</mat-label>
+        <textarea style="resize: none" rows="10" matInput formControlName="text"></textarea>
+      </mat-form-field>
+    </form>
+
+    <button (click)="createAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
+      <mat-icon>add</mat-icon>
+    </button>
+
+  </main>
 </div>

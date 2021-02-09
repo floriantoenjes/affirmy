@@ -19,6 +19,7 @@ import { CreateComponent } from './create/create.component';
 import { DetailComponent } from './detail/detail.component';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatNativeDateModule,
     MatIconModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

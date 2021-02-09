@@ -1,4 +1,4 @@
-import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
+import {Action, createFeatureSelector, createReducer, createSelector, on, Props} from '@ngrx/store';
 import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 import {State} from './index';
@@ -32,4 +32,9 @@ export const getAffirmationsState = createFeatureSelector<State, AffirmationStat
 export const getAffirmations = createSelector(getAffirmationsState, (affirmationState: AffirmationState) => {
   return affirmationState.affirmations;
 });
+
+export const getAffirmationById = createSelector(
+  getAffirmations,
+  (affirmations: Affirmation[], props: any) => affirmations.find(af => af.id === props.id)
+);
 

@@ -20,13 +20,15 @@ import { DetailComponent } from './detail/detail.component';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {ReactiveFormsModule} from '@angular/forms';
+import {EditComponent} from './edit/edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ListComponent,
     CreateComponent,
-    DetailComponent
+    DetailComponent,
+    EditComponent,
   ],
   imports: [
     BrowserModule,

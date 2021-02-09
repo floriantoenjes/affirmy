@@ -1,31 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Observable} from 'rxjs';
 import {Affirmation} from '../shared/models/Affirmation';
-import {Observable, of} from 'rxjs';
 import {select, Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {getAffirmations} from '../reducers/affirmation.reducer';
 import {filter, find, mergeMap} from 'rxjs/operators';
+import {ActivatedRoute} from '@angular/router';
+import {flatten} from '@angular/compiler';
 
 @Component({
-  selector: 'app-detail',
-  templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.scss']
+  selector: 'app-edit',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.scss']
 })
-export class DetailComponent implements OnInit {
+export class EditComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
 
-  constructor(private route: ActivatedRoute, public router: Router, private store: Store<State>) {
-    this.affirmation$ = this.getCurrentAffirmation();
-  }
-
-
-  ngOnInit(): void {
-  }
-
-  private getCurrentAffirmation(): Observable<Affirmation | undefined> {
-    return this.store.pipe(
+  constructor(private route: ActivatedRoute, private store: Store<State>) {
+    this.affirmation$ = store.pipe(
       select(getAffirmations),
       mergeMap(af => af),
       find((af: Affirmation) => {
@@ -39,8 +32,7 @@ export class DetailComponent implements OnInit {
     );
   }
 
-  navigateToEdit(): void {
-    this.router.navigate(['edit'], {relativeTo: this.route});
+  ngOnInit(): void {
   }
 
 }

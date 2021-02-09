@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {createAffirmation} from '../actions/affirmation.actions';
+import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 
 @Component({
@@ -13,6 +13,12 @@ import {Affirmation} from '../shared/models/Affirmation';
 })
 export class CreateComponent implements OnInit {
 
+  @Input()
+  edit = false;
+
+  @Input()
+  affirmation: Affirmation | undefined;
+
   form = new FormGroup({
     title: new FormControl(),
     text: new FormControl()
@@ -21,6 +27,9 @@ export class CreateComponent implements OnInit {
   constructor(public router: Router, private store: Store<State>) { }
 
   ngOnInit(): void {
+    if (this.affirmation) {
+      this.form.patchValue(this.affirmation);
+    }
   }
 
   createAffirmation(): void {
@@ -32,6 +41,14 @@ export class CreateComponent implements OnInit {
       );
       this.store.dispatch(createAffirmation({ affirmation: newAffirmation}));
       this.router.navigate(['detail', '10']);
+    }
+  }
+
+  updateAffirmation(): void {
+    if (this.form.valid) {
+      const updatedAffirmation = {...this.affirmation, ...this.form.getRawValue()};
+      this.store.dispatch(updateAffirmation({affirmation: updatedAffirmation}));
+      this.router.navigate(['detail', this.affirmation?.id]);
     }
   }
 }

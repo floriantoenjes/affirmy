@@ -1,5 +1,5 @@
 import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
-import {createAffirmation} from '../actions/affirmation.actions';
+import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 import {State} from './index';
 
@@ -17,7 +17,9 @@ export const initialState = {
 
 const affirmationReducer = createReducer(
   initialState,
-  on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]}))
+  on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]})),
+  on(updateAffirmation, (state, {affirmation}) => (
+    {affirmations: [...state.affirmations.filter(af => af.id !== affirmation.id), affirmation]}))
 );
 
 export function reducer(state: AffirmationState | undefined, action: Action): AffirmationState {

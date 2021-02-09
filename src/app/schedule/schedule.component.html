@@ -8,7 +8,7 @@
   <ng-container *ngIf="!showDaySelect">
     <main class="p-6">
       <form [formGroup]="form">
-        <div class="mb-4">
+        <div class="mb-6">
           <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg" (change)="switchType()">
             <mat-radio-button value="daily" class="mr-4" [checked]="selectedType === types.DAILY">Daily</mat-radio-button>
             <mat-radio-button value="hourly" [checked]="selectedType === types.HOURLY">Hourly</mat-radio-button>
@@ -19,7 +19,8 @@
           <button type="button" (click)="showDaySelect=true" mat-raised-button color="accent" class="text-xl mb-4">
             Select Days
           </button>
-          <p class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
+          <p *ngIf="selectedWeekDaysAsString()" class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
+          <p *ngIf="!selectedWeekDaysAsString()" class="mb-4 text-lg">No week days selected</p>
 
           <mat-form-field class="text-xl">
             <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"

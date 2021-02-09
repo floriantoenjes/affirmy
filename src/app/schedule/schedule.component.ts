@@ -8,6 +8,8 @@ import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {createSchedule} from '../actions/schedule.actions';
+import {map, mergeMap, tap} from 'rxjs/operators';
+import {getScheduleById} from '../reducers/schedule.reducer';
 
 @Component({
   selector: 'app-schedule',
@@ -18,6 +20,7 @@ import {createSchedule} from '../actions/schedule.actions';
 export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
+  schedule: Schedule | undefined;
 
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
@@ -26,6 +29,10 @@ export class ScheduleComponent implements OnInit {
 
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')});
+
+    this.affirmation$.pipe(
+      tap(affirmation => this.store.select(getScheduleById, {id: affirmation?.id}))
+    );
   }
 
   ngOnInit(): void {

@@ -23,6 +23,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {EditComponent} from './edit/edit.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import {MatRadioModule} from '@angular/material/radio';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import {MatRadioModule} from '@angular/material/radio';
     MatDividerModule,
     MatRadioModule,
     ReactiveFormsModule,
+    NgxMaterialTimepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

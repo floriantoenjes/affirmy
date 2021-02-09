@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
-import {createSchedule} from '../actions/schedule.actions';
+import {createSchedule, updateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
@@ -53,16 +53,23 @@ export class ScheduleComponent implements OnInit {
   }
 
   createSchedule(): void {
-    console.log(this.form.value);
-    const newSchedule = new Schedule(
-      1,
-      1,
-      true,
-      ScheduleType.HOURLY,
-      [],
-      this.form.get('time')?.value
-    );
-    this.store.dispatch(createSchedule({schedule: newSchedule}));
+    if (this.schedule) {
+      const updatedSchedule = {
+        ...this.schedule,
+        scheduleTime: this.form.get('time')?.value,
+      } as Schedule;
+      this.store.dispatch(updateSchedule({schedule: updatedSchedule}));
+    } else {
+      const newSchedule = new Schedule(
+        1,
+        1,
+        true,
+        ScheduleType.HOURLY,
+        [],
+        this.form.get('time')?.value
+      );
+      this.store.dispatch(createSchedule({schedule: newSchedule}));
+    }
     this.router.navigate(['..'], {relativeTo: this.route});
   }
 

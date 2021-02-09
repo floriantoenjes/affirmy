@@ -26,11 +26,12 @@ export class CreateComponent implements OnInit {
   createAffirmation(): void {
     if (this.form.valid) {
       const newAffirmation = new Affirmation(
-        1,
+        10,
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );
       this.store.dispatch(createAffirmation({ affirmation: newAffirmation}));
+      this.router.navigate(['detail', '10']);
     }
   }
 }

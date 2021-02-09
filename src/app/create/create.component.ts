@@ -40,7 +40,7 @@ export class CreateComponent implements OnInit {
         this.form.get('text')?.value
       );
       this.store.dispatch(createAffirmation({ affirmation: newAffirmation}));
-      this.router.navigate(['detail', '10']);
+      this.router.navigate(['detail', newAffirmation.id]);
     }
   }
 

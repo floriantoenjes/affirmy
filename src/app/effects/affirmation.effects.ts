@@ -7,7 +7,7 @@ import {from} from 'rxjs';
 @Injectable()
 export class AffirmationEffects {
 
-  db = new PouchDB('affirmations');
+  db = new PouchDB('affirmations2');
 
   $fetchAffirmations = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.fetchAffirmations),
@@ -20,7 +20,8 @@ export class AffirmationEffects {
     map(docs => {
       console.log('RESULTS', docs);
       const affirmations = docs.rows.map(row => row.doc);
-      return ({type: '[Affirmation] Load', payload: affirmations});
+      console.log('AFFS', affirmations);
+      return ({type: '[Affirmation] Load', affirmations});
     })
   ));
 

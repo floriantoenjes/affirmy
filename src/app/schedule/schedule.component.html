@@ -7,8 +7,6 @@
   <hr>
   <ng-container *ngIf="!showDaySelect">
     <main class="p-6">
-      <button (click)="showDaySelect = true" mat-button class="text-xl mb-6">Select Days</button>
-
       <form [formGroup]="form">
         <div class="mb-6">
           <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg">
@@ -16,6 +14,8 @@
             <mat-radio-button value="hourly">Hourly</mat-radio-button>
           </mat-radio-group>
         </div>
+
+        <button type="button" (click)="showDaySelect=true" mat-raised-button color="accent" class="text-xl mb-6">Select Days</button>
 
         <mat-form-field class="text-xl">
           <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"

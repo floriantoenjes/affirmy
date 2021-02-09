@@ -68,9 +68,12 @@ export class ScheduleComponent implements OnInit {
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
     const weekDays = selectedWeekDays.map(swd => swd.value);
     if (this.schedule) {
-      // this.schedule.scheduleDays = weekDays;
       this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
     }
     this.showDaySelect = false;
+  }
+
+  isSelected(weekday: string): boolean {
+    return !!this.schedule?.scheduleDays.some(d => d === weekday);
   }
 }

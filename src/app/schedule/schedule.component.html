@@ -32,7 +32,7 @@
 
   <ng-container *ngIf="showDaySelect">
     <mat-selection-list #daySelect>
-      <mat-list-option *ngFor="let weekday of ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" [value]="weekday">
+      <mat-list-option *ngFor="let weekday of ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" [value]="weekday" [selected]="isSelected(weekday)">
         {{weekday}}
       </mat-list-option>
     </mat-selection-list>

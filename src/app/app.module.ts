@@ -21,6 +21,8 @@ import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {ReactiveFormsModule} from '@angular/forms';
 import {EditComponent} from './edit/edit.component';
+import { ScheduleComponent } from './schedule/schedule.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import {EditComponent} from './edit/edit.component';
     CreateComponent,
     DetailComponent,
     EditComponent,
+    ScheduleComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,6 +49,7 @@ import {EditComponent} from './edit/edit.component';
     MatIconModule,
     MatListModule,
     MatDividerModule,
+    MatRadioModule,
     ReactiveFormsModule,
   ],
   providers: [],

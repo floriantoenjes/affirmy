@@ -43,4 +43,7 @@ export class DetailComponent implements OnInit {
     this.router.navigate(['edit'], {relativeTo: this.route});
   }
 
+  navigateToSchedule(): void {
+    this.router.navigate(['schedule'], {relativeTo: this.route});
+  }
 }

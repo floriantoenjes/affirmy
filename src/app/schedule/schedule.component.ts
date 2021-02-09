@@ -8,7 +8,7 @@ import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {createSchedule, updateSchedule} from '../actions/schedule.actions';
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
 
@@ -21,6 +21,7 @@ import {MatListOption} from '@angular/material/list';
 export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
+  affirmationId: number | undefined;
   schedule: Schedule | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
@@ -33,7 +34,9 @@ export class ScheduleComponent implements OnInit {
   });
 
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
-    this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')});
+    this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
+      tap(af => this.affirmationId = af?.id)
+    );
 
     this.affirmation$.pipe(
       mergeMap(affirmation => {
@@ -65,9 +68,12 @@ export class ScheduleComponent implements OnInit {
       } as Schedule;
       this.store.dispatch(updateSchedule({schedule: updatedSchedule}));
     } else {
+      if (!this.affirmationId) {
+        return;
+      }
       const newSchedule = new Schedule(
         1,
-        1,
+        this.affirmationId,
         true,
         this.selectedType,
         [],

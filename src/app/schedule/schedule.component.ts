@@ -10,6 +10,7 @@ import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {createSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
+import {flatten} from '@angular/compiler';
 
 @Component({
   selector: 'app-schedule',
@@ -31,8 +32,18 @@ export class ScheduleComponent implements OnInit {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')});
 
     this.affirmation$.pipe(
-      tap(affirmation => this.store.select(getScheduleById, {id: affirmation?.id}))
-    );
+      mergeMap(affirmation => {
+        console.log('AFFIRM', affirmation);
+        return this.store.select(getScheduleById, {id: affirmation?.id});
+      }),
+      map(result => {
+        console.log('RESULT', result);
+        if (result) {
+          this.form.patchValue(result);
+        }
+        this.schedule = result;
+      })
+    ).subscribe();
   }
 
   ngOnInit(): void {
@@ -49,6 +60,10 @@ export class ScheduleComponent implements OnInit {
       this.form.get('time')?.value
     );
     this.store.dispatch(createSchedule({schedule: newSchedule}));
+  }
+
+  setScheduleFromAffirmation(): void {
+
   }
 
 }

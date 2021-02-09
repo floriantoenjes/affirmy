@@ -11,6 +11,7 @@ import {createSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {flatten} from '@angular/compiler';
+import {MatListOption} from '@angular/material/list';
 
 @Component({
   selector: 'app-schedule',
@@ -22,6 +23,7 @@ export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
   schedule: Schedule | undefined;
+  showDaySelect = false;
 
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
@@ -63,8 +65,12 @@ export class ScheduleComponent implements OnInit {
     this.router.navigate(['..'], {relativeTo: this.route});
   }
 
-  setScheduleFromAffirmation(): void {
-
+  selectWeekDays(selectedWeekDays: MatListOption[]): void {
+    const weekDays = selectedWeekDays.map(swd => swd.value);
+    if (this.schedule) {
+      // this.schedule.scheduleDays = weekDays;
+      this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
+    }
+    this.showDaySelect = false;
   }
-
 }

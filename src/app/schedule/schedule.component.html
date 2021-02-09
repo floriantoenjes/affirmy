@@ -1,26 +1,44 @@
-<div class="container" *ngIf="affirmation$ | async as affirmation">
+<div class="container" *ngIf=" affirmation$ | async as affirmation">
+
   <header class="flex flex-row">
     <mat-icon class="arrow-back ml-3 mt-3" (click)="router.navigate(['..'])">arrow_back</mat-icon>
     <h1 class="text-center pt-4 flex-1 pr-12">{{ affirmation.title }}</h1>
   </header>
   <hr>
-  <main class="p-6">
-    <form [formGroup]="form">
-      <div class="mb-6">
-        <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg">
-          <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
-          <mat-radio-button value="hourly">Hourly</mat-radio-button>
-        </mat-radio-group>
-      </div>
+  <ng-container *ngIf="!showDaySelect">
+    <main class="p-6">
+      <button (click)="showDaySelect = true" mat-button class="text-xl mb-6">Select Days</button>
 
-      <mat-form-field class="text-xl">
-        <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24" placeholder="Daily reminder time">
-        <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
-      </mat-form-field>
-    </form>
+      <form [formGroup]="form">
+        <div class="mb-6">
+          <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg">
+            <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
+            <mat-radio-button value="hourly">Hourly</mat-radio-button>
+          </mat-radio-group>
+        </div>
 
-    <button (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
+        <mat-form-field class="text-xl">
+          <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"
+                 placeholder="Daily reminder time">
+          <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
+        </mat-form-field>
+      </form>
+
+      <button (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
+        <mat-icon>check</mat-icon>
+      </button>
+    </main>
+  </ng-container>
+
+  <ng-container *ngIf="showDaySelect">
+    <mat-selection-list #daySelect>
+      <mat-list-option *ngFor="let weekday of ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" [value]="weekday">
+        {{weekday}}
+      </mat-list-option>
+    </mat-selection-list>
+
+    <button (click)="selectWeekDays(daySelect.selectedOptions.selected)" mat-fab class="fixed bottom-0 right-0 m-6">
       <mat-icon>check</mat-icon>
     </button>
-  </main>
+  </ng-container>
 </div>

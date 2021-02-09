@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import * as PouchDb from 'pouchdb-browser';
+import {State} from './reducers';
+import {Store} from '@ngrx/store';
+import {fetchAffirmations} from './actions/affirmation.actions';
 
 @Component({
   selector: 'app-root',
@@ -9,16 +12,20 @@ import * as PouchDb from 'pouchdb-browser';
 export class AppComponent implements OnInit{
   title = 'affirmy';
 
-  ngOnInit(): void {
-    const db = new PouchDB('affirmations');
-    db.put({
-      _id: new Date().toISOString(),
-      title: 'Title',
-      text: 'Text',
-    }).then();
+  constructor(private store: Store<State>) {
+  }
 
-    console.log(db.allDocs({
-      include_docs: true, descending: true
-    }).then((result) => console.log(result)));
+  ngOnInit(): void {
+    this.store.dispatch(fetchAffirmations());
+    // const db = new PouchDB('affirmations');
+    // db.put({
+    //   _id: new Date().toISOString(),
+    //   title: 'Title',
+    //   text: 'Text',
+    // }).then();
+    //
+    // console.log(db.allDocs({
+    //   include_docs: true, descending: true
+    // }).then((result) => console.log(result)));
   }
 }

@@ -26,6 +26,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { EffectsModule } from '@ngrx/effects';
 import {ScheduleEffects} from './effects/schedule.effects';
+import {AffirmationEffects} from './effects/affirmation.effects';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import {ScheduleEffects} from './effects/schedule.effects';
     MatRadioModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,
-    EffectsModule.forRoot([ScheduleEffects])
+    EffectsModule.forRoot([AffirmationEffects, ScheduleEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]

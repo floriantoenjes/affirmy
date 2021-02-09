@@ -76,4 +76,8 @@ export class ScheduleComponent implements OnInit {
   isSelected(weekday: string): boolean {
     return !!this.schedule?.scheduleDays.some(d => d === weekday);
   }
+
+  selectedWeekDaysAsString(): string | undefined {
+    return this.schedule?.scheduleDays.join(', ');
+  }
 }

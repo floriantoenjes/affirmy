@@ -5,19 +5,21 @@
   </header>
   <hr>
   <main class="p-6">
-    <div class="mb-6">
-      <mat-radio-group aria-label="Select an option" class="text-lg">
-        <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
-        <mat-radio-button value="hourly">Hourly</mat-radio-button>
-      </mat-radio-group>
-    </div>
+    <form [formGroup]="form">
+      <div class="mb-6">
+        <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg">
+          <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
+          <mat-radio-button value="hourly">Hourly</mat-radio-button>
+        </mat-radio-group>
+      </div>
 
-    <mat-form-field class="text-xl">
-      <input matInput [ngxTimepicker]="defaultTime" [format]="24" placeholder="Daily reminder time">
-      <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
-    </mat-form-field>
+      <mat-form-field class="text-xl">
+        <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24" placeholder="Daily reminder time">
+        <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
+      </mat-form-field>
+    </form>
 
-    <button mat-fab class="fixed bottom-0 right-0 m-6">
+    <button (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
       <mat-icon>check</mat-icon>
     </button>
   </main>

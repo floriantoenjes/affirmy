@@ -9,20 +9,32 @@
     <main class="p-6">
       <form [formGroup]="form">
         <div class="mb-4">
-          <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg">
+          <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg" (change)="switchType()">
             <mat-radio-button value="daily" class="mr-4" [checked]="true">Daily</mat-radio-button>
             <mat-radio-button value="hourly">Hourly</mat-radio-button>
           </mat-radio-group>
         </div>
 
-        <button type="button" (click)="showDaySelect=true" mat-raised-button color="accent" class="text-xl mb-4">Select Days</button>
-        <p class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
+        <ng-container *ngIf="selectedType === types.DAILY">
+          <button type="button" (click)="showDaySelect=true" mat-raised-button color="accent" class="text-xl mb-4">
+            Select Days
+          </button>
+          <p class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
 
-        <mat-form-field class="text-xl">
-          <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"
-                 placeholder="Daily reminder time">
-          <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
-        </mat-form-field>
+          <mat-form-field class="text-xl">
+            <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"
+                   placeholder="Daily reminder time">
+            <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
+          </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngIf="selectedType === types.HOURLY">
+          <mat-form-field class="text-xl">
+            <input formControlName="time" matInput [ngxTimepicker]="hourlyTime" [format]="24"
+                   placeholder="Start time">
+            <ngx-material-timepicker #hourlyTime></ngx-material-timepicker>
+          </mat-form-field>
+        </ng-container>
       </form>
 
       <button (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
@@ -33,7 +45,9 @@
 
   <ng-container *ngIf="showDaySelect">
     <mat-selection-list #daySelect>
-      <mat-list-option *ngFor="let weekday of ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']" [value]="weekday" [selected]="isSelected(weekday)">
+      <mat-list-option
+        *ngFor="let weekday of ['Monday','Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
+        [value]="weekday" [selected]="isSelected(weekday)">
         {{weekday}}
       </mat-list-option>
     </mat-selection-list>

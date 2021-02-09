@@ -8,9 +8,8 @@ import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {createSchedule} from '../actions/schedule.actions';
-import {map, mergeMap, tap} from 'rxjs/operators';
+import {map, mergeMap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
-import {flatten} from '@angular/compiler';
 import {MatListOption} from '@angular/material/list';
 
 @Component({
@@ -24,6 +23,8 @@ export class ScheduleComponent implements OnInit {
   affirmation$: Observable<Affirmation | undefined>;
   schedule: Schedule | undefined;
   showDaySelect = false;
+  selectedType: ScheduleType = ScheduleType.DAILY;
+  types = ScheduleType;
 
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
@@ -79,5 +80,16 @@ export class ScheduleComponent implements OnInit {
 
   selectedWeekDaysAsString(): string | undefined {
     return this.schedule?.scheduleDays.join(', ');
+  }
+
+  switchType(): void {
+    switch (this.form.get('type')?.value) {
+      case 'daily':
+        this.selectedType = ScheduleType.DAILY;
+        break;
+      case 'hourly':
+        this.selectedType = ScheduleType.HOURLY;
+        break;
+    }
   }
 }

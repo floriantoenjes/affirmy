@@ -27,6 +27,7 @@ import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { EffectsModule } from '@ngrx/effects';
 import {ScheduleEffects} from './effects/schedule.effects';
 import {AffirmationEffects} from './effects/affirmation.effects';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import {AffirmationEffects} from './effects/affirmation.effects';
     MatListModule,
     MatDividerModule,
     MatRadioModule,
+    MatSlideToggleModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,
     EffectsModule.forRoot([AffirmationEffects, ScheduleEffects])

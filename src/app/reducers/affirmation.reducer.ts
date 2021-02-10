@@ -17,7 +17,7 @@ export const initialState = {
 
 const affirmationReducer = createReducer(
   initialState,
-  on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]})),
+  on(createAffirmation, (state, {affirmation}) => ({affirmations: [affirmation, ...state.affirmations]})),
 
   on(updateAffirmation, (state, {affirmation}) => (
     {affirmations: [...state.affirmations.filter(af => af._id !== affirmation._id), affirmation]})),

@@ -9,7 +9,7 @@ export interface ScheduleState {
 
 export const initialState = {
   schedules: [
-    new Schedule('1', true, ScheduleType.DAILY, [], '18:45')
+    // new Schedule('1', true, ScheduleType.DAILY, [], '18:45')
   ] as Schedule[]
 };
 

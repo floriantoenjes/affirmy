@@ -9,9 +9,9 @@ export interface AffirmationState {
 
 export const initialState = {
   affirmations: [
-    new Affirmation( 'Do the Dishes', 'Das Geschirr aufräumen'),
-    new Affirmation( 'Walk the Dog', 'Mit dem Hund rausgehen'),
-    new Affirmation( 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
+    // new Affirmation( 'Do the Dishes', 'Das Geschirr aufräumen'),
+    // new Affirmation( 'Walk the Dog', 'Mit dem Hund rausgehen'),
+    // new Affirmation( 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
   ] as Affirmation[]
 };
 

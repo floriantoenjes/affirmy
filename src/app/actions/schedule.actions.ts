@@ -3,4 +3,4 @@ import {Schedule} from '../shared/models/Schedule';
 
 export const createSchedule = createAction('[Schedule] Create', props<{ schedule: Schedule; }>());
 export const updateSchedule = createAction('[Schedule] Update', props<{ schedule: Schedule; }>());
-export const deleteSchedule = createAction('[Schedule] Delete', props<{ scheduleId: number }>());
+export const deleteSchedule = createAction('[Schedule] Delete', props<{ schedule: Schedule }>());

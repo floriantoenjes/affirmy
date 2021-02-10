@@ -31,6 +31,18 @@ export class ScheduleEffects {
     })
   ), {dispatch: false});
 
+  $deleteSchedule = createEffect(() => this.actionPipe$.pipe(
+    ofType(ScheduleActions.deleteSchedule),
+    tap(action => {
+      const schedule = action.schedule;
+
+      const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
+      console.log('Rescheduling...', scheduleDt.toISOTime());
+
+      this.db.remove(schedule);
+    })
+  ), {dispatch: false});
+
   constructor(
     private actions$: Actions,
   ) {}

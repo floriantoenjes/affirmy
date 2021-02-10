@@ -1,9 +1,13 @@
 import {Injectable} from '@angular/core';
-import {Actions, createEffect, ofType} from '@ngrx/effects';
+import {act, Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
-import {map, mergeMap, tap} from 'rxjs/operators';
-import {from} from 'rxjs';
+import {map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
+import {from, of} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {Store} from '@ngrx/store';
+import {State} from '../reducers';
+import {deleteSchedule} from '../actions/schedule.actions';
+import {getScheduleById} from '../reducers/schedule.reducer';
 
 @Injectable()
 export class AffirmationEffects {
@@ -47,7 +51,8 @@ export class AffirmationEffects {
   ), {dispatch: false});
 
   constructor(
-    private actions$: Actions
+    private actions$: Actions,
+    private store: Store<State>
   ) {
   }
 }

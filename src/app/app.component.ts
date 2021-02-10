@@ -17,15 +17,5 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     this.store.dispatch(fetchAffirmations());
-    // const db = new PouchDB('affirmations');
-    // db.put({
-    //   _id: new Date().toISOString(),
-    //   title: 'Title',
-    //   text: 'Text',
-    // }).then();
-    //
-    // console.log(db.allDocs({
-    //   include_docs: true, descending: true
-    // }).then((result) => console.log(result)));
   }
 }

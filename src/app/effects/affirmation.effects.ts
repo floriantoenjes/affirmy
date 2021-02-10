@@ -1,15 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
-import {map, mergeMap} from 'rxjs/operators';
+import {map, mergeMap, tap} from 'rxjs/operators';
 import {from} from 'rxjs';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class AffirmationEffects {
 
   db = new PouchDB('affirmations2');
+  actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDBurl)));
 
-  $fetchAffirmations = createEffect(() => this.actions$.pipe(
+  $fetchAffirmations = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.fetchAffirmations),
     mergeMap(() => {
       console.log('fetching');
@@ -25,14 +27,14 @@ export class AffirmationEffects {
     })
   ));
 
-  $createAffirmation = createEffect(() => this.actions$.pipe(
+  $createAffirmation = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.createAffirmation),
     map(action => {
       this.db.put({...action.affirmation});
     })
   ), {dispatch: false});
 
-  $deleteAffirmation = createEffect(() => this.actions$.pipe(
+  $deleteAffirmation = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
     map(action => {
       this.db.remove(action.affirmation);

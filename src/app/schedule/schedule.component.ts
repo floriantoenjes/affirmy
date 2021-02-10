@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
-import {createSchedule, updateSchedule} from '../actions/schedule.actions';
+import {createSchedule, startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
@@ -69,7 +69,7 @@ export class ScheduleComponent implements OnInit {
         scheduleTime: this.form.get('time')?.value,
         hourlyInterval: this.form.get('hourlyInterval')?.value
       } as Schedule;
-      this.store.dispatch(updateSchedule({schedule: updatedSchedule}));
+      this.store.dispatch(startUpdateSchedule({schedule: updatedSchedule}));
     } else {
       if (!this.affirmationId) {
         return;

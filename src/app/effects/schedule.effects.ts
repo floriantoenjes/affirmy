@@ -5,6 +5,7 @@ import {from, of} from 'rxjs';
 import * as ScheduleActions from '../actions/schedule.actions';
 import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
+import {updateSchedule} from '../actions/schedule.actions';
 
 @Injectable()
 export class ScheduleEffects {
@@ -37,15 +38,22 @@ export class ScheduleEffects {
   ), {dispatch: false});
 
   $updateSchedule = createEffect(() => this.actions$.pipe(
-    ofType(ScheduleActions.updateSchedule),
-    tap(action => {
+    ofType(ScheduleActions.startUpdateSchedule),
+    mergeMap(action => {
       const schedule = action.schedule;
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Rescheduling...', scheduleDt.toISOTime());
-      this.db.put(schedule);
+      const responseObs = from(this.db.put(schedule));
+
+      return responseObs.pipe(
+        map(response => {
+          const rev = response.rev;
+          return updateSchedule({schedule: {...action.schedule, _rev: rev}});
+        })
+      );
     }),
     tap(() => this.dbSync())
-  ), {dispatch: false});
+  ));
 
   $deleteSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.deleteSchedule),

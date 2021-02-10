@@ -15,9 +15,7 @@ export class AffirmationEffects {
   db = new PouchDB('affirmations2');
   scheduleDb = new PouchDB('schedules2');
 
-  actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDbAffirmations)));
-
-  $fetchAffirmations = createEffect(() => this.actionPipe$.pipe(
+  $fetchAffirmations = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.fetchAffirmations),
     mergeMap(() => {
       console.log('fetching');
@@ -30,22 +28,25 @@ export class AffirmationEffects {
       const affirmations = docs.rows.map(row => row.doc);
       console.log('AFFS', affirmations);
       return ({type: '[Affirmation] Load', affirmations});
-    })
+    }),
+    tap(() => this.dbSync())
   ));
 
-  $createAffirmation = createEffect(() => this.actionPipe$.pipe(
+  $createAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.createAffirmation),
     map(action => {
       this.db.put({...action.affirmation});
-    })
+    }),
+    tap(() => this.dbSync())
   ), {dispatch: false});
 
-  $updateAffirmation = createEffect(() => this.actionPipe$.pipe(
+  $updateAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.updateAffirmation),
-    map(action => this.db.put(action.affirmation))
+    map(action => this.db.put(action.affirmation)),
+    tap(() => this.dbSync())
   ), {dispatch: false});
 
-  $deleteAffirmation = createEffect(() => this.actionPipe$.pipe(
+  $deleteAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
     map(action => action.affirmation),
     mergeMap((affirmation) =>
@@ -66,7 +67,8 @@ export class AffirmationEffects {
         });
       }
       return of();
-    })
+    }),
+    tap(() => this.dbSync())
 
   ), {dispatch: false});
 
@@ -74,5 +76,10 @@ export class AffirmationEffects {
     private actions$: Actions,
     private store: Store<State>
   ) {
+  }
+
+  dbSync(): void {
+    console.log('DB SYNC AFFIRMATION EFFECT');
+    this.db.sync(environment.pouchDbAffirmations);
   }
 }

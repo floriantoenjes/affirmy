@@ -10,9 +10,8 @@ import {environment} from '../../environments/environment';
 export class ScheduleEffects {
 
   db = new PouchDB('schedules2');
-  actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDbSchedules)));
 
-  $fetchSchedules = createEffect(() => this.actionPipe$.pipe(
+  $fetchSchedules = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.fetchSchedules),
     mergeMap(() => {
       return from(this.db.allDocs({
@@ -22,30 +21,33 @@ export class ScheduleEffects {
     map(docs => {
       const schedules = docs.rows.map(row => row.doc);
       return ({type: '[Schedule] Load', schedules});
-    })
+    }),
+    tap(() => this.dbSync())
   ));
 
-  $createSchedule = createEffect(() => this.actionPipe$.pipe(
+  $createSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.createSchedule),
     tap(action => {
       const schedule = action.schedule;
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Scheduling...', scheduleDt.toISOTime());
       this.db.put({...schedule});
-    })
+    }),
+    tap(() => this.dbSync())
   ), {dispatch: false});
 
-  $updateSchedule = createEffect(() => this.actionPipe$.pipe(
+  $updateSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.updateSchedule),
     tap(action => {
       const schedule = action.schedule;
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Rescheduling...', scheduleDt.toISOTime());
       this.db.put(schedule);
-    })
+    }),
+    tap(() => this.dbSync())
   ), {dispatch: false});
 
-  $deleteSchedule = createEffect(() => this.actionPipe$.pipe(
+  $deleteSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.deleteSchedule),
     tap(action => {
       const schedule = action.schedule;
@@ -54,10 +56,16 @@ export class ScheduleEffects {
       console.log('Rescheduling...', scheduleDt.toISOTime());
 
       this.db.remove(schedule);
-    })
+    }),
+    tap(() => this.dbSync())
   ), {dispatch: false});
 
   constructor(
     private actions$: Actions,
   ) {}
+
+  dbSync(): void {
+    console.log('DB SYNC SCHEDULE EFFECT');
+    this.db.sync(environment.pouchDbSchedules);
+  }
 }

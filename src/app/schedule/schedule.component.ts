@@ -60,6 +60,7 @@ export class ScheduleComponent implements OnInit {
 
   createSchedule(): void {
     if (this.schedule?._id) {
+      console.log('UPDATE SCHEDULE');
       const updatedSchedule = {
         ...this.schedule,
         scheduleType: this.selectedType,
@@ -71,6 +72,7 @@ export class ScheduleComponent implements OnInit {
       if (!this.affirmationId) {
         return;
       }
+      console.log('CREATE SCHEDULE');
       const newSchedule = new Schedule(
         this.affirmationId,
         true,

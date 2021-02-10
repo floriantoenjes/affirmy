@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {act, Actions, createEffect, ofType} from '@ngrx/effects';
+import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
+import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {map, mergeMap, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {from, of} from 'rxjs';
 import {environment} from '../../environments/environment';
@@ -8,7 +9,6 @@ import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {deleteSchedule} from '../actions/schedule.actions';
 import {getScheduleById} from '../reducers/schedule.reducer';
-import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 
 @Injectable()
 export class AffirmationEffects {
@@ -75,10 +75,7 @@ export class AffirmationEffects {
       this.db.remove(affirmation);
       if (schedule) {
         console.log('REMOVING SCHEDULE');
-        this.scheduleDb.remove(schedule)
-          .then((x) => console.log(x)).catch((e) => {
-          console.log('SCHEDULE', e);
-        });
+        this.store.dispatch(deleteSchedule({schedule}));
       }
       return of();
     }),

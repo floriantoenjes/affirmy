@@ -1,6 +1,6 @@
-import {Schedule, ScheduleType} from '../shared/models/Schedule';
+import {Schedule} from '../shared/models/Schedule';
 import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
-import {createSchedule, loadSchedules, updateSchedule} from '../actions/schedule.actions';
+import {createSchedule, deleteSchedule, loadSchedules, updateSchedule} from '../actions/schedule.actions';
 import {State} from './index';
 
 export interface ScheduleState {
@@ -23,7 +23,11 @@ const scheduleReducer = createReducer(
 
   on(loadSchedules, (state, {schedules}) => {
     return ({schedules});
-  })
+  }),
+
+  on(deleteSchedule, (state, {schedule}) => ({
+    schedules: state.schedules.filter(sc => sc._id !== schedule._id)
+  }))
 );
 
 export function reducer(state: ScheduleState | undefined, action: Action): ScheduleState {

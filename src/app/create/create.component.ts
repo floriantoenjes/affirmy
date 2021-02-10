@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
+import {createAffirmation, startUpdateAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 
 @Component({
@@ -48,7 +48,7 @@ export class CreateComponent implements OnInit {
   updateAffirmation(): void {
     if (this.form.valid) {
       const updatedAffirmation = {...this.affirmation, ...this.form.getRawValue()};
-      this.store.dispatch(updateAffirmation({affirmation: updatedAffirmation}));
+      this.store.dispatch(startUpdateAffirmation({affirmation: updatedAffirmation}));
       this.router.navigate(['detail', this.affirmation?._id]);
     }
   }

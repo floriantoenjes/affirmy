@@ -8,7 +8,7 @@ import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {deleteSchedule} from '../actions/schedule.actions';
 import {getScheduleById} from '../reducers/schedule.reducer';
-import {updateAffirmation} from '../actions/affirmation.actions';
+import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 
 @Injectable()
 export class AffirmationEffects {
@@ -34,12 +34,17 @@ export class AffirmationEffects {
   ));
 
   $createAffirmation = createEffect(() => this.actions$.pipe(
-    ofType(AffirmationActions.createAffirmation),
-    map(action => {
-      this.db.put({...action.affirmation});
+    ofType(AffirmationActions.startCreateAffirmation),
+    mergeMap(action => {
+      const responseObs = from(this.db.put({...action.affirmation}));
+      return responseObs.pipe(
+        map(response => {
+          return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev}});
+        })
+      );
     }),
     tap(() => this.dbSync())
-  ), {dispatch: false});
+  ));
 
   $updateAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.startUpdateAffirmation),

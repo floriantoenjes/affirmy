@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {createAffirmation, startUpdateAffirmation, updateAffirmation} from '../actions/affirmation.actions';
+import {createAffirmation, startCreateAffirmation, startUpdateAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 
 @Component({
@@ -40,7 +40,7 @@ export class CreateComponent implements OnInit {
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );
-      this.store.dispatch(createAffirmation({ affirmation: newAffirmation}));
+      this.store.dispatch(startCreateAffirmation({ affirmation: newAffirmation}));
       this.router.navigate(['detail', newAffirmation._id]);
     }
   }

@@ -4,7 +4,7 @@ import {Affirmation} from '../shared/models/Affirmation';
 export const fetchAffirmations = createAction('[Affirmation] Fetch');
 export const loadAffirmations = createAction('[Affirmation] Load', props<{ affirmations: Affirmation[] }>());
 
-
+export const startCreateAffirmation = createAction('[Affirmation] Start Creation', props<{affirmation: Affirmation}>());
 export const createAffirmation = createAction('[Affirmation] Create', props<{ affirmation: Affirmation }>());
 
 export const startUpdateAffirmation = createAction('[Affirmation] Start Update', props<{ affirmation: Affirmation }>());

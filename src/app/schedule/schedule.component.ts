@@ -36,12 +36,12 @@ export class ScheduleComponent implements OnInit {
 
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
-      tap(af => this.affirmationId = af?.id)
+      tap(af => this.affirmationId = af?._id)
     );
 
     this.affirmation$.pipe(
       mergeMap(affirmation => {
-        return this.store.select(getScheduleById, {id: affirmation?.id});
+        return this.store.select(getScheduleById, {id: affirmation?._id});
       }),
       map(result => {
         if (result) {
@@ -59,7 +59,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   createSchedule(): void {
-    if (this.schedule?.id) {
+    if (this.schedule?._id) {
       const updatedSchedule = {
         ...this.schedule,
         scheduleType: this.selectedType,
@@ -72,7 +72,6 @@ export class ScheduleComponent implements OnInit {
         return;
       }
       const newSchedule = new Schedule(
-        new Date().toISOString(),
         this.affirmationId,
         true,
         this.selectedType,

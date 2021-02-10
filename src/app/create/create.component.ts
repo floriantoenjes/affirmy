@@ -35,12 +35,11 @@ export class CreateComponent implements OnInit {
   createAffirmation(): void {
     if (this.form.valid) {
       const newAffirmation = new Affirmation(
-        new Date().toISOString(),
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );
       this.store.dispatch(createAffirmation({ affirmation: newAffirmation}));
-      this.router.navigate(['detail', newAffirmation.id]);
+      this.router.navigate(['detail', newAffirmation._id]);
     }
   }
 
@@ -48,7 +47,7 @@ export class CreateComponent implements OnInit {
     if (this.form.valid) {
       const updatedAffirmation = {...this.affirmation, ...this.form.getRawValue()};
       this.store.dispatch(updateAffirmation({affirmation: updatedAffirmation}));
-      this.router.navigate(['detail', this.affirmation?.id]);
+      this.router.navigate(['detail', this.affirmation?._id]);
     }
   }
 }

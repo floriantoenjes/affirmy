@@ -9,7 +9,7 @@ export interface ScheduleState {
 
 export const initialState = {
   schedules: [
-    new Schedule('1', '1', true, ScheduleType.DAILY, [], '18:45')
+    new Schedule('1', true, ScheduleType.DAILY, [], '18:45')
   ] as Schedule[]
 };
 
@@ -17,7 +17,7 @@ const scheduleReducer = createReducer(
   initialState,
   on(createSchedule, (state, {schedule}) => ({schedules: [...state.schedules, schedule]})),
   on(updateSchedule, (state, {schedule}) => ({
-    schedules: [...state.schedules.filter(s => s.id !== schedule.id), schedule]
+    schedules: [...state.schedules.filter(s => s._id !== schedule._id), schedule]
   }))
 );
 

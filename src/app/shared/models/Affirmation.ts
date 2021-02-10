@@ -1,10 +1,10 @@
 export class Affirmation {
-  id: string;
+  // tslint:disable-next-line:variable-name
+  _id = new Date().toISOString();
   title: string;
   text: string;
 
-  constructor(id: string, title: string, text: string) {
-    this.id = id;
+  constructor(title: string, text: string) {
     this.title = title;
     this.text = text;
   }

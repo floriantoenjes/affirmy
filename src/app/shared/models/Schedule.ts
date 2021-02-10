@@ -7,7 +7,8 @@ export enum ScheduleType {
 }
 
 export class Schedule {
-  id: string;
+  // tslint:disable-next-line:variable-name
+  _id = new Date().toISOString();
   affirmationId: string;
   active: boolean;
   scheduleType: ScheduleType;
@@ -16,9 +17,8 @@ export class Schedule {
   hourlyInterval: number | undefined;
 
 
-  constructor(id: string, affirmationId: string, active: boolean,
+  constructor(affirmationId: string, active: boolean,
               scheduleType: ScheduleType, scheduleDays: string[], scheduleTime: string) {
-    this.id = id;
     this.affirmationId = affirmationId;
     this.active = active;
     this.scheduleType = scheduleType;

@@ -29,7 +29,7 @@ export class AffirmationEffects {
   $createAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.createAffirmation),
     map(action => {
-      this.db.put(action.affirmation);
+      this.db.put({...action.affirmation});
     })
   ), {dispatch: false});
 

@@ -9,9 +9,9 @@ export interface AffirmationState {
 
 export const initialState = {
   affirmations: [
-    new Affirmation('1', 'Do the Dishes', 'Das Geschirr aufräumen'),
-    new Affirmation('2', 'Walk the Dog', 'Mit dem Hund rausgehen'),
-    new Affirmation('3', 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
+    new Affirmation( 'Do the Dishes', 'Das Geschirr aufräumen'),
+    new Affirmation( 'Walk the Dog', 'Mit dem Hund rausgehen'),
+    new Affirmation( 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
   ] as Affirmation[]
 };
 
@@ -20,7 +20,7 @@ const affirmationReducer = createReducer(
   on(createAffirmation, (state, {affirmation}) => ({affirmations: [...state.affirmations, affirmation]})),
 
   on(updateAffirmation, (state, {affirmation}) => (
-    {affirmations: [...state.affirmations.filter(af => af.id !== affirmation.id), affirmation]})),
+    {affirmations: [...state.affirmations.filter(af => af._id !== affirmation._id), affirmation]})),
 
   on(loadAffirmations, (state, {affirmations}) => {
     console.log('AFFIRMATIONS', affirmations);
@@ -41,6 +41,6 @@ export const getAffirmations = createSelector(getAffirmationsState, (affirmation
 
 export const getAffirmationById = createSelector(
   getAffirmations,
-  (affirmations: Affirmation[], props: any) => affirmations.find(af => af.id === props.id)
+  (affirmations: Affirmation[], props: any) => affirmations.find(af => af._id === props.id)
 );
 

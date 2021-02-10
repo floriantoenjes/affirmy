@@ -6,7 +6,7 @@
   <main class="h-full">
     <article>
       <mat-selection-list [multiple]=false>
-        <mat-list-option *ngFor="let affirmation of affirmations$ | async" class="my-4" (click)="router.navigate(['detail', affirmation.id])">
+        <mat-list-option *ngFor="let affirmation of affirmations$ | async" class="my-4" (click)="router.navigate(['detail', affirmation._id])">
           <p class="text-center text-xl">{{affirmation.title}}</p>
           <mat-divider></mat-divider>
         </mat-list-option>

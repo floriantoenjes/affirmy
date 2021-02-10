@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
-import {createSchedule, startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
+import {createSchedule, startCreateSchedule, startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
@@ -61,6 +61,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   createSchedule(): void {
+    console.log('CREATE OR UPDATE', this.schedule?._id);
     if (this.schedule?._id) {
       console.log('UPDATE SCHEDULE');
       const updatedSchedule = {
@@ -82,7 +83,7 @@ export class ScheduleComponent implements OnInit {
         this.scheduleDays,
         this.form.get('time')?.value
       );
-      this.store.dispatch(createSchedule({schedule: newSchedule}));
+      this.store.dispatch(startCreateSchedule({schedule: newSchedule}));
     }
     this.router.navigate(['..'], {relativeTo: this.route});
   }

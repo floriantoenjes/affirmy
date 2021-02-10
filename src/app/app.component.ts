@@ -3,6 +3,7 @@ import * as PouchDb from 'pouchdb-browser';
 import {State} from './reducers';
 import {Store} from '@ngrx/store';
 import {fetchAffirmations} from './actions/affirmation.actions';
+import {fetchSchedules} from './actions/schedule.actions';
 
 @Component({
   selector: 'app-root',
@@ -17,5 +18,6 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     this.store.dispatch(fetchAffirmations());
+    this.store.dispatch(fetchSchedules());
   }
 }

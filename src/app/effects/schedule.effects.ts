@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {map, mergeMap, tap} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {from, of} from 'rxjs';
 import * as ScheduleActions from '../actions/schedule.actions';
 import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
@@ -11,6 +11,19 @@ export class ScheduleEffects {
 
   db = new PouchDB('schedules2');
   actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDbSchedules)));
+
+  $fetchSchedules = createEffect(() => this.actionPipe$.pipe(
+    ofType(ScheduleActions.fetchSchedules),
+    mergeMap(() => {
+      return from(this.db.allDocs({
+        include_docs: true, descending: true
+      }));
+    }),
+    map(docs => {
+      const schedules = docs.rows.map(row => row.doc);
+      return ({type: '[Schedule] Load', schedules});
+    })
+  ));
 
   $createSchedule = createEffect(() => this.actionPipe$.pipe(
     ofType(ScheduleActions.createSchedule),
@@ -28,6 +41,7 @@ export class ScheduleEffects {
       const schedule = action.schedule;
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Rescheduling...', scheduleDt.toISOTime());
+      this.db.put(schedule);
     })
   ), {dispatch: false});
 

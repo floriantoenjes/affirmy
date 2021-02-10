@@ -7,7 +7,7 @@
   <hr>
   <ng-container *ngIf="!showDaySelect">
     <main class="p-6">
-      <form [formGroup]="form">
+      <form [formGroup]="form" (input)="hasChanges()">
         <div class="mb-6">
           <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg" (change)="switchType()">
             <mat-radio-button value="daily" class="mr-4" [checked]="selectedType === types.DAILY">Daily</mat-radio-button>
@@ -42,7 +42,11 @@
         </ng-container>
       </form>
 
-      <button (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
+      <button *ngIf="!schedule" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
+        <mat-icon>check</mat-icon>
+      </button>
+
+      <button *ngIf="schedule && changed" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
         <mat-icon>check</mat-icon>
       </button>
     </main>

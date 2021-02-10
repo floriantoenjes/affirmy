@@ -28,6 +28,8 @@ export class ScheduleComponent implements OnInit {
   types = ScheduleType;
   scheduleDays: string[] = [];
 
+  changed = false;
+
   form: FormGroup = new FormGroup({
     type: new FormControl('daily'),
     time: new FormControl(),
@@ -110,6 +112,18 @@ export class ScheduleComponent implements OnInit {
       case 'hourly':
         this.selectedType = ScheduleType.HOURLY;
         break;
+    }
+  }
+
+  hasChanges(): void {
+    if (this.form.get('type')?.value !== this.schedule?.scheduleType
+      || this.form.get('time')?.value !== this.schedule?.scheduleTime
+      || this.form.get('hourlyInterval')?.value !== this.schedule?.hourlyInterval) {
+      this.changed = true;
+      console.log('CHANGED');
+    } else {
+      this.changed = false;
+      console.log('NOT CHANGED');
     }
   }
 }

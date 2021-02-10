@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  pouchDBurl: 'http://localhost:5984/affirmations2'
+  pouchDbAffirmations: 'http://localhost:5984/affirmations2',
+  pouchDbSchedules: 'http://localhost:5984/schedules2'
 };
 
 /*

@@ -9,7 +9,7 @@ import {environment} from '../../environments/environment';
 export class AffirmationEffects {
 
   db = new PouchDB('affirmations2');
-  actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDBurl)));
+  actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDbAffirmations)));
 
   $fetchAffirmations = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.fetchAffirmations),

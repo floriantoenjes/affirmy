@@ -54,8 +54,8 @@ export class CreateComponent implements OnInit {
   }
 
   hasChanges(): void {
-    if (this.form.get('title')?.value.trim() !== this.affirmation?.title
-      || this.form.get('text')?.value.trim() !== this.affirmation?.text) {
+    if (this.form.get('title')?.value?.trim() !== this.affirmation?.title
+      || this.form.get('text')?.value?.trim() !== this.affirmation?.text) {
       this.changed = true;
       console.log('CHANGED');
     } else {

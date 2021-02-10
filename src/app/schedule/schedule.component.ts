@@ -81,8 +81,9 @@ export class ScheduleComponent implements OnInit {
         true,
         this.selectedType,
         this.scheduleDays,
-        this.form.get('time')?.value
+        this.form.get('time')?.value,
       );
+      newSchedule.hourlyInterval = this.form.get('hourlyInterval')?.value;
       this.store.dispatch(startCreateSchedule({schedule: newSchedule}));
     }
     this.router.navigate(['..'], {relativeTo: this.route});

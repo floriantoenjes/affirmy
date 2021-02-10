@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {act, Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
-import {map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, mergeMap, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {from, of} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
@@ -13,6 +13,8 @@ import {getScheduleById} from '../reducers/schedule.reducer';
 export class AffirmationEffects {
 
   db = new PouchDB('affirmations2');
+  scheduleDb = new PouchDB('schedules2');
+
   actionPipe$ = this.actions$.pipe(tap(() => this.db.sync(environment.pouchDbAffirmations)));
 
   $fetchAffirmations = createEffect(() => this.actionPipe$.pipe(
@@ -45,9 +47,27 @@ export class AffirmationEffects {
 
   $deleteAffirmation = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
-    map(action => {
-      this.db.remove(action.affirmation);
+    map(action => action.affirmation),
+    mergeMap((affirmation) =>
+        of(affirmation).pipe(
+          withLatestFrom(
+            this.store.select(getScheduleById, {id: affirmation._id})
+          )
+        ),
+      (affirmation, schedule) => schedule
+    ),
+    switchMap(([affirmation, schedule]) => {
+      this.db.remove(affirmation);
+      if (schedule) {
+        console.log('REMOVING SCHEDULE');
+        this.scheduleDb.remove(schedule)
+          .then((x) => console.log(x)).catch((e) => {
+          console.log('SCHEDULE', e);
+        });
+      }
+      return of();
     })
+
   ), {dispatch: false});
 
   constructor(

@@ -1,6 +1,3 @@
-import {Affirmation} from './Affirmation';
-import {Time} from '@angular/common';
-
 export enum ScheduleType {
   DAILY,
   HOURLY
@@ -9,6 +6,8 @@ export enum ScheduleType {
 export class Schedule {
   // tslint:disable-next-line:variable-name
   _id = new Date().toISOString();
+  // tslint:disable-next-line:variable-name
+  _rev = '';
   affirmationId: string;
   active: boolean;
   scheduleType: ScheduleType;

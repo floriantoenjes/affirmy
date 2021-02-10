@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Affirmation} from '../shared/models/Affirmation';
-import {Observable, of} from 'rxjs';
-import {select, Store} from '@ngrx/store';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {getAffirmationById, getAffirmations} from '../reducers/affirmation.reducer';
-import {filter, find, mergeMap} from 'rxjs/operators';
+import {getAffirmationById} from '../reducers/affirmation.reducer';
+import {deleteAffirmation} from '../actions/affirmation.actions';
 
 @Component({
   selector: 'app-detail',
@@ -34,5 +34,10 @@ export class DetailComponent implements OnInit {
 
   navigateToSchedule(): void {
     this.router.navigate(['schedule'], {relativeTo: this.route});
+  }
+
+  delete(affirmation: Affirmation): void {
+    this.store.dispatch(deleteAffirmation({affirmation}));
+    this.router.navigate(['..']);
   }
 }

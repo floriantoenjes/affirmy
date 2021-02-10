@@ -3,7 +3,6 @@ import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
 import {map, mergeMap} from 'rxjs/operators';
 import {from} from 'rxjs';
-import {create} from 'domain';
 
 @Injectable()
 export class AffirmationEffects {
@@ -33,6 +32,12 @@ export class AffirmationEffects {
     })
   ), {dispatch: false});
 
+  $deleteAffirmation = createEffect(() => this.actions$.pipe(
+    ofType(AffirmationActions.deleteAffirmation),
+    map(action => {
+      this.db.remove(action.affirmation);
+    })
+  ), {dispatch: false});
 
   constructor(
     private actions$: Actions

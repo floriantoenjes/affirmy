@@ -1,6 +1,8 @@
 export class Affirmation {
   // tslint:disable-next-line:variable-name
   _id = new Date().toISOString();
+  // tslint:disable-next-line:variable-name
+  _rev = '';
   title: string;
   text: string;
 

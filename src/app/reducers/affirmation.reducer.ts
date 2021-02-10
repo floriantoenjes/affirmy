@@ -1,5 +1,5 @@
-import {Action, createFeatureSelector, createReducer, createSelector, on, Props} from '@ngrx/store';
-import {createAffirmation, loadAffirmations, updateAffirmation} from '../actions/affirmation.actions';
+import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
+import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
 import {State} from './index';
 
@@ -25,7 +25,10 @@ const affirmationReducer = createReducer(
   on(loadAffirmations, (state, {affirmations}) => {
     console.log('AFFIRMATIONS', affirmations);
     return ({affirmations: [...affirmations]});
-  })
+  }),
+
+  on(deleteAffirmation, (state, {affirmation}) => (
+    {affirmations: [...state.affirmations.filter(af => af._id !== affirmation._id)]})),
 );
 
 export function reducer(state: AffirmationState | undefined, action: Action): AffirmationState {

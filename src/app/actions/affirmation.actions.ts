@@ -6,4 +6,4 @@ export const loadAffirmations = createAction('[Affirmation] Load', props<{ affir
 
 export const createAffirmation = createAction('[Affirmation] Create', props<{ affirmation: Affirmation }>());
 export const updateAffirmation = createAction('[Affirmation] Update', props<{ affirmation: Affirmation }>());
-export const deleteAffirmation = createAction('[Affirmation] Delete');
+export const deleteAffirmation = createAction('[Affirmation] Delete', props<{affirmation: Affirmation}>());

@@ -19,6 +19,8 @@ export class CreateComponent implements OnInit {
   @Input()
   affirmation: Affirmation | undefined;
 
+  changed = false;
+
   form = new FormGroup({
     title: new FormControl(),
     text: new FormControl()
@@ -48,6 +50,17 @@ export class CreateComponent implements OnInit {
       const updatedAffirmation = {...this.affirmation, ...this.form.getRawValue()};
       this.store.dispatch(updateAffirmation({affirmation: updatedAffirmation}));
       this.router.navigate(['detail', this.affirmation?._id]);
+    }
+  }
+
+  hasChanges(): void {
+    if (this.form.get('title')?.value.trim() !== this.affirmation?.title
+      || this.form.get('text')?.value.trim() !== this.affirmation?.text) {
+      this.changed = true;
+      console.log('CHANGED');
+    } else {
+      this.changed = false;
+      console.log('NOT CHANGED');
     }
   }
 }

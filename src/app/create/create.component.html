@@ -5,7 +5,7 @@
   </header>
   <hr>
   <main class="p-6">
-    <form [formGroup]="form">
+    <form [formGroup]="form" (input)="hasChanges()">
       <mat-form-field class="w-full text-lg">
         <mat-label>Title</mat-label>
         <input matInput formControlName="title">
@@ -20,7 +20,7 @@
       <mat-icon>add</mat-icon>
     </button>
 
-    <button *ngIf="edit" (click)="updateAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
+    <button *ngIf="edit && changed" (click)="updateAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
       <mat-icon>check</mat-icon>
     </button>
 

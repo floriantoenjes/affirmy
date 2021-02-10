@@ -34,6 +34,11 @@ export class AffirmationEffects {
     })
   ), {dispatch: false});
 
+  $updateAffirmation = createEffect(() => this.actionPipe$.pipe(
+    ofType(AffirmationActions.updateAffirmation),
+    map(action => this.db.put(action.affirmation))
+  ), {dispatch: false});
+
   $deleteAffirmation = createEffect(() => this.actionPipe$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
     map(action => {

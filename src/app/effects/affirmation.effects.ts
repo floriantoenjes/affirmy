@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
 import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
-import {map, mergeMap, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
 import {from, of} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
@@ -71,16 +71,14 @@ export class AffirmationEffects {
         ),
       (affirmation, schedule) => schedule
     ),
-    switchMap(([affirmation, schedule]) => {
+    tap(([affirmation, schedule]) => {
       this.db.remove(affirmation);
       if (schedule) {
         console.log('REMOVING SCHEDULE');
         this.store.dispatch(deleteSchedule({schedule}));
       }
-      return of();
+      this.dbSync();
     }),
-    tap(() => this.dbSync())
-
   ), {dispatch: false});
 
   constructor(

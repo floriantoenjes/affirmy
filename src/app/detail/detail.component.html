@@ -8,23 +8,22 @@
       <p class="m-2 p-2 text-xl" style="word-wrap: break-word">{{affirmation.text}}</p>
     </article>
 
-    <div class="fixed bottom-0 right-0 bg-mat w-full">
+    <div class="fixed bottom-0 right-0 bg-mat w-full footer">
 
-      <div class="flex flex-row">
-        <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule"
-                          class="text-xl mt-4 mb-2 mr-6 ml-auto" [checked]="schedule?.active">Active
-        </mat-slide-toggle>
-      </div>
       <div class="flex flex row">
-        <button (click)="delete(affirmation)" mat-fab class="m-6">
+        <button (click)="delete(affirmation)" mat-fab class="m-6 mr-0">
           <mat-icon>delete</mat-icon>
         </button>
         <div class="ml-auto">
-          <button (click)="navigateToEdit()" mat-fab class="m-6 mr-2">
+          <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule"
+                            class="text-xl mr-1" [checked]="schedule?.active">Active
+          </mat-slide-toggle>
+
+          <button (click)="navigateToEdit()" mat-fab class="m-6 mr-2 ml-4">
             <mat-icon>create</mat-icon>
           </button>
 
-          <button (click)="navigateToSchedule()" mat-fab class="relative right-0 m-6">
+          <button (click)="navigateToSchedule()" mat-fab class="relative right-0 m-6 ml-2">
             <mat-icon>schedule</mat-icon>
           </button>
         </div>

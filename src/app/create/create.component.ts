@@ -57,13 +57,23 @@ export class CreateComponent implements OnInit {
   }
 
   hasChanges(): void {
-    if (this.form.get('title')?.value?.trim() !== this.affirmation?.title
-      || this.form.get('text')?.value?.trim() !== this.affirmation?.text) {
+    const titleValue = this.form.get('title')?.value?.trim();
+    const textValue = this.form.get('text')?.value?.trim();
+
+    const titleValueInvalid = titleValue === '' || titleValue === undefined;
+    const textValueInvalid = textValue === '' || textValue === undefined;
+
+    if (!this.edit) {
+      if ( titleValueInvalid || textValueInvalid ) {
+        this.changed = false;
+        return;
+      }
+    }
+
+    if ((!titleValueInvalid && !textValueInvalid) && titleValue !== this.affirmation?.title || textValue !== this.affirmation?.text) {
       this.changed = true;
-      console.log('CHANGED');
     } else {
       this.changed = false;
-      console.log('NOT CHANGED');
     }
   }
 

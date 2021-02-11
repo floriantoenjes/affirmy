@@ -9,13 +9,13 @@
       <p class="m-2 p-2 text-xl">{{affirmation.text}}</p>
     </article>
 
-    <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule" class="text-xl fixed bottom-28 right-50 m-6" [checked]="schedule?.active">Active</mat-slide-toggle>
+    <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule" class="text-xl fixed bottom-28 right-0 m-6" [checked]="schedule?.active">Active</mat-slide-toggle>
 
-    <button (click)="navigateToEdit()" mat-fab class="fixed bottom-20 right-0 m-6">
+    <button (click)="navigateToEdit()" mat-fab class="fixed bottom-0 right-20 m-6">
       <mat-icon>create</mat-icon>
     </button>
 
-    <button (click)="delete(affirmation)" mat-fab class="fixed bottom-0 right-20 m-6">
+    <button (click)="delete(affirmation)" mat-fab class="fixed bottom-0 m-6">
       <mat-icon>delete</mat-icon>
     </button>
 

@@ -16,7 +16,7 @@
       </mat-form-field>
     </form>
 
-    <button *ngIf="!edit" (click)="createAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
+    <button *ngIf="!edit && changed" (click)="createAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
       <mat-icon>check</mat-icon>
     </button>
 

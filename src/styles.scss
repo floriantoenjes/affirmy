@@ -18,7 +18,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 // Define your application's custom theme.
 $primary: mat-palette($mat-indigo);
-$accent:  mat-palette($mat-pink, A200, A100, A400);
+//$accent:  mat-palette($mat-pink, A200, A100, A400);
+$accent:  mat-palette($mat-pink);
 $theme: mat-light-theme((
   color: (
     primary: $primary,
@@ -73,4 +74,13 @@ h1 {
   margin-bottom: 0 !important;
   padding-top: 0.5em !important;
   padding-bottom: 0.75em !important;
+}
+
+header {
+  box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),0 6px 10px 0 rgba(0,0,0,.14),0 1px 18px 0 rgba(0,0,0,.12);
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+  background-color: mat-color($accent);
 }

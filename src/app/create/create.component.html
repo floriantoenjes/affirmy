@@ -17,7 +17,7 @@
     </form>
 
     <button *ngIf="!edit" (click)="createAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">
-      <mat-icon>add</mat-icon>
+      <mat-icon>check</mat-icon>
     </button>
 
     <button *ngIf="edit && changed" (click)="updateAffirmation()" mat-fab class="fixed bottom-0 right-0 m-6">

@@ -1,12 +1,12 @@
 <div class="container bg-mat">
   <header>
-    <h1 class="text-center text-primary  pt-4">Your Affirmations</h1>
+    <h1 class="text-center text-primary pt-4 text-xl">Your Affirmations</h1>
   </header>
   <hr>
   <main class="h-full">
     <article>
       <mat-selection-list [multiple]=false>
-        <mat-list-option *ngFor="let affirmation of affirmations$ | async" class="my-4" (click)="router.navigate(['detail', affirmation._id])">
+        <mat-list-option *ngFor="let affirmation of affirmations$ | async" class="mb-4" (click)="router.navigate(['detail', affirmation._id])">
           <p class="text-center text-xl">{{affirmation.title}}</p>
           <mat-divider></mat-divider>
         </mat-list-option>

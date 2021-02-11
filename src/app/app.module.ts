@@ -28,6 +28,8 @@ import { EffectsModule } from '@ngrx/effects';
 import {ScheduleEffects} from './effects/schedule.effects';
 import {AffirmationEffects} from './effects/affirmation.effects';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     DetailComponent,
     EditComponent,
     ScheduleComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +62,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     FormsModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,
-    EffectsModule.forRoot([AffirmationEffects, ScheduleEffects])
+    EffectsModule.forRoot([AffirmationEffects, ScheduleEffects]),
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

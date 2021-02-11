@@ -11,6 +11,8 @@ import {getScheduleById} from '../reducers/schedule.reducer';
 import {tap} from 'rxjs/operators';
 import {startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-detail',
@@ -22,7 +24,7 @@ export class DetailComponent implements OnInit {
   affirmation$: Observable<Affirmation | undefined>;
   schedule$: Observable<Schedule | undefined>;
 
-  constructor(private route: ActivatedRoute, public router: Router, private store: Store<State>) {
+  constructor(private route: ActivatedRoute, private dialog: MatDialog, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.getCurrentAffirmation();
     this.schedule$ = of();
   }
@@ -45,8 +47,12 @@ export class DetailComponent implements OnInit {
   }
 
   delete(affirmation: Affirmation): void {
-    this.store.dispatch(deleteAffirmation({affirmation}));
-    this.router.navigate(['..']);
+    this.dialog.open(ConfirmDialogComponent, {width: '250px'}).afterClosed().subscribe(result => {
+      if (result === true) {
+        this.store.dispatch(deleteAffirmation({affirmation}));
+        this.router.navigate(['..']);
+      }
+    });
   }
 
   changeActive($event: MatSlideToggleChange, schedule: Schedule): void {

@@ -11,19 +11,27 @@ import {environment} from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'affirmy';
+
+  private affirmationDb = new PouchDB('affirmations2');
+  private schedulesDb = new PouchDB('schedules2');
 
   constructor(private store: Store<State>) {
   }
 
   ngOnInit(): void {
-    new PouchDB('affirmations2').sync(environment.pouchDbAffirmations)
+    this.syncDbs();
+  }
+
+  syncDbs(): void {
+    this.affirmationDb.sync(environment.pouchDbAffirmations)
       .then(() => this.store.dispatch(fetchAffirmations()))
       .catch((e) => this.store.dispatch(fetchAffirmations()));
 
-    new PouchDB('schedules2').sync(environment.pouchDbSchedules)
+    this.schedulesDb.sync(environment.pouchDbSchedules)
       .then(() => this.store.dispatch(fetchSchedules()))
       .catch((e) => this.store.dispatch(fetchSchedules()));
   }
+
 }

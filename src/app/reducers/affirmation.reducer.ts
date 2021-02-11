@@ -20,7 +20,7 @@ const affirmationReducer = createReducer(
   on(createAffirmation, (state, {affirmation}) => ({affirmations: [affirmation, ...state.affirmations]})),
 
   on(updateAffirmation, (state, {affirmation}) => (
-    {affirmations: [...state.affirmations.filter(af => af._id !== affirmation._id), affirmation]})),
+    {affirmations: [affirmation, ...state.affirmations.filter(af => af._id !== affirmation._id)]})),
 
   on(loadAffirmations, (state, {affirmations}) => {
     console.log('AFFIRMATIONS', affirmations);

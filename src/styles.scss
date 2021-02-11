@@ -27,6 +27,8 @@ $theme: mat-light-theme((
   )
 ));
 
+$clock-hand-color: $accent !important;
+
 .text-primary {
   //color: mat-color($primary);
   color: #fff;
@@ -50,6 +52,10 @@ body {
 }
 
 ngx-material-timepicker-container {
+
+  .clock-face__clock-hand {
+    background-color: mat-color($accent) !important;
+  }
 
   .timepicker-button span {
     color: mat-color($accent) !important;
@@ -84,3 +90,4 @@ header {
   z-index: 10;
   background-color: mat-color($accent);
 }
+

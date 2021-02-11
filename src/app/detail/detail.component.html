@@ -1,15 +1,15 @@
 <div *ngIf="affirmation$ | async as affirmation" class="container">
-  <header class="flex flex-row">
+  <header class="flex flex-row items-center">
     <mat-icon class="arrow-back ml-3 mt-3" (click)="router.navigate(['/'])">arrow_back</mat-icon>
     <h1 class="text-center pt-4 flex-1 pr-12">{{ affirmation.title }}</h1>
   </header>
   <hr>
   <main>
-    <article>
-      <p class="m-2 p-2 text-xl">{{affirmation.text}}</p>
+    <article class="mb-28">
+      <p class="m-2 p-2 text-xl" style="word-wrap: break-word">{{affirmation.text}}</p>
     </article>
 
-    <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule" class="text-xl fixed bottom-28 right-0 m-6" [checked]="schedule?.active">Active</mat-slide-toggle>
+    <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule" class="text-xl fixed bottom-24 right-0 m-6" [checked]="schedule?.active">Active</mat-slide-toggle>
 
     <button (click)="navigateToEdit()" mat-fab class="fixed bottom-0 right-20 m-6">
       <mat-icon>create</mat-icon>

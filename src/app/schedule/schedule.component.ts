@@ -7,7 +7,7 @@ import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
-import {createSchedule, startCreateSchedule, startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
+import {startCreateSchedule, startUpdateSchedule} from '../actions/schedule.actions';
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';

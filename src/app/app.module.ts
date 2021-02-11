@@ -19,7 +19,7 @@ import { CreateComponent } from './create/create.component';
 import { DetailComponent } from './detail/detail.component';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EditComponent} from './edit/edit.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import {MatRadioModule} from '@angular/material/radio';
@@ -56,6 +56,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatDividerModule,
     MatRadioModule,
     MatSlideToggleModule,
+    FormsModule,
     ReactiveFormsModule,
     NgxMaterialTimepickerModule,
     EffectsModule.forRoot([AffirmationEffects, ScheduleEffects])

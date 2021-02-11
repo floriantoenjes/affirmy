@@ -128,4 +128,8 @@ export class ScheduleComponent implements OnInit {
       console.log('NOT CHANGED');
     }
   }
+
+  navigateBack(): void {
+    this.router.navigate(['..'], {relativeTo: this.route});
+  }
 }

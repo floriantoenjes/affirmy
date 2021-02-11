@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
@@ -21,12 +21,15 @@ export class CreateComponent implements OnInit {
 
   changed = false;
 
+  @Input()
+  title = 'Create';
+
   form = new FormGroup({
     title: new FormControl(),
     text: new FormControl()
   });
 
-  constructor(public router: Router, private store: Store<State>) { }
+  constructor(private route: ActivatedRoute, public router: Router, private store: Store<State>) { }
 
   ngOnInit(): void {
     if (this.affirmation) {
@@ -62,5 +65,9 @@ export class CreateComponent implements OnInit {
       this.changed = false;
       console.log('NOT CHANGED');
     }
+  }
+
+  navigateBack(): void {
+    this.router.navigate(['..'], {relativeTo: this.route});
   }
 }

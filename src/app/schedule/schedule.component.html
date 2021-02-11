@@ -1,7 +1,7 @@
 <div class="container" *ngIf=" affirmation$ | async as affirmation">
 
   <header class="flex flex-row">
-    <mat-icon class="arrow-back ml-3 mt-3" (click)="router.navigate(['..'])">arrow_back</mat-icon>
+    <mat-icon class="arrow-back ml-3 mt-3" (click)="navigateBack()">arrow_back</mat-icon>
     <h1 class="text-center pt-4 flex-1 pr-12">{{ affirmation.title }}</h1>
   </header>
   <hr>

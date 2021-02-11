@@ -9,6 +9,8 @@ import {deleteAffirmation} from '../actions/affirmation.actions';
 import {Schedule} from '../shared/models/Schedule';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {tap} from 'rxjs/operators';
+import {startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-detail',
@@ -24,7 +26,6 @@ export class DetailComponent implements OnInit {
     this.affirmation$ = this.getCurrentAffirmation();
     this.schedule$ = of();
   }
-
 
   ngOnInit(): void {
   }
@@ -46,5 +47,9 @@ export class DetailComponent implements OnInit {
   delete(affirmation: Affirmation): void {
     this.store.dispatch(deleteAffirmation({affirmation}));
     this.router.navigate(['..']);
+  }
+
+  changeActive($event: MatSlideToggleChange, schedule: Schedule): void {
+    this.store.dispatch(startUpdateSchedule({schedule: {...schedule, active: $event.checked }}));
   }
 }

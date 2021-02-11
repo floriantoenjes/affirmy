@@ -10,8 +10,8 @@
       <form [formGroup]="form" (input)="hasChanges()">
         <div class="mb-6">
           <mat-radio-group formControlName="type" aria-label="Select an option" class="text-lg" (change)="switchType()">
-            <mat-radio-button value="daily" class="mr-4" [checked]="selectedType === types.DAILY">Daily</mat-radio-button>
-            <mat-radio-button value="hourly" [checked]="selectedType === types.HOURLY">Hourly</mat-radio-button>
+            <mat-radio-button [value]="0" class="mr-4" [checked]="selectedType === 0">Daily</mat-radio-button>
+            <mat-radio-button [value]="1" [checked]="selectedType === 1">Hourly</mat-radio-button>
           </mat-radio-group>
         </div>
 

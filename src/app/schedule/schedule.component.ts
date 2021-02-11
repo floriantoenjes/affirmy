@@ -31,7 +31,7 @@ export class ScheduleComponent implements OnInit {
   changed = false;
 
   form: FormGroup = new FormGroup({
-    type: new FormControl('daily'),
+    type: new FormControl(),
     time: new FormControl(),
     hourlyInterval: new FormControl(),
   });
@@ -47,6 +47,7 @@ export class ScheduleComponent implements OnInit {
       }),
       map(result => {
         if (result) {
+          console.log('RESULT', result.scheduleType);
           this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
           this.selectedType = result.scheduleType;
           this.form.get('hourlyInterval')?.patchValue(result.hourlyInterval);
@@ -108,13 +109,16 @@ export class ScheduleComponent implements OnInit {
 
   switchType(): void {
     switch (this.form.get('type')?.value) {
-      case 'daily':
+      case 0:
         this.selectedType = ScheduleType.DAILY;
+        this.form.get('type')?.patchValue(0);
         break;
-      case 'hourly':
+      case 1:
         this.selectedType = ScheduleType.HOURLY;
+        this.form.get('type')?.patchValue(1);
         break;
     }
+    this.hasChanges();
   }
 
   hasChanges(): void {

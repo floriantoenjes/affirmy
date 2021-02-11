@@ -122,6 +122,8 @@ export class ScheduleComponent implements OnInit {
   }
 
   hasChanges(): void {
+    console.log('CHANGES', this.form.get('time')?.value);
+
     if (this.form.get('type')?.value !== this.schedule?.scheduleType
       || this.form.get('time')?.value !== this.schedule?.scheduleTime
       || this.form.get('hourlyInterval')?.value !== this.schedule?.hourlyInterval) {

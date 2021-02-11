@@ -24,16 +24,16 @@
 
           <mat-form-field class="text-xl">
             <input formControlName="time" matInput [ngxTimepicker]="defaultTime" [format]="24"
-                   placeholder="Daily reminder time">
-            <ngx-material-timepicker #defaultTime></ngx-material-timepicker>
+                   placeholder="Daily reminder time" (blur)="hasChanges()">
+            <ngx-material-timepicker #defaultTime (closed)="hasChanges()"></ngx-material-timepicker>
           </mat-form-field>
         </ng-container>
 
         <ng-container *ngIf="selectedType === types.HOURLY">
           <mat-form-field class="text-xl">
             <input formControlName="time" matInput [ngxTimepicker]="hourlyTime" [format]="24"
-                   placeholder="Start time">
-            <ngx-material-timepicker #hourlyTime></ngx-material-timepicker>
+                   placeholder="Start time" (blur)="hasChanges()">
+            <ngx-material-timepicker #hourlyTime (closed)="hasChanges()"></ngx-material-timepicker>
           </mat-form-field>
 
           <mat-form-field class="text-xl">

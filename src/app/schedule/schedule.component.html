@@ -15,7 +15,7 @@
 
         <ng-container *ngIf="selectedType === types.DAILY">
           <button type="button" (click)="showDaySelect=true" mat-raised-button color="accent" class="text-xl mb-4">
-            Select Days
+            Select days
           </button>
           <p *ngIf="selectedWeekDaysAsString()" class="mb-4 text-lg">{{selectedWeekDaysAsString()}}</p>
           <p *ngIf="scheduleDays.length === 0" class="mb-4 text-lg">No week days selected</p>

@@ -1,8 +1,9 @@
 <div class="container bg-mat">
-  <header>
+  <header class="flex flex-row items-center">
+    <mat-icon class="mb-4">3p</mat-icon>
     <h1 class="text-center text-primary pt-4 text-xl">Your Affirmations</h1>
   </header>
-  <main class="h-full">
+  <main class="h-full mt-2">
     <article>
       <mat-selection-list [multiple]=false>
         <mat-list-option *ngFor="let affirmation of affirmations$ | async" (click)="router.navigate(['detail', affirmation._id])">

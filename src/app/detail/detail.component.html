@@ -12,7 +12,7 @@
 
       <div class="flex flex-row">
         <mat-slide-toggle (change)="changeActive($event, schedule)" *ngIf="schedule$ | async as schedule"
-                          class="text-xl m-6 ml-auto" [checked]="schedule?.active">Active
+                          class="text-xl mt-4 mb-2 mr-6 ml-auto" [checked]="schedule?.active">Active
         </mat-slide-toggle>
       </div>
       <div class="flex flex row">

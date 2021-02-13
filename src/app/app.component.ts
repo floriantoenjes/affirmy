@@ -29,19 +29,19 @@ export class AppComponent implements OnInit {
   }
 
   syncDbs(): void {
-    this.affirmationDb.sync(environment.pouchDbAffirmations)
+    this.affirmationDb.sync(this.getRemoteDb(environment.pouchDbAffirmations))
       .then(() => this.store.dispatch(fetchAffirmations()))
       .catch((e) => this.store.dispatch(fetchAffirmations()));
 
-    this.schedulesDb.sync(environment.pouchDbSchedules)
+    this.schedulesDb.sync(this.getRemoteDb(environment.pouchDbSchedules))
       .then(() => this.store.dispatch(fetchSchedules()))
       .catch((e) => this.store.dispatch(fetchSchedules()));
   }
 
-  syncDb(): void {
-    const db = new PouchDB(environment.pouchDbAffirmations, {
+  getRemoteDb(dbUri: string): PouchDB.Database {
+    const db = new PouchDB(dbUri, {
       fetch: (url, opts) => {
-        if (opts) {
+        if (opts && this.authService.getJwt() !== '') {
           const headersWithAuth = new Headers(opts.headers);
           headersWithAuth.append('Authorization', `Bearer ${this.authService.getJwt()}`);
           opts.headers = headersWithAuth;
@@ -49,6 +49,7 @@ export class AppComponent implements OnInit {
         return PouchDB.fetch(url, opts);
       }
     });
+    return db;
   }
 
 }

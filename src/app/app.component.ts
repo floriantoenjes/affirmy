@@ -5,6 +5,7 @@ import {Store} from '@ngrx/store';
 import {fetchAffirmations} from './actions/affirmation.actions';
 import {fetchSchedules} from './actions/schedule.actions';
 import {environment} from '../environments/environment';
+import {AuthService} from './shared/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,10 @@ export class AppComponent implements OnInit {
   private affirmationDb = new PouchDB('affirmations2');
   private schedulesDb = new PouchDB('schedules2');
 
-  constructor(private store: Store<State>) {
+  constructor(
+    private authService: AuthService,
+    private store: Store<State>
+  ) {
   }
 
   ngOnInit(): void {
@@ -32,6 +36,19 @@ export class AppComponent implements OnInit {
     this.schedulesDb.sync(environment.pouchDbSchedules)
       .then(() => this.store.dispatch(fetchSchedules()))
       .catch((e) => this.store.dispatch(fetchSchedules()));
+  }
+
+  syncDb(): void {
+    const db = new PouchDB(environment.pouchDbAffirmations, {
+      fetch: (url, opts) => {
+        if (opts) {
+          const headersWithAuth = new Headers(opts.headers);
+          headersWithAuth.append('Authorization', `Bearer ${this.authService.getJwt()}`);
+          opts.headers = headersWithAuth;
+        }
+        return PouchDB.fetch(url, opts);
+      }
+    });
   }
 
 }

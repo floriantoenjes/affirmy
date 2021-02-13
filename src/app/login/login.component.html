@@ -2,13 +2,13 @@
 
   <mat-icon class="mb-20 pr-20">3p</mat-icon>
 
-  <form (ngSubmit)="login()">
+  <form (ngSubmit)="login()" [formGroup]="form">
     <mat-form-field class="text-lg w-full">
-      <input matInput type="text" placeholder="E-Mail">
+      <input matInput type="text" placeholder="E-Mail" formControlName="email">
     </mat-form-field>
 
     <mat-form-field class="text-lg w-full mb-16">
-      <input matInput type="text" placeholder="Password">
+      <input matInput type="password" placeholder="Password" formControlName="password">
     </mat-form-field>
 
     <button mat-raised-button color="accent" type="submit" class="block mx-auto px-12">Login</button>

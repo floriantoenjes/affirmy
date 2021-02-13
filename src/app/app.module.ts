@@ -30,6 +30,7 @@ import {AffirmationEffects} from './effects/affirmation.effects';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ConfirmDialogComponent } from './dialogs/confirm-dialog/confirm-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     EditComponent,
     ScheduleComponent,
     ConfirmDialogComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

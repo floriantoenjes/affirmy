@@ -26,6 +26,8 @@ export class ScheduleComponent implements OnInit {
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
+
+  originalScheduleDays: string[] = [];
   scheduleDays: string[] = [];
 
   changed = false;
@@ -52,6 +54,7 @@ export class ScheduleComponent implements OnInit {
           this.selectedType = result.scheduleType;
           this.form.get('hourlyInterval')?.patchValue(result.hourlyInterval);
           this.scheduleDays = result.scheduleDays;
+          this.originalScheduleDays = result.scheduleDays;
         }
         this.schedule = result;
       })
@@ -136,7 +139,8 @@ export class ScheduleComponent implements OnInit {
 
     if (formValue.type !== this.schedule?.scheduleType
       || formValue.time !== this.schedule?.scheduleTime
-      || (formValue.type === ScheduleType.HOURLY && formValue.hourlyInterval !== this.schedule?.hourlyInterval)) {
+      || (formValue.type === ScheduleType.HOURLY && formValue.hourlyInterval !== this.schedule?.hourlyInterval)
+      || (formValue.type === ScheduleType.DAILY && !this.arraysEqual(this.schedule?.scheduleDays, this.originalScheduleDays))) {
       this.changed = true;
       console.log('CHANGED');
     } else {
@@ -147,5 +151,20 @@ export class ScheduleComponent implements OnInit {
 
   navigateBack(): void {
     this.router.navigate(['..'], {relativeTo: this.route});
+  }
+
+  arraysEqual(a1: Array<string> | undefined, a2: Array<string> | undefined): boolean {
+    console.log(a1, a2);
+
+    if (!a1 || !a2) {
+      return false;
+    }
+
+    for (const element of a1) {
+      if (a2.indexOf(element) === -1) {
+        return false;
+      }
+    }
+    return true;
   }
 }

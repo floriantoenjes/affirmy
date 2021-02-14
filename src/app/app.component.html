@@ -1,8 +1,5 @@
-<div *ngIf="spinnerService.spinnerActive$ | async" class="spinner-wrapper">
-  <mat-spinner color="accent"></mat-spinner>
-</div>
 <mat-sidenav-container class="h-full">
-  <mat-sidenav #snav position="end" class="h-full w-2/5 px-6">
+  <mat-sidenav #snav position="end" class="h-full w-3/4 px-6">
     <mat-nav-list>
       <div (click)="snav.close()" class="flex flex-row justify-end cursor-pointer mb-4 mt-2">
         <mat-icon>close</mat-icon>
@@ -12,10 +9,17 @@
         <mat-icon>logout</mat-icon>
         <a mat-list-item>Logout</a>
       </div>
+      <div class="flex flex-row items-center">
+        <mat-icon>sync</mat-icon>
+        <a mat-list-item>Synchronize</a>
+      </div>
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content class="bg-mat">
+    <div *ngIf="spinnerService.spinnerActive$ | async" class="spinner-wrapper">
+      <mat-spinner color="accent"></mat-spinner>
+    </div>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

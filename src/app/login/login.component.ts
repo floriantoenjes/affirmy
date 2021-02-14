@@ -56,6 +56,7 @@ export class LoginComponent implements OnInit {
       this.showRegistration = true;
     } else {
       this.form.get('confirmPassword')?.clearValidators();
+      this.form.clearValidators();
       this.form.get('confirmPassword')?.updateValueAndValidity();
       this.showRegistration = false;
     }

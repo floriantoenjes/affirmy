@@ -1,8 +1,10 @@
 <div *ngIf="affirmation$ | async as affirmation" class="container">
-  <header class="flex flex-row items-center">
-    <mat-icon class="arrow-back ml-3 mt-1" (click)="router.navigate(['/'])">chevron_left</mat-icon>
-    <h1 class="text-center pt-4 flex-1 pr-14 text-xl font-bold">{{ affirmation.title }}</h1>
-  </header>
+  <app-header>
+    <div class="flex flex-row items-center w-full pl-6">
+      <mat-icon class="arrow-back ml-3 mt-1" (click)="router.navigate(['/'])">chevron_left</mat-icon>
+      <h1 class="text-center pt-4 flex-1 pr-14 text-xl font-bold">{{ affirmation.title }}</h1>
+    </div>
+  </app-header>
   <main>
     <article class="mb-36 p-3">
       <p class="m-2 p-2 text-xl" style="word-wrap: break-word">{{affirmation.text}}</p>

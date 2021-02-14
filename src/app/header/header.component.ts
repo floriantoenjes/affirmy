@@ -1,5 +1,6 @@
 import {Component, OnInit, Output, EventEmitter} from '@angular/core';
 import {AuthService} from '../shared/services/auth.service';
+import {NavbarService} from '../shared/services/navbar.service';
 
 @Component({
   selector: 'app-header',
@@ -8,15 +9,12 @@ import {AuthService} from '../shared/services/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  @Output()
-  navOpened = new EventEmitter<boolean>();
-
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private navbarService: NavbarService) { }
 
   ngOnInit(): void {
   }
 
-  openNav(): void {
-    this.navOpened.next(true);
+  toggleNavbar(): void {
+    this.navbarService.navbarToggled.next();
   }
 }

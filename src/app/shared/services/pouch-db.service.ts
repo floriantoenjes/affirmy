@@ -29,7 +29,7 @@ export class PouchDbService {
     this.syncDb(this.schedulesDb, 'schedules', successSchedules, errorSchedules);
   }
 
-  syncDb(pouchDb: PouchDB.Database, prefix: string, success: () => void, error: () => void): void {
+  syncDb(pouchDb: PouchDB.Database, prefix: string, success?: () => void, error?: () => void): void {
     const jwt = this.authService.getJwt();
 
     if (!jwt) {
@@ -41,8 +41,16 @@ export class PouchDbService {
     const dbUri = `http://192.168.2.111:5984/${prefix}-${dbSuffix}`;
 
     this.affirmationDb.sync(this.getRemoteDb(dbUri))
-      .then(() => success())
-      .catch((e) => error());
+      .then(() => {
+        if (success) {
+          success();
+        }
+      })
+      .catch((e) => {
+        if (error) {
+          error();
+        }
+      });
   }
 
   getRemoteDb(dbUri: string): PouchDB.Database {

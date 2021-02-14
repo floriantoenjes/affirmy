@@ -9,12 +9,12 @@ import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {deleteSchedule} from '../actions/schedule.actions';
 import {getScheduleById} from '../reducers/schedule.reducer';
+import {PouchDbService} from '../shared/services/pouch-db.service';
 
 @Injectable()
 export class AffirmationEffects {
 
   db = new PouchDB('affirmations2');
-  scheduleDb = new PouchDB('schedules2');
 
   $fetchAffirmations = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.fetchAffirmations),
@@ -83,12 +83,13 @@ export class AffirmationEffects {
 
   constructor(
     private actions$: Actions,
+    private pouchDbService: PouchDbService,
     private store: Store<State>
   ) {
   }
 
   dbSync(): void {
     console.log('DB SYNC AFFIRMATION EFFECT');
-    this.db.sync(environment.pouchDbAffirmations);
+    this.pouchDbService.syncDb(this.db, 'affirmations');
   }
 }

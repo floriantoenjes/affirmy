@@ -6,6 +6,7 @@ import * as ScheduleActions from '../actions/schedule.actions';
 import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
 import {createSchedule, updateSchedule} from '../actions/schedule.actions';
+import {PouchDbService} from '../shared/services/pouch-db.service';
 
 @Injectable()
 export class ScheduleEffects {
@@ -77,10 +78,11 @@ export class ScheduleEffects {
 
   constructor(
     private actions$: Actions,
+    private pouchDbService: PouchDbService
   ) {}
 
   dbSync(): void {
     console.log('DB SYNC SCHEDULE EFFECT');
-    this.db.sync(environment.pouchDbSchedules);
+    this.pouchDbService.syncDb(this.db, 'schedules');
   }
 }

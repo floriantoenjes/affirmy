@@ -33,6 +33,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { LoginComponent } from './login/login.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthInterceptor} from './shared/interceptors/auth.interceptor';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import {AuthInterceptor} from './shared/interceptors/auth.interceptor';
     NgxMaterialTimepickerModule,
     EffectsModule.forRoot([AffirmationEffects, ScheduleEffects]),
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     {

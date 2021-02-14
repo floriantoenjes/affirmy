@@ -7,10 +7,21 @@
       <input matInput type="text" placeholder="E-Mail" formControlName="email">
     </mat-form-field>
 
-    <mat-form-field class="text-lg w-full mb-16">
+    <mat-form-field class="text-lg w-full mb-16" [class.mb-16]="!showRegistration">
       <input matInput type="password" placeholder="Password" formControlName="password">
     </mat-form-field>
 
-    <button mat-raised-button color="accent" type="submit" class="block mx-auto px-12">Login</button>
+    <mat-form-field *ngIf="showRegistration" class="text-lg w-full mb-16">
+      <input matInput type="password" placeholder="Repeat your Password" formControlName="confirmPassword">
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" type="submit" class="block mx-auto px-12 mb-8">
+      {{ showRegistration ? 'Register' : 'Login'}}
+    </button>
+
+    <a class="text-center w-full block text-lg" (click)="showRegistration = !showRegistration">
+      <u *ngIf="!showRegistration">Don't have an account? Register here!</u>
+      <u *ngIf="showRegistration">Already have an account? Login here!</u>
+    </a>
   </form>
 </main>

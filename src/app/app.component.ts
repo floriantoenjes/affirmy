@@ -29,11 +29,22 @@ export class AppComponent implements OnInit {
   }
 
   syncDbs(): void {
-    this.affirmationDb.sync(this.getRemoteDb(environment.pouchDbAffirmations))
+    const jwt = this.authService.getJwt();
+
+    if (!jwt) {
+      return;
+    }
+
+    const dbSuffix = (this.authService.decodeJwt(jwt) as any).db;
+
+    const affirmationsDbUri = `http://192.168.2.111:5984/affirmations-${dbSuffix}`;
+    const schedulesDbUri = `http://192.168.2.111:5984/schedules-${dbSuffix}`;
+
+    this.affirmationDb.sync(this.getRemoteDb(affirmationsDbUri))
       .then(() => this.store.dispatch(fetchAffirmations()))
       .catch((e) => this.store.dispatch(fetchAffirmations()));
 
-    this.schedulesDb.sync(this.getRemoteDb(environment.pouchDbSchedules))
+    this.schedulesDb.sync(this.getRemoteDb(schedulesDbUri))
       .then(() => this.store.dispatch(fetchSchedules()))
       .catch((e) => this.store.dispatch(fetchSchedules()));
   }
@@ -41,11 +52,21 @@ export class AppComponent implements OnInit {
   getRemoteDb(dbUri: string): PouchDB.Database {
     const db = new PouchDB(dbUri, {
       fetch: (url, opts) => {
+        console.log('opts outer');
+
         if (opts && this.authService.getJwt() !== '') {
+          console.log('opts inner');
+
           const headersWithAuth = new Headers(opts.headers);
           headersWithAuth.append('Authorization', `Bearer ${this.authService.getJwt()}`);
           opts.headers = headersWithAuth;
+
+          console.log('HEADERS', opts.headers.get('Authorization'));
+
+          return PouchDB.fetch(url, opts);
         }
+        console.log('HEADERS', opts);
+
         return PouchDB.fetch(url, opts);
       }
     });

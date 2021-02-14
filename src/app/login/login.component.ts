@@ -32,6 +32,6 @@ export class LoginComponent implements OnInit {
     if (formValue.password !== formValue.confirmPassword) {
       return;
     }
-    // this.authService.register(formValue.email, formValue.password);
+    this.authService.register(formValue.email, formValue.password);
   }
 }

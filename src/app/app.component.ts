@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
       fetch: (url, opts) => {
         console.log('opts outer');
 
-        if (opts && this.authService.getJwt() !== '') {
+        if (opts && this.authService.isLoggedIn()) {
           console.log('opts inner');
 
           const headersWithAuth = new Headers(opts.headers);

@@ -4,7 +4,7 @@
 
   <form (ngSubmit)="login()" [formGroup]="form">
     <mat-form-field class="text-lg w-full">
-      <input matInput type="text" placeholder="E-Mail" formControlName="email">
+      <input matInput type="email" placeholder="E-Mail" formControlName="email">
     </mat-form-field>
 
     <mat-form-field class="text-lg w-full mb-16" [class.mb-16]="!showRegistration">
@@ -15,11 +15,12 @@
       <input matInput type="password" placeholder="Repeat your Password" formControlName="confirmPassword">
     </mat-form-field>
 
-    <button mat-raised-button color="accent" type="submit" class="block mx-auto px-12 mb-8">
+    <button mat-raised-button color="accent" type="submit" class="block mx-auto px-12 mb-8"
+            [disabled]="!form.valid">
       {{ showRegistration ? 'Register' : 'Login'}}
     </button>
 
-    <a class="text-center w-full block text-lg" (click)="showRegistration = !showRegistration">
+    <a class="text-center w-full block text-lg" (click)="switchMode()">
       <u *ngIf="!showRegistration">Don't have an account? Register here!</u>
       <u *ngIf="showRegistration">Already have an account? Login here!</u>
     </a>

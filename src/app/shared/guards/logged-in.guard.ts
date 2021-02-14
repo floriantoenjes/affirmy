@@ -20,12 +20,11 @@ export class LoggedInGuard implements CanActivate {
 
     const loggedIn = this.authService.isLoggedIn();
 
-    console.log('GUARD', loggedIn);
-
     if (!loggedIn) {
       this.router.navigate(['/login']);
       return false;
     }
+
     return true;
   }
 

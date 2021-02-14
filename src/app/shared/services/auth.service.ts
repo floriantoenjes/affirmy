@@ -1,13 +1,16 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {Subject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  loggedInSubject$ = new Subject<boolean>();
+
+  constructor(private httpClient: HttpClient) {
   }
 
   login(email: string, password: string): void {
@@ -27,7 +30,7 @@ export class AuthService {
 
         console.log(this.decodeJwt(token));
 
-        this.router.navigate(['']);
+        this.loggedInSubject$.next(true);
     });
   }
 
@@ -43,12 +46,15 @@ export class AuthService {
       }).subscribe(res => {
       const body = res.body as any;
       console.log('REGISTERED', res);
-      this.router.navigate(['']);
     });
   }
 
+  logout(): void {
+    localStorage.removeItem('token');
+    this.loggedInSubject$.next(false);
+  }
+
   isLoggedIn(): boolean {
-    console.log('ISLOGGEDIN', this.getJwt());
     return !!this.getJwt();
   }
 

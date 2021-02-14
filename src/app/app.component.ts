@@ -6,6 +6,7 @@ import {fetchAffirmations} from './actions/affirmation.actions';
 import {fetchSchedules} from './actions/schedule.actions';
 import {environment} from '../environments/environment';
 import {AuthService} from './shared/services/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -20,12 +21,24 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
     private store: Store<State>
   ) {
   }
 
   ngOnInit(): void {
-    this.syncDbs();
+    if (this.authService.isLoggedIn()) {
+      this.syncDbs();
+    }
+
+    this.authService.loggedInSubject$.subscribe(loggedIn => {
+      console.log('LOGGED IN SUBJECT', loggedIn);
+      if (loggedIn) {
+        this.syncDbs();
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   syncDbs(): void {
@@ -52,21 +65,13 @@ export class AppComponent implements OnInit {
   getRemoteDb(dbUri: string): PouchDB.Database {
     const db = new PouchDB(dbUri, {
       fetch: (url, opts) => {
-        console.log('opts outer');
-
         if (opts && this.authService.isLoggedIn()) {
-          console.log('opts inner');
-
           const headersWithAuth = new Headers(opts.headers);
           headersWithAuth.append('Authorization', `Bearer ${this.authService.getJwt()}`);
           opts.headers = headersWithAuth;
 
-          console.log('HEADERS', opts.headers.get('Authorization'));
-
           return PouchDB.fetch(url, opts);
         }
-        console.log('HEADERS', opts);
-
         return PouchDB.fetch(url, opts);
       }
     });

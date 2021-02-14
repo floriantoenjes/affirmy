@@ -1,8 +1,10 @@
 <div class="container">
-  <header class="flex flex-row items-center">
-    <mat-icon class="arrow-back ml-3 mt-1" (click)="navigateBack()">chevron_left</mat-icon>
-    <h1 class="text-center pt-4 flex-1 pr-14 text-xl font-bold">{{title}} your Affirmation</h1>
-  </header>
+  <app-header>
+    <div class="flex flex-row items-center">
+      <mat-icon class="arrow-back ml-3 mt-1" (click)="navigateBack()">chevron_left</mat-icon>
+      <h1 class="text-center pt-4 flex-1 pr-14 text-xl font-bold  pl-6">{{title}} your Affirmation</h1>
+    </div>
+  </app-header>
   <main class="p-6">
     <form [formGroup]="form" (input)="hasChanges()">
       <mat-form-field class="w-full text-lg">

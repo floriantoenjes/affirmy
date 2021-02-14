@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import {AuthService} from './auth.service';
-import {fetchAffirmations} from '../../actions/affirmation.actions';
-import {fetchSchedules} from '../../actions/schedule.actions';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PouchDbService {
 
-  private affirmationDb = new PouchDB('affirmations2');
-  private schedulesDb = new PouchDB('schedules2');
+  affirmationDb = new PouchDB('affirmations2');
+  schedulesDb = new PouchDB('schedules2');
 
   constructor(
     private authService: AuthService
@@ -25,8 +24,8 @@ export class PouchDbService {
       return;
     }
 
-    this.syncDb(this.affirmationDb, 'affirmations', successAffirmations, errorAffirmations);
-    this.syncDb(this.schedulesDb, 'schedules', successSchedules, errorSchedules);
+    this.syncDb(this.affirmationDb, environment.pouchDbAffirmationsPrefix, successAffirmations, errorAffirmations);
+    this.syncDb(this.schedulesDb, environment.pouchDbSchedulesPrefix, successSchedules, errorSchedules);
   }
 
   syncDb(pouchDb: PouchDB.Database, prefix: string, success?: () => void, error?: () => void): void {

@@ -11,7 +11,7 @@ import {PouchDbService} from '../shared/services/pouch-db.service';
 @Injectable()
 export class ScheduleEffects {
 
-  db = new PouchDB('schedules2');
+  private db = this.pouchDbService.schedulesDb;
 
   $fetchSchedules = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.fetchSchedules),
@@ -83,6 +83,6 @@ export class ScheduleEffects {
 
   dbSync(): void {
     console.log('DB SYNC SCHEDULE EFFECT');
-    this.pouchDbService.syncDb(this.db, 'schedules');
+    this.pouchDbService.syncDb(this.db, environment.pouchDbSchedulesPrefix);
   }
 }

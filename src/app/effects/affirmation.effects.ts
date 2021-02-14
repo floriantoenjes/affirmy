@@ -14,7 +14,7 @@ import {PouchDbService} from '../shared/services/pouch-db.service';
 @Injectable()
 export class AffirmationEffects {
 
-  db = new PouchDB('affirmations2');
+  private db = this.pouchDbService.affirmationDb;
 
   $fetchAffirmations = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.fetchAffirmations),
@@ -90,6 +90,6 @@ export class AffirmationEffects {
 
   dbSync(): void {
     console.log('DB SYNC AFFIRMATION EFFECT');
-    this.pouchDbService.syncDb(this.db, 'affirmations');
+    this.pouchDbService.syncDb(this.db, environment.pouchDbAffirmationsPrefix);
   }
 }

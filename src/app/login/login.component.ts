@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../shared/services/auth.service';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 
 @Component({
@@ -51,6 +51,7 @@ export class LoginComponent implements OnInit {
   switchMode(): void {
     if (!this.showRegistration) {
       this.form.get('confirmPassword')?.setValidators(Validators.required);
+      this.form.setValidators(this.confirmPasswordValidator());
       this.form.get('confirmPassword')?.updateValueAndValidity();
       this.showRegistration = true;
     } else {
@@ -58,5 +59,14 @@ export class LoginComponent implements OnInit {
       this.form.get('confirmPassword')?.updateValueAndValidity();
       this.showRegistration = false;
     }
+  }
+
+  confirmPasswordValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      if (this.form.get('password')?.value === this.form.get('confirmPassword')?.value) {
+        return null;
+      }
+      return {passwordsDontMatch: true};
+    };
   }
 }

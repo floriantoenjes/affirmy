@@ -36,6 +36,7 @@ import {AuthInterceptor} from './shared/interceptors/auth.interceptor';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { HeaderComponent } from './header/header.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatDialogModule,
     HttpClientModule,
     MatProgressSpinnerModule,
-    MatSidenavModule
+    MatSidenavModule,
+    MatProgressBarModule,
   ],
   providers: [
     {

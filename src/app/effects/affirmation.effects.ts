@@ -10,6 +10,7 @@ import {State} from '../reducers';
 import {deleteSchedule} from '../actions/schedule.actions';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {PouchDbService} from '../shared/services/pouch-db.service';
+import {ProgressBarService} from '../shared/services/progress-bar.service';
 
 @Injectable()
 export class AffirmationEffects {
@@ -84,12 +85,17 @@ export class AffirmationEffects {
   constructor(
     private actions$: Actions,
     private pouchDbService: PouchDbService,
+    private progressBarService: ProgressBarService,
     private store: Store<State>
   ) {
   }
 
   dbSync(): void {
     console.log('DB SYNC AFFIRMATION EFFECT');
-    this.pouchDbService.syncDb(this.db, environment.pouchDbAffirmationsPrefix);
+    this.pouchDbService.syncDb(this.db, environment.pouchDbAffirmationsPrefix, () => {
+      this.progressBarService.stopSpinner();
+    }, () => {
+      this.progressBarService.stopSpinner();
+    });
   }
 }

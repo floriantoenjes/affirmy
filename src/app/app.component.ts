@@ -7,6 +7,7 @@ import {fetchSchedules} from './actions/schedule.actions';
 import {environment} from '../environments/environment';
 import {AuthService} from './shared/services/auth.service';
 import {Router} from '@angular/router';
+import {PouchDbService} from './shared/services/pouch-db.service';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +17,9 @@ import {Router} from '@angular/router';
 export class AppComponent implements OnInit {
   title = 'affirmy';
 
-  private affirmationDb = new PouchDB('affirmations2');
-  private schedulesDb = new PouchDB('schedules2');
-
   constructor(
     private authService: AuthService,
+    private pouchDbService: PouchDbService,
     private router: Router,
     private store: Store<State>
   ) {
@@ -42,40 +41,16 @@ export class AppComponent implements OnInit {
   }
 
   syncDbs(): void {
-    const jwt = this.authService.getJwt();
-
-    if (!jwt) {
-      return;
-    }
-
-    const dbSuffix = (this.authService.decodeJwt(jwt) as any).db;
-
-    const affirmationsDbUri = `http://192.168.2.111:5984/affirmations-${dbSuffix}`;
-    const schedulesDbUri = `http://192.168.2.111:5984/schedules-${dbSuffix}`;
-
-    this.affirmationDb.sync(this.getRemoteDb(affirmationsDbUri))
-      .then(() => this.store.dispatch(fetchAffirmations()))
-      .catch((e) => this.store.dispatch(fetchAffirmations()));
-
-    this.schedulesDb.sync(this.getRemoteDb(schedulesDbUri))
-      .then(() => this.store.dispatch(fetchSchedules()))
-      .catch((e) => this.store.dispatch(fetchSchedules()));
-  }
-
-  getRemoteDb(dbUri: string): PouchDB.Database {
-    const db = new PouchDB(dbUri, {
-      fetch: (url, opts) => {
-        if (opts && this.authService.isLoggedIn()) {
-          const headersWithAuth = new Headers(opts.headers);
-          headersWithAuth.append('Authorization', `Bearer ${this.authService.getJwt()}`);
-          opts.headers = headersWithAuth;
-
-          return PouchDB.fetch(url, opts);
-        }
-        return PouchDB.fetch(url, opts);
-      }
-    });
-    return db;
+    this.pouchDbService.syncDbs(
+      () => {
+        this.store.dispatch(fetchAffirmations());
+      }, () => {
+        this.store.dispatch(fetchAffirmations());
+      }, () => {
+        this.store.dispatch(fetchSchedules());
+      }, () => {
+        this.store.dispatch(fetchSchedules());
+      });
   }
 
 }

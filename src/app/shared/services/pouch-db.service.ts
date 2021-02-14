@@ -7,8 +7,8 @@ import {environment} from '../../../environments/environment';
 })
 export class PouchDbService {
 
-  affirmationDb = new PouchDB('affirmations2');
-  schedulesDb = new PouchDB('schedules2');
+  affirmationDb = new PouchDB(`${environment.pouchDbAffirmationsPrefix}-${this.getDbName()}`);
+  schedulesDb = new PouchDB(`${environment.pouchDbSchedulesPrefix}-${this.getDbName()}`);
 
   constructor(
     private authService: AuthService
@@ -29,15 +29,12 @@ export class PouchDbService {
   }
 
   syncDb(pouchDb: PouchDB.Database, prefix: string, success?: () => void, error?: () => void): void {
-    const jwt = this.authService.getJwt();
 
-    if (!jwt) {
+    if (!this.authService.isLoggedIn()) {
       return;
     }
 
-    const dbSuffix = (this.authService.decodeJwt(jwt) as any).db;
-
-    const dbUri = `http://192.168.2.111:5984/${prefix}-${dbSuffix}`;
+    const dbUri = `${environment.pouchDbUrl}/${prefix}-${this.getDbName()}`;
 
     this.affirmationDb.sync(this.getRemoteDb(dbUri))
       .then(() => {
@@ -66,5 +63,16 @@ export class PouchDbService {
       }
     });
     return db;
+  }
+
+  getDbName(): string {
+    const jwt = this.authService.getJwt();
+
+    if (jwt) {
+      const dbSuffix = (this.authService.decodeJwt(jwt) as any).db;
+      return dbSuffix;
+    }
+
+    return '';
   }
 }

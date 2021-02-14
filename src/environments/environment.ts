@@ -5,8 +5,7 @@
 export const environment = {
   production: false,
 
-  pouchDbAffirmations: 'http://192.168.2.111:5984/affirmations2',
-  pouchDbSchedules: 'http://192.168.2.111:5984/schedules2',
+  pouchDbUrl: 'http://192.168.2.111:5984',
 
   pouchDbAffirmationsPrefix: 'affirmations',
   pouchDbSchedulesPrefix: 'schedules',

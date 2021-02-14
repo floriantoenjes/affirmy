@@ -2,9 +2,13 @@
   <mat-spinner color="accent"></mat-spinner>
 </div>
 <mat-sidenav-container class="h-full">
-  <mat-sidenav #snav position="end" class="h-full w-1/2 px-6">
+  <mat-sidenav #snav position="end" class="h-full w-2/5 px-6">
     <mat-nav-list>
-      <div class="flex flex-row items-center">
+      <div (click)="snav.close()" class="flex flex-row justify-end cursor-pointer mb-4 mt-2">
+        <mat-icon>close</mat-icon>
+      </div>
+      <mat-divider></mat-divider>
+      <div (click)="logout()" class="flex flex-row items-center">
         <mat-icon>logout</mat-icon>
         <a mat-list-item>Logout</a>
       </div>

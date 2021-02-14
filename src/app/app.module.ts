@@ -34,6 +34,8 @@ import { LoginComponent } from './login/login.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthInterceptor} from './shared/interceptors/auth.interceptor';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { HeaderComponent } from './header/header.component';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     ScheduleComponent,
     ConfirmDialogComponent,
     LoginComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,7 +73,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     EffectsModule.forRoot([AffirmationEffects, ScheduleEffects]),
     MatDialogModule,
     HttpClientModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSidenavModule
   ],
   providers: [
     {

@@ -16,15 +16,10 @@ export class ListComponent implements OnInit {
 
   affirmations$: Observable<Affirmation[]>;
 
-  constructor(public router: Router, store: Store<State>, private authService: AuthService) {
+  constructor(public router: Router, store: Store<State>) {
     this.affirmations$ = store.select(getAffirmations);
   }
 
   ngOnInit(): void {
   }
-
-  logout(): void {
-    this.authService.logout();
-  }
-
 }

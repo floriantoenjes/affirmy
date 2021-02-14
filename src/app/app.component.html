@@ -1,4 +1,18 @@
 <div *ngIf="spinnerService.spinnerActive$ | async" class="spinner-wrapper">
   <mat-spinner color="accent"></mat-spinner>
 </div>
-<router-outlet></router-outlet>
+<mat-sidenav-container class="h-full">
+  <mat-sidenav #snav position="end" class="h-full w-1/2 px-6">
+    <mat-nav-list>
+      <div class="flex flex-row items-center">
+        <mat-icon>logout</mat-icon>
+        <a mat-list-item>Logout</a>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="bg-mat">
+    <app-header (navOpened)="snav.toggle()"></app-header>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

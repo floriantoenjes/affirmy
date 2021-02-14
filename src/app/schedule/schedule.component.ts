@@ -31,7 +31,7 @@ export class ScheduleComponent implements OnInit {
   changed = false;
 
   form: FormGroup = new FormGroup({
-    type: new FormControl(),
+    type: new FormControl(ScheduleType.DAILY),
     time: new FormControl(),
     hourlyInterval: new FormControl(),
   });
@@ -97,6 +97,8 @@ export class ScheduleComponent implements OnInit {
     }
     this.showDaySelect = false;
     this.scheduleDays = weekDays;
+
+    this.hasChanges();
   }
 
   isSelected(weekday: string): boolean {
@@ -122,11 +124,12 @@ export class ScheduleComponent implements OnInit {
   }
 
   hasChanges(): void {
-    console.log('CHANGES', this.form.value);
+    console.log('CHANGES', this.form.value, this.scheduleDays);
 
     const formValue = this.form.value;
 
-    if (formValue.time === '' || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)) {
+    if (formValue.time === '' || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)
+      || (formValue.type === ScheduleType.DAILY && this.scheduleDays.length === 0)) {
       this.changed = false;
       return;
     }

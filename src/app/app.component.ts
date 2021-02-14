@@ -8,6 +8,7 @@ import {environment} from '../environments/environment';
 import {AuthService} from './shared/services/auth.service';
 import {Router} from '@angular/router';
 import {PouchDbService} from './shared/services/pouch-db.service';
+import {SpinnerService} from './shared/services/spinner.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private pouchDbService: PouchDbService,
     private router: Router,
+    public spinnerService: SpinnerService,
     private store: Store<State>
   ) {
   }

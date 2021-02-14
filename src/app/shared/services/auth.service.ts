@@ -1,7 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {Subject} from 'rxjs';
+import {Subject, throwError} from 'rxjs';
+import {SpinnerService} from './spinner.service';
+import {catchError, timeout} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +12,14 @@ export class AuthService {
 
   loggedInSubject$ = new Subject<boolean>();
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private spinnerService: SpinnerService
+  ) {
   }
 
   login(email: string, password: string): void {
+    this.spinnerService.startSpinner();
     this.httpClient.post('https://192.168.2.106:5001/WeatherForecast/login',
       {
         email,
@@ -22,19 +28,29 @@ export class AuthService {
       {
         observe: 'response',
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
-      }).subscribe(res => {
-        const body = res.body as any;
-        const token = body.token;
+      })
+      .pipe(
+        timeout(5000),
+        catchError( () => {
+          this.spinnerService.stopSpinner();
+          return throwError('Timeout');
+        })
+      )
+      .subscribe(res => {
+      const body = res.body as any;
+      const token = body.token;
 
-        this.setJwt(token);
+      this.setJwt(token);
 
-        console.log(this.decodeJwt(token));
+      console.log(this.decodeJwt(token));
 
-        this.loggedInSubject$.next(true);
+      this.loggedInSubject$.next(true);
+      this.spinnerService.stopSpinner();
     });
   }
 
   register(email: string, password: string): void {
+    this.spinnerService.startSpinner();
     this.httpClient.post('https://192.168.2.106:5001/WeatherForecast/register',
       {
         email,
@@ -43,9 +59,17 @@ export class AuthService {
       {
         observe: 'response',
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
-      }).subscribe(res => {
+      })
+      .pipe(
+        timeout(5000),
+        catchError( () => {
+          this.spinnerService.stopSpinner();
+          return throwError('Timeout');
+        })
+      ).subscribe(res => {
       const body = res.body as any;
       console.log('REGISTERED', res);
+      this.spinnerService.stopSpinner();
     });
   }
 

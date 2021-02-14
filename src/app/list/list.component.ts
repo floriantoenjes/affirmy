@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {State} from '../reducers';
 import {getAffirmations} from '../reducers/affirmation.reducer';
 import {Router} from '@angular/router';
+import {AuthService} from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-list',
@@ -15,11 +16,15 @@ export class ListComponent implements OnInit {
 
   affirmations$: Observable<Affirmation[]>;
 
-  constructor(public router: Router, store: Store<State>) {
+  constructor(public router: Router, store: Store<State>, private authService: AuthService) {
     this.affirmations$ = store.select(getAffirmations);
   }
 
   ngOnInit(): void {
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 
 }

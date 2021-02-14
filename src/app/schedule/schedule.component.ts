@@ -122,11 +122,18 @@ export class ScheduleComponent implements OnInit {
   }
 
   hasChanges(): void {
-    console.log('CHANGES', this.form.get('time')?.value);
+    console.log('CHANGES', this.form.value);
 
-    if (this.form.get('type')?.value !== this.schedule?.scheduleType
-      || this.form.get('time')?.value !== this.schedule?.scheduleTime
-      || this.form.get('hourlyInterval')?.value !== this.schedule?.hourlyInterval) {
+    const formValue = this.form.value;
+
+    if (formValue.time === '' || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)) {
+      this.changed = false;
+      return;
+    }
+
+    if (formValue.type !== this.schedule?.scheduleType
+      || formValue.time !== this.schedule?.scheduleTime
+      || (formValue.type === ScheduleType.HOURLY && formValue.hourlyInterval !== this.schedule?.hourlyInterval)) {
       this.changed = true;
       console.log('CHANGED');
     } else {

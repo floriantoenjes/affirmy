@@ -40,11 +40,11 @@
         </ng-container>
       </form>
 
-      <button *ngIf="!schedule" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
-        <mat-icon>check</mat-icon>
-      </button>
+<!--      <button *ngIf="!schedule" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">-->
+<!--        <mat-icon>check</mat-icon>-->
+<!--      </button>-->
 
-      <button *ngIf="schedule && changed" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
+      <button *ngIf="changed" (click)="createSchedule()" mat-fab class="fixed bottom-0 right-0 m-6">
         <mat-icon>check</mat-icon>
       </button>
     </main>

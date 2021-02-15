@@ -122,7 +122,8 @@ export class NotificationSchedulingService {
   }
 
   generateNotificationId(schedule: Schedule): number {
-    return new Date(schedule._id).getTime() / 1000;
+    console.log('LN ID', new Date(schedule._id).getTime());
+    return new Date(schedule._id).getTime();
   }
 
   getTimeFromString(schedule: Schedule): DateTime {

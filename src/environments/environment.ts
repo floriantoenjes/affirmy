@@ -5,6 +5,8 @@
 export const environment = {
   production: false,
 
+  authUrl: 'http://192.168.2.106:5001/WeatherForecast',
+
   pouchDbUrl: 'http://192.168.2.111:5984',
 
   pouchDbAffirmationsPrefix: 'affirmations',

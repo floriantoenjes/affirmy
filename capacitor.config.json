@@ -1,0 +1,13 @@
+{
+  "appId": "com.floriantoenjes.affirmy",
+  "appName": "affirmy",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist/affirmy",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {}
+}

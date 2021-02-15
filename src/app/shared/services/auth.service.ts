@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {Subject, throwError} from 'rxjs';
 import {SpinnerService} from './spinner.service';
 import {catchError, timeout} from 'rxjs/operators';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class AuthService {
 
   login(email: string, password: string): void {
     this.spinnerService.startSpinner();
-    this.httpClient.post('https://192.168.2.106:5001/WeatherForecast/login',
+    this.httpClient.post(`${environment.authUrl}/login`,
       {
         email,
         password
@@ -51,7 +52,7 @@ export class AuthService {
 
   register(email: string, password: string): void {
     this.spinnerService.startSpinner();
-    this.httpClient.post('https://192.168.2.106:5001/WeatherForecast/register',
+    this.httpClient.post(`${environment.authUrl}/register`,
       {
         email,
         password

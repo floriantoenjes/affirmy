@@ -56,8 +56,6 @@ export class AppComponent implements OnInit {
 
     this.navbarService.navbarToggled.subscribe(() => this.snav?.toggle());
 
-    LocalNotifications.getPending().then(pending => LocalNotifications.cancel(pending)).then(() => this.initScheduleNotifications());
-
   }
 
   syncDbs(): void {
@@ -93,11 +91,27 @@ export class AppComponent implements OnInit {
       }, () => {
         this.store.dispatch(fetchSchedules());
       });
+
+    this.clearAndInitNotifications(); // TODO: All which belongs to this goes into it's own service!
+  }
+
+  clearAndInitNotifications(): void {
+    LocalNotifications.getPending().then(pending => {
+      if (pending.notifications.length > 0) {
+        LocalNotifications.cancel(pending).then(() => this.initScheduleNotifications());
+      } else {
+        this.initScheduleNotifications();
+      }
+    });
   }
 
   initScheduleNotifications(): void {
+    console.log('INIT SCHEDULING');
+
     this.store.select(getSchedules).subscribe(
       schedules => {
+        console.log('SELECTOR SUBSCRIPTION', schedules.length);
+
         for (const schedule of schedules) {
           this.scheduleNotification(schedule);
         }
@@ -106,6 +120,7 @@ export class AppComponent implements OnInit {
   }
 
   scheduleNotification(schedule: Schedule): void {
+    // console.log('SCHEDULE ACTIVE?', schedule);
     if (schedule.active) {
 
       switch (schedule.scheduleType) {
@@ -122,14 +137,11 @@ export class AppComponent implements OnInit {
   }
 
   scheduleDaily(schedule: Schedule): void {
-    const timeStrSplit = this.getTimeFromString(schedule.scheduleTime);
-    let scheduleDate = DateTime.local();
+    const luxonTime = this.getTimeFromString(schedule);
 
     for (const weekDay of schedule.scheduleDays) {
-      scheduleDate = scheduleDate.set({
+      const scheduleDate = luxonTime.set({
         weekday: this.getWeekdayNumber(weekDay),
-        hour: +timeStrSplit[0],
-        minute: +timeStrSplit[1]
       });
 
       // TODO: Use 'repeat week' here
@@ -151,22 +163,17 @@ export class AppComponent implements OnInit {
   }
 
   scheduleHourly(schedule: Schedule): void {
-    const timeStrSplit = this.getTimeFromString(schedule.scheduleTime);
-    let scheduleDate = DateTime.local();
-    scheduleDate = scheduleDate.set({
-      hour: +timeStrSplit[0],
-      minute: +timeStrSplit[1]
-    });
+    const luxonTime = this.getTimeFromString(schedule);
 
     // TODO: Use every: minutes = 60 * hourlyInterval
-    console.log('SCHEDULING FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
+    console.log('SCHEDULING FOR', luxonTime.toJSDate(), this.generateNotificationId(schedule));
 
     LocalNotifications.schedule({
       notifications: [{
         title: 'Affirmy',
         body: 'Hey, it is hourly Affirmy!',
         id: this.generateNotificationId(schedule),
-        schedule: { at: scheduleDate.toJSDate(), every: 'hour' },
+        schedule: { at: luxonTime.toJSDate(), every: 'hour' },
         sound: undefined,
         attachments: undefined,
         actionTypeId: '',
@@ -179,8 +186,13 @@ export class AppComponent implements OnInit {
     return new Date(schedule._id).getTime() / 1000;
   }
 
-  getTimeFromString(timeStr: string): string[] {
-    return timeStr.split(':');
+  getTimeFromString(schedule: Schedule): DateTime {
+    let luxonTime = DateTime.fromFormat(schedule.scheduleTime, 't');
+    if (!luxonTime.isValid) {
+      luxonTime = DateTime.fromFormat(schedule.scheduleTime, 'T');
+    }
+    console.log('LUXON TIME', luxonTime);
+    return luxonTime;
   }
 
   getWeekdayNumber(weekday: string): number {

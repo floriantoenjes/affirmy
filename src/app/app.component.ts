@@ -11,7 +11,7 @@ import {SpinnerService} from './shared/services/spinner.service';
 import {MatSidenav} from '@angular/material/sidenav';
 import {NavbarService} from './shared/services/navbar.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {Plugins} from '@capacitor/core';
+import {LocalNotificationPendingList, Plugins} from '@capacitor/core';
 import {getSchedules} from './reducers/schedule.reducer';
 import {Schedule, ScheduleType} from './shared/models/Schedule';
 import {DateTime} from 'luxon';
@@ -56,7 +56,8 @@ export class AppComponent implements OnInit {
 
     this.navbarService.navbarToggled.subscribe(() => this.snav?.toggle());
 
-    this.initScheduleNotifications();
+    LocalNotifications.getPending().then(pending => LocalNotifications.cancel(pending)).then(() => this.initScheduleNotifications());
+
   }
 
   syncDbs(): void {

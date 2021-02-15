@@ -78,19 +78,6 @@ export class AppComponent implements OnInit {
   }
 
   syncDbsManually(): void {
-    // LocalNotifications.schedule({
-    //   notifications: [{
-    //     title: 'Affirmy',
-    //     body: 'Hey, it is Affirmy!',
-    //     id: 1,
-    //     schedule: { at: new Date(Date.now() + 1000 * 5) },
-    //     sound: undefined,
-    //     attachments: undefined,
-    //     actionTypeId: '',
-    //     extra: null
-    //   }]
-    // }).then(() => console.log('SCHEDULED'));
-
     this.pouchDbService.syncDbs(
       () => {
         this.store.dispatch(fetchAffirmations());
@@ -144,7 +131,20 @@ export class AppComponent implements OnInit {
       });
 
       // TODO: Use 'repeat week' here
-      console.log('SCHEDULING FOR', scheduleDate.toJSDate());
+      console.log('SCHEDULING FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
+
+      LocalNotifications.schedule({
+        notifications: [{
+          title: 'Affirmy',
+          body: 'Hey, it is daily Affirmy!',
+          id: this.generateNotificationId(schedule),
+          schedule: { at: scheduleDate.toJSDate(), every: 'week' },
+          sound: undefined,
+          attachments: undefined,
+          actionTypeId: '',
+          extra: null
+        }]
+      }).then(() => console.log('SCHEDULED'));
     }
   }
 
@@ -157,7 +157,24 @@ export class AppComponent implements OnInit {
     });
 
     // TODO: Use every: minutes = 60 * hourlyInterval
-    console.log('SCHEDULING FOR', scheduleDate.toJSDate());
+    console.log('SCHEDULING FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
+
+    LocalNotifications.schedule({
+      notifications: [{
+        title: 'Affirmy',
+        body: 'Hey, it is hourly Affirmy!',
+        id: this.generateNotificationId(schedule),
+        schedule: { at: scheduleDate.toJSDate(), every: 'hour' },
+        sound: undefined,
+        attachments: undefined,
+        actionTypeId: '',
+        extra: null
+      }]
+    }).then(() => console.log('SCHEDULED'));
+  }
+
+  generateNotificationId(schedule: Schedule): number {
+    return new Date(schedule._id).getTime() / 1000;
   }
 
   getTimeFromString(timeStr: string): string[] {

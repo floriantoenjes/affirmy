@@ -4,7 +4,6 @@ import {State} from './reducers';
 import {Store} from '@ngrx/store';
 import {fetchAffirmations} from './actions/affirmation.actions';
 import {fetchSchedules} from './actions/schedule.actions';
-import {environment} from '../environments/environment';
 import {AuthService} from './shared/services/auth.service';
 import {Router} from '@angular/router';
 import {PouchDbService} from './shared/services/pouch-db.service';
@@ -12,6 +11,12 @@ import {SpinnerService} from './shared/services/spinner.service';
 import {MatSidenav} from '@angular/material/sidenav';
 import {NavbarService} from './shared/services/navbar.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Plugins} from '@capacitor/core';
+import {getSchedules} from './reducers/schedule.reducer';
+import {Schedule, ScheduleType} from './shared/models/Schedule';
+import {DateTime} from 'luxon';
+
+const {LocalNotifications} = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -50,6 +55,8 @@ export class AppComponent implements OnInit {
     });
 
     this.navbarService.navbarToggled.subscribe(() => this.snav?.toggle());
+
+    this.initScheduleNotifications();
   }
 
   syncDbs(): void {
@@ -71,6 +78,19 @@ export class AppComponent implements OnInit {
   }
 
   syncDbsManually(): void {
+    // LocalNotifications.schedule({
+    //   notifications: [{
+    //     title: 'Affirmy',
+    //     body: 'Hey, it is Affirmy!',
+    //     id: 1,
+    //     schedule: { at: new Date(Date.now() + 1000 * 5) },
+    //     sound: undefined,
+    //     attachments: undefined,
+    //     actionTypeId: '',
+    //     extra: null
+    //   }]
+    // }).then(() => console.log('SCHEDULED'));
+
     this.pouchDbService.syncDbs(
       () => {
         this.store.dispatch(fetchAffirmations());
@@ -86,4 +106,83 @@ export class AppComponent implements OnInit {
         this.store.dispatch(fetchSchedules());
       });
   }
+
+  initScheduleNotifications(): void {
+    this.store.select(getSchedules).subscribe(
+      schedules => {
+        for (const schedule of schedules) {
+          if (schedule.active) {
+
+            switch (schedule.scheduleType) {
+
+              case ScheduleType.DAILY:
+                this.scheduleDaily(schedule);
+                break;
+                // if (scheduleDate.toMillis() > Date.now()) {
+                //   console.log('SCHEDULING on', scheduleDate.toJSDate());
+                // }
+
+              case ScheduleType.HOURLY:
+                this.scheduleHourly(schedule);
+                break;
+            }
+          }
+        }
+      }
+    );
+  }
+
+  scheduleDaily(schedule: Schedule): void {
+    const timeStrSplit = this.getTimeFromString(schedule.scheduleTime);
+    let scheduleDate = DateTime.local();
+
+    for (const weekDay of schedule.scheduleDays) {
+      scheduleDate = scheduleDate.set({
+        weekday: this.getWeekdayNumber(weekDay),
+        hour: +timeStrSplit[0],
+        minute: +timeStrSplit[1]
+      });
+
+      // TODO: Use 'repeat week' here
+      console.log('SCHEDULING FOR', scheduleDate.toJSDate());
+    }
+  }
+
+  scheduleHourly(schedule: Schedule): void {
+    const timeStrSplit = this.getTimeFromString(schedule.scheduleTime);
+    let scheduleDate = DateTime.local();
+    scheduleDate = scheduleDate.set({
+      hour: +timeStrSplit[0],
+      minute: +timeStrSplit[1]
+    });
+
+    // TODO: Use every: minutes = 60 * hourlyInterval
+    console.log('SCHEDULING FOR', scheduleDate.toJSDate());
+  }
+
+  getTimeFromString(timeStr: string): string[] {
+    return timeStr.split(':');
+  }
+
+  getWeekdayNumber(weekday: string): number {
+    switch (weekday) {
+      case 'Monday':
+        return 1;
+      case 'Tuesday':
+        return 2;
+      case 'Wednesday':
+        return 3;
+      case 'Thursday':
+        return 4;
+      case 'Friday':
+        return 5;
+      case 'Saturday':
+        return 6;
+      case 'Sunday':
+        return 7;
+      default:
+        return 0;
+    }
+  }
+
 }

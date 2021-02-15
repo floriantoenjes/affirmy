@@ -15,6 +15,7 @@ import {LocalNotificationPendingList, Plugins} from '@capacitor/core';
 import {getSchedules} from './reducers/schedule.reducer';
 import {Schedule, ScheduleType} from './shared/models/Schedule';
 import {DateTime} from 'luxon';
+import {take} from 'rxjs/operators';
 
 const {LocalNotifications} = Plugins;
 
@@ -108,7 +109,7 @@ export class AppComponent implements OnInit {
   initScheduleNotifications(): void {
     console.log('INIT SCHEDULING');
 
-    this.store.select(getSchedules).subscribe(
+    this.store.select(getSchedules).pipe(take(1)).subscribe(
       schedules => {
         console.log('SELECTOR SUBSCRIPTION', schedules.length);
 

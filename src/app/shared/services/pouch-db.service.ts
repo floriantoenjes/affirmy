@@ -16,6 +16,8 @@ export class PouchDbService {
     private progressBarService: ProgressBarService,
   ) { }
 
+  // TODO: Much to refactor right here!
+
   syncDbs(
     successAffirmations: () => void,
     errorAffirmations: () => void,

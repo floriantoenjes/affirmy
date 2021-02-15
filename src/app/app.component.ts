@@ -89,8 +89,6 @@ export class AppComponent implements OnInit {
       }, () => {
         this.store.dispatch(fetchSchedules());
       });
-
-    this.schedulingService.clearAndInitNotifications(); // TODO: All which belongs to this goes into it's own service!
   }
 
 

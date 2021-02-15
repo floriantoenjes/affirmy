@@ -28,6 +28,11 @@ export class ScheduleEffects {
     tap(() => this.dbSync())
   ));
 
+  $loadSchedules = createEffect(() => this.actions$.pipe(
+    ofType(ScheduleActions.loadSchedules),
+    tap(() => this.scheduleService.clearAndInitNotifications()
+    )), {dispatch: false});
+
   $createSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.startCreateSchedule),
     mergeMap(action => {

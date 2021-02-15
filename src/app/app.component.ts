@@ -99,25 +99,26 @@ export class AppComponent implements OnInit {
     this.store.select(getSchedules).subscribe(
       schedules => {
         for (const schedule of schedules) {
-          if (schedule.active) {
-
-            switch (schedule.scheduleType) {
-
-              case ScheduleType.DAILY:
-                this.scheduleDaily(schedule);
-                break;
-                // if (scheduleDate.toMillis() > Date.now()) {
-                //   console.log('SCHEDULING on', scheduleDate.toJSDate());
-                // }
-
-              case ScheduleType.HOURLY:
-                this.scheduleHourly(schedule);
-                break;
-            }
-          }
+          this.scheduleNotification(schedule);
         }
       }
     );
+  }
+
+  scheduleNotification(schedule: Schedule): void {
+    if (schedule.active) {
+
+      switch (schedule.scheduleType) {
+
+        case ScheduleType.DAILY:
+          this.scheduleDaily(schedule);
+          break;
+
+        case ScheduleType.HOURLY:
+          this.scheduleHourly(schedule);
+          break;
+      }
+    }
   }
 
   scheduleDaily(schedule: Schedule): void {

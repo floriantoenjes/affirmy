@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {AuthService} from './auth.service';
 import {environment} from '../../../environments/environment';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {ProgressBarService} from './progress-bar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class PouchDbService {
 
   constructor(
     private authService: AuthService,
+    private progressBarService: ProgressBarService,
     private snackBar: MatSnackBar
   ) { }
 
@@ -36,6 +38,8 @@ export class PouchDbService {
       return;
     }
 
+    this.progressBarService.startSpinner();
+
     const dbUri = `${environment.pouchDbUrl}/${prefix}-${this.getDbName()}`;
 
     pouchDb.sync(this.getRemoteDb(dbUri))
@@ -52,7 +56,8 @@ export class PouchDbService {
         if (error) {
           error();
         }
-      });
+      })
+      .finally(() => this.progressBarService.stopSpinner());
   }
 
   getRemoteDb(dbUri: string): PouchDB.Database {

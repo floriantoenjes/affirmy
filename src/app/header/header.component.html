@@ -4,3 +4,4 @@
   </div>
   <mat-icon class="logout mb-4 cursor-pointer ml-auto mr-6" (click)="toggleNavbar()">menu</mat-icon>
 </header>
+<mat-progress-bar *ngIf="progressBarService.progressBarActive$ | async" color="warn" mode="indeterminate"></mat-progress-bar>

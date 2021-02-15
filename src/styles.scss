@@ -42,6 +42,10 @@ $clock-hand-color: $accent !important;
   background-color: mat-color($accent);
 }
 
+.bg-primary {
+  background-color: mat-color(mat-palette($mat-gray));
+}
+
 
 body {
   @apply bg-mat;

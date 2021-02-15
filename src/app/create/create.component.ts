@@ -5,7 +5,6 @@ import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {createAffirmation, startCreateAffirmation, startUpdateAffirmation, updateAffirmation} from '../actions/affirmation.actions';
 import {Affirmation} from '../shared/models/Affirmation';
-import {ProgressBarService} from '../shared/services/progress-bar.service';
 
 @Component({
   selector: 'app-create',
@@ -31,7 +30,6 @@ export class CreateComponent implements OnInit {
   });
 
   constructor(
-    public progressBarService: ProgressBarService,
     private route: ActivatedRoute,
     public router: Router,
     private store: Store<State>
@@ -45,8 +43,6 @@ export class CreateComponent implements OnInit {
 
   createAffirmation(): void {
     if (this.form.valid) {
-      this.progressBarService.startSpinner();
-
       const newAffirmation = new Affirmation(
         this.form.get('title')?.value,
         this.form.get('text')?.value

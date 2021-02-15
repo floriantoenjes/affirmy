@@ -5,7 +5,6 @@
       <h1 class="text-center pt-4 flex-1 pr-14 text-xl font-bold  pl-6">{{title}} your Affirmation</h1>
     </div>
   </app-header>
-  <mat-progress-bar *ngIf="progressBarService.progressBarActive$ | async" color="warn" mode="indeterminate"></mat-progress-bar>
   <main class="p-6">
     <form [formGroup]="form" (input)="hasChanges()">
       <mat-form-field class="w-full text-lg">

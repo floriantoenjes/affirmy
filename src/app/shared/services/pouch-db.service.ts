@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AuthService} from './auth.service';
 import {environment} from '../../../environments/environment';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {ProgressBarService} from './progress-bar.service';
 
 @Injectable({
@@ -15,7 +14,6 @@ export class PouchDbService {
   constructor(
     private authService: AuthService,
     private progressBarService: ProgressBarService,
-    private snackBar: MatSnackBar
   ) { }
 
   syncDbs(
@@ -44,10 +42,6 @@ export class PouchDbService {
 
     pouchDb.sync(this.getRemoteDb(dbUri))
       .then(() => {
-        this.snackBar.open('Synchronized', 'Dismiss', {
-          panelClass: ['bg-primary', 'text-center'],
-          duration: 5000
-        });
         if (success) {
           success();
         }

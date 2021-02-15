@@ -11,6 +11,7 @@ import {PouchDbService} from './shared/services/pouch-db.service';
 import {SpinnerService} from './shared/services/spinner.service';
 import {MatSidenav} from '@angular/material/sidenav';
 import {NavbarService} from './shared/services/navbar.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit {
     private navbarService: NavbarService,
     private pouchDbService: PouchDbService,
     private router: Router,
+    private snackBar: MatSnackBar,
     public spinnerService: SpinnerService,
     private store: Store<State>
   ) {
@@ -66,5 +68,22 @@ export class AppComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.snav?.close();
+  }
+
+  syncDbsManually(): void {
+    this.pouchDbService.syncDbs(
+      () => {
+        this.store.dispatch(fetchAffirmations());
+      }, () => {
+        this.store.dispatch(fetchAffirmations());
+      }, () => {
+        this.snackBar.open('Synchronized', 'Dismiss', {
+          panelClass: ['bg-primary', 'text-center'],
+          duration: 5000
+        });
+        this.store.dispatch(fetchSchedules());
+      }, () => {
+        this.store.dispatch(fetchSchedules());
+      });
   }
 }

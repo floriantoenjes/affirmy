@@ -131,7 +131,7 @@ export class ScheduleComponent implements OnInit {
 
     const formValue = this.form.value;
 
-    if (formValue.time === '' || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)
+    if (formValue.time === '' || formValue.time === null || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)
       || (formValue.type === ScheduleType.DAILY && this.scheduleDays.length === 0)) {
       this.changed = false;
       return;

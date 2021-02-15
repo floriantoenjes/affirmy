@@ -7,6 +7,7 @@ import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
 import {createSchedule, updateSchedule} from '../actions/schedule.actions';
 import {PouchDbService} from '../shared/services/pouch-db.service';
+import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
 
 @Injectable()
 export class ScheduleEffects {
@@ -45,6 +46,11 @@ export class ScheduleEffects {
     tap(() => this.dbSync())
   ));
 
+  $createdSchedule = createEffect(() => this.actions$.pipe(
+    ofType(ScheduleActions.createSchedule),
+    tap(action => this.scheduleService.scheduleNotification(action.schedule))
+  ), {dispatch: false});
+
   $updateSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.startUpdateSchedule),
     mergeMap(action => {
@@ -63,6 +69,13 @@ export class ScheduleEffects {
     tap(() => this.dbSync())
   ));
 
+  $updatedSchedule = createEffect(() => this.actions$.pipe(
+    ofType(ScheduleActions.updateSchedule),
+    tap(action => this.scheduleService.cancelNotification(action.schedule).then(() => {
+      this.scheduleService.scheduleNotification(action.schedule);
+    }))
+  ), {dispatch: false});
+
   $deleteSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.deleteSchedule),
     tap(action => {
@@ -71,6 +84,7 @@ export class ScheduleEffects {
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Rescheduling...', scheduleDt.toISOTime());
 
+      this.scheduleService.cancelNotification(schedule);
       this.db.remove(schedule);
     }),
     tap(() => this.dbSync())
@@ -78,7 +92,8 @@ export class ScheduleEffects {
 
   constructor(
     private actions$: Actions,
-    private pouchDbService: PouchDbService
+    private pouchDbService: PouchDbService,
+    private scheduleService: NotificationSchedulingService
   ) {}
 
   dbSync(): void {

@@ -40,8 +40,8 @@ export class NotificationSchedulingService {
     );
   }
 
-  cancelNotification(schedule: Schedule): void {
-    LocalNotifications.cancel({
+  cancelNotification(schedule: Schedule): Promise<void> {
+    return LocalNotifications.cancel({
       notifications: [
         {
           id: this.generateNotificationId(schedule).toString()

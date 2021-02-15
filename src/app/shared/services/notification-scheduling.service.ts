@@ -71,9 +71,13 @@ export class NotificationSchedulingService {
     const luxonTime = this.getTimeFromString(schedule);
 
     for (const weekDay of schedule.scheduleDays) {
-      const scheduleDate = luxonTime.set({
+      let scheduleDate = luxonTime.set({
         weekday: this.getWeekdayNumber(weekDay),
       });
+
+      if (scheduleDate.toMillis() <= Date.now()) {
+        scheduleDate = scheduleDate.plus({day: 1});
+      }
 
       // TODO: Use 'repeat week' here
       console.log('SCHEDULING FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
@@ -94,7 +98,11 @@ export class NotificationSchedulingService {
   }
 
   scheduleHourly(schedule: Schedule): void {
-    const luxonTime = this.getTimeFromString(schedule);
+    let luxonTime = this.getTimeFromString(schedule);
+
+    if (luxonTime.toMillis() <= Date.now()) {
+      luxonTime = luxonTime.plus({day: 1});
+    }
 
     // TODO: Use every: minutes = 60 * hourlyInterval
     console.log('SCHEDULING FOR', luxonTime.toJSDate(), this.generateNotificationId(schedule));

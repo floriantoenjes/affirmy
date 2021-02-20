@@ -160,6 +160,10 @@ export class ScheduleComponent implements OnInit {
       return false;
     }
 
+    if (a1.length !== a2.length) {
+      return false;
+    }
+
     for (const element of a1) {
       if (a2.indexOf(element) === -1) {
         return false;

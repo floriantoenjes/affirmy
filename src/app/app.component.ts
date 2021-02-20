@@ -79,6 +79,10 @@ export class AppComponent implements OnInit {
       () => {
         this.store.dispatch(fetchAffirmations());
       }, () => {
+        this.snackBar.open('Affirmation Sync Error', 'Dismiss', {
+          panelClass: ['bg-primary', 'text-center'],
+          duration: 5000
+        });
         this.store.dispatch(fetchAffirmations());
       }, () => {
         this.snackBar.open('Synchronized', 'Dismiss', {
@@ -87,6 +91,10 @@ export class AppComponent implements OnInit {
         });
         this.store.dispatch(fetchSchedules());
       }, () => {
+        this.snackBar.open('Schedule Sync Error', 'Dismiss', {
+          panelClass: ['bg-primary', 'text-center'],
+          duration: 5000
+        });
         this.store.dispatch(fetchSchedules());
       });
   }

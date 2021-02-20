@@ -49,6 +49,7 @@ export class PouchDbService {
         }
       })
       .catch((e) => {
+        console.log('Sync error', dbUri, e);
         if (error) {
           error();
         }

@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
 
-  authUrl: 'http://192.168.2.106:5001/WeatherForecast',
+  authUrl: 'https://affirmy.floriantoenjes.com:5002/WeatherForecast',
 
-  pouchDbUrl: 'http://192.168.2.111:5984',
+  pouchDbUrl: 'https://affirmy.floriantoenjes.com:6985',
 
   pouchDbAffirmationsPrefix: 'affirmations',
   pouchDbSchedulesPrefix: 'schedules',

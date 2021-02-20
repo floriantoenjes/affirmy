@@ -4,7 +4,7 @@ import {Router} from '@angular/router';
 import {Subject, throwError} from 'rxjs';
 import {SpinnerService} from './spinner.service';
 import {catchError, timeout} from 'rxjs/operators';
-import {environment} from "../../../environments/environment";
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

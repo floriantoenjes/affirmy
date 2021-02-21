@@ -76,7 +76,7 @@ export class NotificationSchedulingService {
       });
 
       if (scheduleDate.toMillis() <= DateTime.local().toMillis()) {
-        scheduleDate = scheduleDate.plus({day: 1});
+        scheduleDate = scheduleDate.plus({week: 1});
       }
 
       // TODO: Use 'repeat week' here

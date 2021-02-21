@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {getSchedules} from '../../reducers/schedule.reducer';
 import {take} from 'rxjs/operators';
 import {Schedule, ScheduleType} from '../models/Schedule';
@@ -43,6 +43,21 @@ export class NotificationSchedulingService {
   }
 
   cancelNotification(schedule: Schedule): Promise<void> {
+
+    if (schedule.scheduleType === ScheduleType.DAILY) {
+      let lastCancel = null;
+      for (const weekDay of schedule.scheduleDays) {
+          lastCancel = LocalNotifications.cancel({
+            notifications: [
+              {
+                id: `${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`
+              }
+            ]
+          });
+          return lastCancel;
+        }
+    }
+
     return LocalNotifications.cancel({
       notifications: [
         {
@@ -90,13 +105,13 @@ export class NotificationSchedulingService {
       }
 
       // TODO: Use 'repeat week' here
-      console.log('SCHEDULING DAILY FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
+      console.log('SCHEDULING DAILY FOR', scheduleDate.toJSDate(), +`${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`);
 
       LocalNotifications.schedule({
         notifications: [{
           title: affirmation.title,
           body: affirmation.text,
-          id: this.generateNotificationId(schedule),
+          id: +`${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`,
           schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week' },
           sound: undefined,
           attachments: undefined,

@@ -6,6 +6,8 @@ import {DateTime} from 'luxon';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
+import {getAffirmationById} from '../../reducers/affirmation.reducer';
+import {Affirmation} from '../models/Affirmation';
 
 const {LocalNotifications} = Plugins;
 
@@ -54,20 +56,28 @@ export class NotificationSchedulingService {
     // console.log('SCHEDULE ACTIVE?', schedule);
     if (schedule.active) {
 
-      switch (schedule.scheduleType) {
+      this.store.select(getAffirmationById, {id: schedule.affirmationId}).pipe(take(1)).subscribe(
+        (affirmation) => {
+          if (!affirmation) {
+            return;
+          }
 
-        case ScheduleType.DAILY:
-          this.scheduleDaily(schedule);
-          break;
+          switch (schedule.scheduleType) {
 
-        case ScheduleType.HOURLY:
-          this.scheduleHourly(schedule);
-          break;
-      }
+            case ScheduleType.DAILY:
+              this.scheduleDaily(schedule, affirmation);
+              break;
+
+            case ScheduleType.HOURLY:
+              this.scheduleHourly(schedule, affirmation);
+              break;
+          }
+        }
+      );
     }
   }
 
-  scheduleDaily(schedule: Schedule): void {
+  scheduleDaily(schedule: Schedule, affirmation: Affirmation): void {
     const luxonTime = this.getTimeFromString(schedule);
 
     for (const weekDay of schedule.scheduleDays) {
@@ -84,8 +94,8 @@ export class NotificationSchedulingService {
 
       LocalNotifications.schedule({
         notifications: [{
-          title: 'Affirmy',
-          body: 'Hey, it is daily Affirmy!',
+          title: affirmation.title,
+          body: affirmation.text,
           id: this.generateNotificationId(schedule),
           schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week' },
           sound: undefined,
@@ -97,7 +107,7 @@ export class NotificationSchedulingService {
     }
   }
 
-  scheduleHourly(schedule: Schedule): void {
+  scheduleHourly(schedule: Schedule, affirmation: Affirmation): void {
     let luxonTime = this.getTimeFromString(schedule);
 
     if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
@@ -108,8 +118,8 @@ export class NotificationSchedulingService {
 
     LocalNotifications.schedule({
       notifications: [{
-        title: 'Affirmy',
-        body: 'Hey, it is hourly Affirmy!',
+        title: affirmation.title,
+        body: affirmation.text,
         id: this.generateNotificationId(schedule),
         schedule: { at: luxonTime.toJSDate(), every: 'hour' },
         sound: undefined,

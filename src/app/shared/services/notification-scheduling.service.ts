@@ -75,19 +75,19 @@ export class NotificationSchedulingService {
         weekday: this.getWeekdayNumber(weekDay),
       });
 
-      if (scheduleDate.toMillis() <= Date.now()) {
+      if (scheduleDate.toMillis() <= DateTime.local().toMillis()) {
         scheduleDate = scheduleDate.plus({day: 1});
       }
 
       // TODO: Use 'repeat week' here
-      console.log('SCHEDULING FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
+      console.log('SCHEDULING DAILY FOR', scheduleDate.toJSDate(), this.generateNotificationId(schedule));
 
       LocalNotifications.schedule({
         notifications: [{
           title: 'Affirmy',
           body: 'Hey, it is daily Affirmy!',
           id: this.generateNotificationId(schedule),
-          schedule: { at: scheduleDate.toJSDate(), every: 'week' },
+          schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week' },
           sound: undefined,
           attachments: undefined,
           actionTypeId: '',
@@ -100,12 +100,11 @@ export class NotificationSchedulingService {
   scheduleHourly(schedule: Schedule): void {
     let luxonTime = this.getTimeFromString(schedule);
 
-    if (luxonTime.toMillis() <= Date.now()) {
+    if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
       luxonTime = luxonTime.plus({day: 1});
     }
 
-    // TODO: Use every: minutes = 60 * hourlyInterval
-    console.log('SCHEDULING FOR', luxonTime.toJSDate(), this.generateNotificationId(schedule));
+    console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(schedule));
 
     LocalNotifications.schedule({
       notifications: [{
@@ -131,7 +130,7 @@ export class NotificationSchedulingService {
     if (!luxonTime.isValid) {
       luxonTime = DateTime.fromFormat(schedule.scheduleTime, 'T');
     }
-    console.log('LUXON TIME', luxonTime);
+    console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
     return luxonTime;
   }
 

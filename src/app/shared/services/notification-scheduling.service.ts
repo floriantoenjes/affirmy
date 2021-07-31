@@ -45,7 +45,7 @@ export class NotificationSchedulingService {
   cancelNotification(schedule: Schedule): Promise<void> {
 
     if (schedule.scheduleType === ScheduleType.DAILY) {
-      let lastCancel = null;
+      let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
           lastCancel = LocalNotifications.cancel({
             notifications: [
@@ -54,8 +54,8 @@ export class NotificationSchedulingService {
               }
             ]
           });
-          return lastCancel;
         }
+      return lastCancel;
     }
 
     return LocalNotifications.cancel({
@@ -112,7 +112,7 @@ export class NotificationSchedulingService {
           title: affirmation.title,
           body: affirmation.text,
           id: +`${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`,
-          schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week' },
+          schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week', count: 1, repeats: true },
           sound: undefined,
           attachments: undefined,
           actionTypeId: '',
@@ -136,7 +136,7 @@ export class NotificationSchedulingService {
         title: affirmation.title,
         body: affirmation.text,
         id: this.generateNotificationId(schedule),
-        schedule: { at: luxonTime.toJSDate(), every: 'hour' },
+        schedule: { at: luxonTime.toJSDate(), every: 'hour', count: schedule.hourlyInterval, repeats: true },
         sound: undefined,
         attachments: undefined,
         actionTypeId: '',

@@ -1,27 +1,38 @@
-# Affirmy
+# Affirmy App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4.
+An app to create affirmations or reminders for oneself with complex scheduling options,
+offline storage and synchronization.
 
-## Development server
+## Functionality
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Users can...
+* Register and sign in into the app.
+* Create affirmations, edit, and delete affirmations.
+* Schedule affirmations.
+* Choose to schedule those affirmations daily or hourly.
+* Choose on which days/hours and in what interval they should be reminded.
+* Synchronize their affirmations list with the server, to access them from any device.
 
-## Code scaffolding
+## Technical Details
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The frontend...
+* Is written in TypeScript using the Angular 11 framework and makes use of the Redux pattern by integrating
+ngrx-store.
+* Styling is done using Tailwind CSS and the Angular Material Library.
+* Persists user data on the device using the PouchDb NoSQL database.
+  
+The backend...
+* Has an authorization server written in .NET 5.0 using the Identity Framework.
+* Uses a CouchDb server to synchronize the local PouchDb database with the offline storage on the device.
 
-## Build
+Deployment...
+* Of the App is cross-platform, which is done by using the CapacitorJS wrapper, to make
+  functions of the device, like local notifications available to the app.
+* Of the backend is done on via Docker Compose.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Screenshots
+![](readme_images/1_list.png)
+![](readme_images/2_edit.png)
+![](readme_images/3_detail.png)
+![](readme_images/4_scheduling.png)
+![](readme_images/5_time.png)

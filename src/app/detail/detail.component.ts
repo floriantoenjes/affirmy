@@ -5,11 +5,10 @@ import {Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
-import {deleteAffirmation} from '../actions/affirmation.actions';
+import {deleteAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
 import {Schedule} from '../shared/models/Schedule';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {tap} from 'rxjs/operators';
-import {startUpdateSchedule, updateSchedule} from '../actions/schedule.actions';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.component';
@@ -55,7 +54,10 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  changeActive($event: MatSlideToggleChange, schedule: Schedule): void {
-    this.store.dispatch(startUpdateSchedule({schedule: {...schedule, active: $event.checked }}));
+  changeActive($event: MatSlideToggleChange, affirmation: Affirmation): void {
+    if ($event.checked) {
+      affirmation.scheduled = true;
+    }
+    this.store.dispatch(startUpdateAffirmation({affirmation}));
   }
 }

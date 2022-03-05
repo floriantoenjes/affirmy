@@ -80,6 +80,7 @@ export class ScheduleComponent implements OnInit {
         return;
       }
       console.log('CREATE SCHEDULE');
+      console.log(this.affirmation);
       const newSchedule = this.affirmation.schedule(
         this.selectedType,
         this.scheduleDays,

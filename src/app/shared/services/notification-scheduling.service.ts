@@ -106,10 +106,7 @@ export class NotificationSchedulingService {
     const scheduleModel = new Schedule(affirmation.scheduleModel) as DailySchedule;
     const scheduleDays = affirmation.scheduleDaily();
 
-    console.log(scheduleModel.getWeekdayNumber('Monday'));
-
     for (const scheduleDate of scheduleDays) {
-
       console.log('SCHEDULING DAILY FOR',
         scheduleDate.toJSDate(),
         +`${this.generateNotificationId(scheduleModel)}${scheduleModel.getWeekdayNumber(scheduleDate.weekdayLong)}`
@@ -136,7 +133,6 @@ export class NotificationSchedulingService {
     }
 
     const scheduleModel = affirmation.scheduleModel as HourlySchedule;
-
     const luxonTime = affirmation.scheduleHourly()[0];
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));

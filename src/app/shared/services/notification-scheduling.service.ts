@@ -89,6 +89,9 @@ export class NotificationSchedulingService {
                   case ScheduleType.HOURLY:
                     this.scheduleHourly(affirmation);
                     break;
+
+                  default:
+                    throw new Error(`Unknown schedule type: ${aff.scheduleModel.scheduleType}`);
                 }
               }
             );

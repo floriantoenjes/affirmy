@@ -21,7 +21,7 @@ import {MatListOption} from '@angular/material/list';
 export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
-  affirmationId: string | undefined;
+  affirmation: Affirmation | undefined;
   schedule: Schedule | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
@@ -40,7 +40,7 @@ export class ScheduleComponent implements OnInit {
 
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
-      tap(af => this.affirmationId = af?._id)
+      tap(af => this.affirmation = af)
     );
 
     this.affirmation$.pipe(
@@ -76,13 +76,11 @@ export class ScheduleComponent implements OnInit {
       } as Schedule;
       this.store.dispatch(startUpdateSchedule({schedule: updatedSchedule}));
     } else {
-      if (!this.affirmationId) {
+      if (!this.affirmation) {
         return;
       }
       console.log('CREATE SCHEDULE');
-      const newSchedule = new Schedule(
-        this.affirmationId,
-        true,
+      const newSchedule = this.affirmation.schedule(
         this.selectedType,
         this.scheduleDays,
         this.form.get('time')?.value,

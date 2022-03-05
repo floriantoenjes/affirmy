@@ -9,17 +9,14 @@ export class Schedule {
   // tslint:disable-next-line:variable-name
   _rev = '';
   affirmationId: string;
-  active: boolean;
   scheduleType: ScheduleType;
   scheduleDays: string[];
   scheduleTime: string;
   hourlyInterval: number | undefined;
 
 
-  constructor(affirmationId: string, active: boolean,
-              scheduleType: ScheduleType, scheduleDays: string[], scheduleTime: string) {
+  constructor(affirmationId: string, scheduleType: ScheduleType, scheduleDays: string[], scheduleTime: string) {
     this.affirmationId = affirmationId;
-    this.active = active;
     this.scheduleType = scheduleType;
     this.scheduleDays = scheduleDays;
     this.scheduleTime = scheduleTime;

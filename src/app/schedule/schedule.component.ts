@@ -11,6 +11,8 @@ import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
 import {Affirmation} from '../shared/models/Affirmation';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
+import {DailySchedule} from '../shared/models/DailySchedule';
+import {HourlySchedule} from '../shared/models/HourlySchedule';
 
 @Component({
   selector: 'app-schedule',
@@ -33,7 +35,7 @@ export class ScheduleComponent implements OnInit {
   changed = false;
 
   form: FormGroup = new FormGroup({
-    type: new FormControl(ScheduleType.DAILY),
+    type: new FormControl(typeof DailySchedule),
     time: new FormControl(),
     hourlyInterval: new FormControl(),
   });
@@ -45,16 +47,21 @@ export class ScheduleComponent implements OnInit {
 
     this.affirmation$.pipe(
       tap(affirmation => {
-        const schedule = affirmation?.scheduleModel;
-        if (schedule) {
-          console.log('RESULT', schedule.scheduleType);
-          this.form.patchValue({time: schedule.scheduleTime, type: schedule.scheduleType});
-          this.selectedType = schedule.scheduleType;
-          this.form.get('hourlyInterval')?.patchValue(schedule.hourlyInterval);
-          this.scheduleDays = schedule.scheduleDays;
-          this.originalScheduleDays = schedule.scheduleDays;
+        if (affirmation?.scheduleModel) {
+          this.form.patchValue({time: affirmation.scheduleModel.scheduleTime});
+
+          if (affirmation?.scheduleModel?.scheduleType === ScheduleType.DAILY) {
+            const schedule = affirmation.scheduleModel as DailySchedule;
+            this.selectedType = ScheduleType.DAILY;
+            this.scheduleDays = schedule.scheduleDays;
+            this.originalScheduleDays = schedule.scheduleDays;
+          } else if (affirmation.scheduleModel.scheduleType === ScheduleType.HOURLY) {
+            const schedule = affirmation.scheduleModel as HourlySchedule;
+            this.selectedType = ScheduleType.HOURLY;
+            this.form.get('hourlyInterval')?.patchValue(schedule.hourlyInterval);
+          }
         }
-        this.schedule = schedule;
+        this.schedule = affirmation?.scheduleModel;
       })
     ).subscribe();
   }
@@ -64,35 +71,34 @@ export class ScheduleComponent implements OnInit {
 
   createSchedule(): void {
     console.log('CREATE OR UPDATE', this.schedule?._id);
-    if (this.affirmation?.scheduleModel) {
-      console.log('UPDATE SCHEDULE');
-      const updatedSchedule = {
-        ...this.schedule,
-        scheduleType: this.selectedType,
-        scheduleTime: this.form.get('time')?.value,
-        hourlyInterval: this.form.get('hourlyInterval')?.value
-      } as Schedule;
-      // this.store.dispatch(startUpdateSchedule({schedule: updatedSchedule}));
 
-      const updatedAffirmation = {...this.affirmation, scheduleModel: updatedSchedule} as AffirmationDto;
-
-      this.store.dispatch(startUpdateAffirmation({affirmation: updatedAffirmation}));
-    } else {
-      if (!this.affirmation) {
-        return;
-      }
-      console.log('CREATE SCHEDULE');
-      console.log(this.affirmation);
-      const updatedAffirmation = new Affirmation({...this.affirmation});
-      const newSchedule = updatedAffirmation.schedule(
-        this.selectedType,
-        this.scheduleDays,
-        this.form.get('time')?.value,
-      );
-      newSchedule.hourlyInterval = this.form.get('hourlyInterval')?.value;
-
-      this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
+    if (!this.affirmation) {
+      throw new Error('No affirmation for scheduling present!');
     }
+
+    let updatedAffirmation;
+    switch (this.selectedType) {
+        case ScheduleType.DAILY:
+          updatedAffirmation = new Affirmation({...this.affirmation});
+          updatedAffirmation.scheduleDaily(
+            this.form.get('time')?.value,
+            this.scheduleDays
+          );
+          break;
+
+        case ScheduleType.HOURLY:
+           updatedAffirmation = new Affirmation({...this.affirmation});
+           updatedAffirmation.scheduleHourly(
+            this.form.get('time')?.value,
+            this.form.get('hourlyInterval')?.value
+           );
+           break;
+
+        default:
+          throw new Error(`Unkown schedule type: ${this.selectedType} !`);
+      }
+
+    this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
     this.router.navigate(['..'], {relativeTo: this.route});
   }
 
@@ -108,7 +114,10 @@ export class ScheduleComponent implements OnInit {
   }
 
   isSelected(weekday: string): boolean {
-    return !!this.schedule?.scheduleDays.some(d => d === weekday);
+    if (this.schedule instanceof DailySchedule) {
+      return !!this.schedule?.scheduleDays.some(d => d === weekday);
+    }
+    return false;
   }
 
   selectedWeekDaysAsString(): string | undefined {
@@ -140,10 +149,12 @@ export class ScheduleComponent implements OnInit {
       return;
     }
 
-    if (formValue.type !== this.schedule?.scheduleType
+    if (formValue.type !== typeof this.schedule
       || formValue.time !== this.schedule?.scheduleTime
-      || (formValue.type === ScheduleType.HOURLY && formValue.hourlyInterval !== this.schedule?.hourlyInterval)
-      || (formValue.type === ScheduleType.DAILY && !this.arraysEqual(this.schedule?.scheduleDays, this.originalScheduleDays))) {
+      || (formValue.type === ScheduleType.HOURLY &&
+        this.schedule instanceof HourlySchedule && formValue.hourlyInterval !== this.schedule?.hourlyInterval)
+      || (formValue.type === ScheduleType.DAILY &&
+        this.schedule instanceof DailySchedule && !this.arraysEqual(this.schedule?.scheduleDays, this.originalScheduleDays))) {
       this.changed = true;
       console.log('CHANGED');
     } else {

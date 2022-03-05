@@ -8,6 +8,8 @@ import {State} from '../../reducers';
 import {getAffirmationById, getAffirmations} from '../../reducers/affirmation.reducer';
 import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
+import {DailySchedule} from '../models/DailySchedule';
+import {HourlySchedule} from '../models/HourlySchedule';
 
 const {LocalNotifications} = Plugins;
 
@@ -42,12 +44,12 @@ export class NotificationSchedulingService {
     );
   }
 
-  cancelNotification(affirmation: AffirmationDto): Promise<void> | void {
+  cancelNotification(affirmation: AffirmationDto): Promise<void> {
     const schedule = new Affirmation(affirmation).cancelSchedule();
     if (!schedule) {
-      return;
+      return new Promise(() => {});
     }
-    if (schedule.scheduleType === ScheduleType.DAILY) {
+    if (schedule instanceof DailySchedule) {
       let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
           lastCancel = LocalNotifications.cancel({
@@ -71,9 +73,7 @@ export class NotificationSchedulingService {
   }
 
   scheduleNotification(affirmation: AffirmationDto): void {
-      const result = this.cancelNotification(affirmation);
-      if (result) {
-        result.then(() => {
+        this.cancelNotification(affirmation).then(() => {
           if (affirmation.scheduled) {
             this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
               (aff) => {
@@ -94,12 +94,11 @@ export class NotificationSchedulingService {
             );
           }
         });
-      }
   }
 
   scheduleDaily(affirmation: AffirmationDto): void {
-    const schedule = affirmation.scheduleModel;
-    if (!schedule) {
+    const schedule = affirmation.scheduleModel as DailySchedule;
+    if (!schedule || schedule.scheduleType !== ScheduleType.DAILY) {
       return;
     }
 
@@ -133,8 +132,8 @@ export class NotificationSchedulingService {
   }
 
   scheduleHourly(affirmation: AffirmationDto): void {
-    const schedule = affirmation.scheduleModel;
-    if (!schedule) {
+    const schedule = affirmation.scheduleModel as HourlySchedule;
+    if (!schedule || schedule.scheduleType !== ScheduleType.HOURLY) {
       return;
     }
 

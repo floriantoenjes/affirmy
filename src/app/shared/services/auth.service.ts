@@ -1,6 +1,5 @@
-import {Injectable} from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
 import {Subject, throwError} from 'rxjs';
 import {SpinnerService} from './spinner.service';
 import {catchError, timeout} from 'rxjs/operators';
@@ -20,6 +19,12 @@ export class AuthService {
   }
 
   login(email: string, password: string): void {
+    if (isDevMode()) {
+      this.setJwt('dev');
+      this.loggedInSubject$.next(true);
+      return;
+    }
+
     this.spinnerService.startSpinner();
     this.httpClient.post(`${environment.authUrl}/login`,
       {
@@ -68,7 +73,6 @@ export class AuthService {
           return throwError('Timeout');
         })
       ).subscribe(res => {
-      const body = res.body as any;
       console.log('REGISTERED', res);
       this.spinnerService.stopSpinner();
     });

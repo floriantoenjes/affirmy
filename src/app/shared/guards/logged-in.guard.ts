@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import {AuthService} from '../services/auth.service';
@@ -21,9 +21,9 @@ export class LoggedInGuard implements CanActivate {
 
     const loggedIn = this.authService.isLoggedIn();
     let jwt = this.authService.getJwt() as any;
-    if (jwt) {
+    if (!isDevMode() && jwt) {
       jwt = this.authService.decodeJwt(jwt);
-      if (+jwt.exp < DateTime.local().toSeconds()) {
+      if (!jwt?.exp || +jwt.exp < DateTime.local().toSeconds()) {
         this.authService.logout();
         this.router.navigate(['/login']);
         return false;

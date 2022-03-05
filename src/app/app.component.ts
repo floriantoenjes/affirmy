@@ -75,10 +75,12 @@ export class AppComponent implements OnInit {
   }
 
   syncDbsManually(): void {
+    let affSyncError = false;
     this.pouchDbService.syncDbs(
       () => {
         this.store.dispatch(fetchAffirmations());
       }, () => {
+        affSyncError = true;
         this.snackBar.open('Affirmation Sync Error', 'Dismiss', {
           panelClass: ['bg-primary', 'text-center'],
           duration: 5000
@@ -91,7 +93,11 @@ export class AppComponent implements OnInit {
         });
         this.store.dispatch(fetchSchedules());
       }, () => {
-        this.snackBar.open('Schedule Sync Error', 'Dismiss', {
+        let message = 'Schedule Sync Error';
+        if (affSyncError) {
+          message = 'Global Sync Error';
+        }
+        this.snackBar.open(message, 'Dismiss', {
           panelClass: ['bg-primary', 'text-center'],
           duration: 5000
         });

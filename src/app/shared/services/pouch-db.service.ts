@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import {AuthService} from './auth.service';
 import {environment} from '../../../environments/environment';
 import {ProgressBarService} from './progress-bar.service';
@@ -42,8 +42,22 @@ export class PouchDbService {
 
     const dbUri = `${environment.pouchDbUrl}/${prefix}-${this.getDbName()}`;
 
-    pouchDb.sync(this.getRemoteDb(dbUri))
-      .then(() => {
+    let ranInTimeout = false;
+
+    if (navigator.onLine) {
+      setTimeout(() => {
+        ranInTimeout = true;
+        handler.cancel();
+        this.progressBarService.stopSpinner();
+      }, environment.dbSyncTimeoutInMs);
+    }
+
+    const handler = pouchDb.sync(this.getRemoteDb(dbUri));
+    handler.then(() => {
+        if (ranInTimeout && error) {
+          error();
+          return;
+        }
         if (success) {
           success();
         }
@@ -58,7 +72,7 @@ export class PouchDbService {
   }
 
   getRemoteDb(dbUri: string): PouchDB.Database {
-    const db = new PouchDB(dbUri, {
+    return new PouchDB(dbUri, {
       fetch: (url, opts) => {
         if (opts && this.authService.isLoggedIn()) {
           const headersWithAuth = new Headers(opts.headers);
@@ -70,15 +84,16 @@ export class PouchDbService {
         return PouchDB.fetch(url, opts);
       }
     });
-    return db;
   }
 
   getDbName(): string {
+    if (isDevMode()) {
+      return this.authService.getJwt() ?? '';
+    }
     const jwt = this.authService.getJwt();
 
     if (jwt) {
-      const dbSuffix = (this.authService.decodeJwt(jwt) as any).db;
-      return dbSuffix;
+      return (this.authService.decodeJwt(jwt) as any).db;
     }
 
     return '';

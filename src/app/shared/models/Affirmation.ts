@@ -1,4 +1,4 @@
-import {Schedule, ScheduleType} from './Schedule';
+import {Schedule} from './Schedule';
 import {AffirmationDto} from './AffirmationDto';
 import {DailySchedule} from './DailySchedule';
 import {HourlySchedule} from './HourlySchedule';
@@ -24,22 +24,7 @@ export class Affirmation extends AffirmationDto{
     this.scheduleModel = schedule;
     this.scheduled = true;
 
-    const luxonTime = this.getTimeFromString(this.scheduleModel);
-
-    const scheduleDays = [];
-    for (const weekDay of schedule.scheduleDays) {
-      let scheduleDate = luxonTime.set({
-        weekday: this.getWeekdayNumber(weekDay),
-      });
-
-      if (scheduleDate.toMillis() <= DateTime.local().toMillis()) {
-        scheduleDate = scheduleDate.plus({week: 1});
-      }
-
-      scheduleDays.push(scheduleDate);
-    }
-
-    return scheduleDays;
+    return schedule.schedule();
   }
 
   scheduleHourly(time: string, hourlyInterval: number): DateTime {
@@ -47,13 +32,7 @@ export class Affirmation extends AffirmationDto{
     this.scheduleModel = schedule;
     this.scheduled = true;
 
-    let luxonTime = this.getTimeFromString(schedule);
-
-    if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
-      luxonTime = luxonTime.plus({day: 1});
-    }
-
-    return luxonTime;
+    return schedule.schedule();
   }
 
   cancelSchedule(): Schedule | void {
@@ -77,24 +56,4 @@ export class Affirmation extends AffirmationDto{
     return luxonTime;
   }
 
-  getWeekdayNumber(weekday: string): number {
-    switch (weekday) {
-      case 'Monday':
-        return 1;
-      case 'Tuesday':
-        return 2;
-      case 'Wednesday':
-        return 3;
-      case 'Thursday':
-        return 4;
-      case 'Friday':
-        return 5;
-      case 'Saturday':
-        return 6;
-      case 'Sunday':
-        return 7;
-      default:
-        return 0;
-    }
-  }
 }

@@ -20,21 +20,19 @@ export class NotificationSchedulingService {
 
   constructor(private store: Store<State>) { }
 
-  clearAndInitNotifications(): void {
-    LocalNotifications.getPending().then(pending => {
-      if (pending.notifications.length > 0) {
-        LocalNotifications.cancel(pending).then(() => this.initScheduleNotifications());
-      } else {
-        this.initScheduleNotifications();
-      }
-    });
+  async clearAndInitNotifications(): Promise<void> {
+    const pending = await LocalNotifications.getPending();
+    if (pending.notifications.length > 0) {
+      LocalNotifications.cancel(pending).then(() => this.initScheduleNotifications());
+    } else {
+      this.initScheduleNotifications();
+    }
   }
 
   initScheduleNotifications(): void {
     console.log('INIT SCHEDULING');
 
-    this.store.select(getAffirmations).pipe(take(1)).subscribe(
-      affirmations => {
+    this.store.select(getAffirmations).pipe(take(1)).subscribe(affirmations => {
         console.log('SELECTOR SUBSCRIPTION', affirmations.length);
 
         for (const affirmation of affirmations) {

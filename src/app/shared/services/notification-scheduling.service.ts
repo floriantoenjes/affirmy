@@ -72,31 +72,30 @@ export class NotificationSchedulingService {
     });
   }
 
-  scheduleNotification(affirmation: Affirmation): void {
-        this.cancelNotification(affirmation).then(() => {
-          if (affirmation.scheduled) {
-            this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
-              (aff) => {
-                if (!aff?.scheduleModel) {
-                  return;
-                }
+  async scheduleNotification(affirmation: Affirmation): Promise<void> {
+    await this.cancelNotification(affirmation);
+    if (affirmation.scheduled) {
+        this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
+          (aff) => {
+            if (!aff?.scheduleModel) {
+              return;
+            }
 
-                switch (aff.scheduleModel.scheduleType) {
-                  case ScheduleType.DAILY:
-                    this.scheduleDaily(affirmation);
-                    break;
+            switch (aff.scheduleModel.scheduleType) {
+              case ScheduleType.DAILY:
+                this.scheduleDaily(affirmation);
+                break;
 
-                  case ScheduleType.HOURLY:
-                    this.scheduleHourly(affirmation);
-                    break;
+              case ScheduleType.HOURLY:
+                this.scheduleHourly(affirmation);
+                break;
 
-                  default:
-                    throw new Error(`Unknown schedule type: ${aff.scheduleModel.scheduleType}`);
-                }
-              }
-            );
+              default:
+                throw new Error(`Unknown schedule type: ${aff.scheduleModel.scheduleType}`);
+            }
           }
-        });
+        );
+      }
   }
 
   scheduleDaily(affirmation: Affirmation): void {

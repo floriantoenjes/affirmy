@@ -6,6 +6,7 @@ import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
 import {getAffirmationById, getAffirmations} from '../../reducers/affirmation.reducer';
+import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
 
 const {LocalNotifications} = Plugins;
@@ -41,8 +42,11 @@ export class NotificationSchedulingService {
     );
   }
 
-  cancelNotification(affirmation: Affirmation): Promise<void> {
-    const schedule = affirmation.cancelSchedule();
+  cancelNotification(affirmation: AffirmationDto): Promise<void> | void {
+    const schedule = new Affirmation(affirmation).cancelSchedule();
+    if (!schedule) {
+      return;
+    }
     if (schedule.scheduleType === ScheduleType.DAILY) {
       let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
@@ -66,32 +70,38 @@ export class NotificationSchedulingService {
     });
   }
 
-  scheduleNotification(affirmation: Affirmation): void {
-      this.cancelNotification(affirmation).then(() => {
-        if (affirmation.scheduled) {
-          this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
-            (aff) => {
-              if (!aff) {
-                return;
-              }
+  scheduleNotification(affirmation: AffirmationDto): void {
+      const result = this.cancelNotification(affirmation);
+      if (result) {
+        result.then(() => {
+          if (affirmation.scheduled) {
+            this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
+              (aff) => {
+                if (!aff?.scheduleModel) {
+                  return;
+                }
 
-              switch (affirmation.scheduleModel.scheduleType) {
-                case ScheduleType.DAILY:
-                  this.scheduleDaily(affirmation);
-                  break;
+                switch (aff.scheduleModel.scheduleType) {
+                  case ScheduleType.DAILY:
+                    this.scheduleDaily(affirmation);
+                    break;
 
-                case ScheduleType.HOURLY:
-                  this.scheduleHourly(affirmation);
-                  break;
+                  case ScheduleType.HOURLY:
+                    this.scheduleHourly(affirmation);
+                    break;
+                }
               }
-            }
-          );
-        }
-      });
+            );
+          }
+        });
+      }
   }
 
-  scheduleDaily(affirmation: Affirmation): void {
+  scheduleDaily(affirmation: AffirmationDto): void {
     const schedule = affirmation.scheduleModel;
+    if (!schedule) {
+      return;
+    }
 
     const luxonTime = this.getTimeFromString(schedule);
 
@@ -122,8 +132,11 @@ export class NotificationSchedulingService {
     }
   }
 
-  scheduleHourly(affirmation: Affirmation): void {
+  scheduleHourly(affirmation: AffirmationDto): void {
     const schedule = affirmation.scheduleModel;
+    if (!schedule) {
+      return;
+    }
 
     let luxonTime = this.getTimeFromString(schedule);
 

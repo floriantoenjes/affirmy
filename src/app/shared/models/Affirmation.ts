@@ -1,18 +1,19 @@
 import {Schedule, ScheduleType} from './Schedule';
+import {AffirmationDto} from './AffirmationDto';
 
-export class Affirmation {
+export class Affirmation extends AffirmationDto{
   // tslint:disable-next-line:variable-name
   _id = new Date().toISOString();
   // tslint:disable-next-line:variable-name
   _rev = '';
-  title: string;
-  text: string;
+  title!: string;
+  text!: string;
   scheduled = false;
-  scheduleModel!: Schedule;
+  scheduleModel: Schedule | undefined;
 
-  constructor(title: string, text: string) {
-    this.title = title;
-    this.text = text;
+  constructor(affirmationDto: AffirmationDto) {
+    super(affirmationDto.title, affirmationDto.text);
+    Object.assign(this, affirmationDto);
   }
 
   schedule(type: ScheduleType, days: string[], time: string): Schedule {
@@ -22,9 +23,10 @@ export class Affirmation {
     return this.scheduleModel;
   }
 
-  cancelSchedule(): Schedule {
+  cancelSchedule(): Schedule | void {
     this.scheduled = false;
-
-    return this.scheduleModel;
+    if (this.scheduleModel) {
+      return this.scheduleModel;
+    }
   }
 }

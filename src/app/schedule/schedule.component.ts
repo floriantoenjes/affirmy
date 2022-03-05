@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {Affirmation} from '../shared/models/Affirmation';
+import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {State} from '../reducers';
 import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
@@ -11,6 +11,7 @@ import {startCreateSchedule, startUpdateSchedule} from '../actions/schedule.acti
 import {map, mergeMap, tap} from 'rxjs/operators';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {MatListOption} from '@angular/material/list';
+import {Affirmation} from '../shared/models/Affirmation';
 
 @Component({
   selector: 'app-schedule',
@@ -20,8 +21,8 @@ import {MatListOption} from '@angular/material/list';
 })
 export class ScheduleComponent implements OnInit {
 
-  affirmation$: Observable<Affirmation | undefined>;
-  affirmation: Affirmation | undefined;
+  affirmation$: Observable<AffirmationDto | undefined>;
+  affirmation: AffirmationDto | undefined;
   schedule: Schedule | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
@@ -81,7 +82,7 @@ export class ScheduleComponent implements OnInit {
       }
       console.log('CREATE SCHEDULE');
       console.log(this.affirmation);
-      const newSchedule = this.affirmation.schedule(
+      const newSchedule = new Affirmation(this.affirmation).schedule(
         this.selectedType,
         this.scheduleDays,
         this.form.get('time')?.value,

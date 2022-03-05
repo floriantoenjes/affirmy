@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {createAffirmation, startCreateAffirmation, startUpdateAffirmation, updateAffirmation} from '../actions/affirmation.actions';
-import {Affirmation} from '../shared/models/Affirmation';
+import {startCreateAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
+import {AffirmationDto} from '../shared/models/AffirmationDto';
 
 @Component({
   selector: 'app-create',
@@ -17,7 +17,7 @@ export class CreateComponent implements OnInit {
   edit = false;
 
   @Input()
-  affirmation: Affirmation | undefined;
+  affirmation: AffirmationDto | undefined;
 
   changed = false;
 
@@ -43,7 +43,7 @@ export class CreateComponent implements OnInit {
 
   createAffirmation(): void {
     if (this.form.valid) {
-      const newAffirmation = new Affirmation(
+      const newAffirmation = new AffirmationDto(
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );

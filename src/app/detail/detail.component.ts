@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Affirmation} from '../shared/models/Affirmation';
+import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
@@ -20,7 +20,7 @@ import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.c
 })
 export class DetailComponent implements OnInit {
 
-  affirmation$: Observable<Affirmation | undefined>;
+  affirmation$: Observable<AffirmationDto | undefined>;
   schedule$: Observable<Schedule | undefined>;
 
   constructor(private route: ActivatedRoute, private dialog: MatDialog, public router: Router, private store: Store<State>) {
@@ -31,7 +31,7 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private getCurrentAffirmation(): Observable<Affirmation | undefined> {
+  private getCurrentAffirmation(): Observable<AffirmationDto | undefined> {
     return this.store.select(getAffirmationById, {id: this.route.snapshot.paramMap.get('id')}).pipe(
       tap(af => this.schedule$ = this.store.select(getScheduleById, {id: af?._id}))
     );
@@ -45,7 +45,7 @@ export class DetailComponent implements OnInit {
     this.router.navigate(['schedule'], {relativeTo: this.route});
   }
 
-  delete(affirmation: Affirmation): void {
+  delete(affirmation: AffirmationDto): void {
     this.dialog.open(ConfirmDialogComponent, {width: '300px'}).afterClosed().subscribe(result => {
       if (result === true) {
         this.store.dispatch(deleteAffirmation({affirmation}));
@@ -54,7 +54,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  changeActive($event: MatSlideToggleChange, affirmation: Affirmation): void {
+  changeActive($event: MatSlideToggleChange, affirmation: AffirmationDto): void {
     if ($event.checked) {
       affirmation.scheduled = true;
     }

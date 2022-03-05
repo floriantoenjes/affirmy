@@ -8,7 +8,7 @@ import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {PouchDbService} from '../shared/services/pouch-db.service';
-import {Affirmation} from '../shared/models/Affirmation';
+import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AffirmationEffects {
       const responseObs = from(this.db.put({...action.affirmation}));
       return responseObs.pipe(
         map(response => {
-          return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev} as Affirmation});
+          return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev} as AffirmationDto});
         })
       );
     }),
@@ -53,7 +53,7 @@ export class AffirmationEffects {
       return responseObs.pipe(
         map(response => {
           const rev = response.rev;
-          const updatedAffirmation = {...action.affirmation, _rev: rev} as Affirmation;
+          const updatedAffirmation = {...action.affirmation, _rev: rev} as AffirmationDto;
 
           this.scheduleService.scheduleNotification(updatedAffirmation);
 
@@ -67,7 +67,7 @@ export class AffirmationEffects {
   $deleteAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
     map(action => action.affirmation),
-    tap((affirmation: Affirmation) => {
+    tap((affirmation: AffirmationDto) => {
       this.db.remove(affirmation);
       if (affirmation.scheduled) {
         console.log('REMOVING SCHEDULE');

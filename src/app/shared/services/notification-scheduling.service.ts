@@ -41,7 +41,8 @@ export class NotificationSchedulingService {
     );
   }
 
-  cancelNotification(schedule: Schedule): Promise<void> {
+  cancelNotification(affirmation: Affirmation): Promise<void> {
+    const schedule = affirmation.cancelSchedule();
     if (schedule.scheduleType === ScheduleType.DAILY) {
       let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
@@ -66,28 +67,27 @@ export class NotificationSchedulingService {
   }
 
   scheduleNotification(affirmation: Affirmation): void {
-    // console.log('SCHEDULE ACTIVE?', schedule);
-    if (affirmation.scheduled) {
+      this.cancelNotification(affirmation).then(() => {
+        if (affirmation.scheduled) {
+          this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
+            (aff) => {
+              if (!aff) {
+                return;
+              }
 
-      this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
-        (aff) => {
-          if (!aff) {
-            return;
-          }
+              switch (affirmation.scheduleModel.scheduleType) {
+                case ScheduleType.DAILY:
+                  this.scheduleDaily(affirmation);
+                  break;
 
-          switch (affirmation.scheduleModel.scheduleType) {
-
-            case ScheduleType.DAILY:
-              this.scheduleDaily(affirmation);
-              break;
-
-            case ScheduleType.HOURLY:
-              this.scheduleHourly(affirmation);
-              break;
-          }
+                case ScheduleType.HOURLY:
+                  this.scheduleHourly(affirmation);
+                  break;
+              }
+            }
+          );
         }
-      );
-    }
+      });
   }
 
   scheduleDaily(affirmation: Affirmation): void {

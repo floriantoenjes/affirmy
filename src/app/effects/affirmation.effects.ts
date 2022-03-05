@@ -2,14 +2,14 @@ import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import * as AffirmationActions from '../actions/affirmation.actions';
 import {createAffirmation, updateAffirmation} from '../actions/affirmation.actions';
-import {map, mergeMap, tap, withLatestFrom} from 'rxjs/operators';
-import {from, of} from 'rxjs';
+import {map, mergeMap, tap} from 'rxjs/operators';
+import {from} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {deleteSchedule} from '../actions/schedule.actions';
-import {getScheduleById} from '../reducers/schedule.reducer';
 import {PouchDbService} from '../shared/services/pouch-db.service';
+import {Affirmation} from '../shared/models/Affirmation';
+import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
 
 @Injectable()
 export class AffirmationEffects {
@@ -39,7 +39,7 @@ export class AffirmationEffects {
       const responseObs = from(this.db.put({...action.affirmation}));
       return responseObs.pipe(
         map(response => {
-          return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev}});
+          return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev} as Affirmation});
         })
       );
     }),
@@ -53,7 +53,11 @@ export class AffirmationEffects {
       return responseObs.pipe(
         map(response => {
           const rev = response.rev;
-          return updateAffirmation({affirmation: {...action.affirmation, _rev: rev}});
+          const updatedAffirmation = {...action.affirmation, _rev: rev} as Affirmation;
+
+          this.scheduleService.scheduleNotification(updatedAffirmation);
+
+          return updateAffirmation({affirmation: updatedAffirmation});
         })
       );
     }),
@@ -63,19 +67,11 @@ export class AffirmationEffects {
   $deleteAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.deleteAffirmation),
     map(action => action.affirmation),
-    mergeMap((affirmation) =>
-        of(affirmation).pipe(
-          withLatestFrom(
-            this.store.select(getScheduleById, {id: affirmation._id})
-          )
-        ),
-      (affirmation, schedule) => schedule
-    ),
-    tap(([affirmation, schedule]) => {
+    tap((affirmation: Affirmation) => {
       this.db.remove(affirmation);
-      if (schedule) {
+      if (affirmation.scheduled) {
         console.log('REMOVING SCHEDULE');
-        this.store.dispatch(deleteSchedule({schedule}));
+        this.scheduleService.cancelNotification(affirmation);
       }
       this.dbSync();
     }),
@@ -84,7 +80,8 @@ export class AffirmationEffects {
   constructor(
     private actions$: Actions,
     private pouchDbService: PouchDbService,
-    private store: Store<State>
+    private store: Store<State>,
+    private scheduleService: NotificationSchedulingService
   ) {
   }
 

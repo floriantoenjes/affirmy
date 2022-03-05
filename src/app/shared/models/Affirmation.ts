@@ -22,7 +22,9 @@ export class Affirmation {
     return this.scheduleModel;
   }
 
-  cancelSchedule(): void {
+  cancelSchedule(): Schedule {
     this.scheduled = false;
+
+    return this.scheduleModel;
   }
 }

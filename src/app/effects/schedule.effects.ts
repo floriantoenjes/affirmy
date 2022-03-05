@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, createEffect, ofType} from '@ngrx/effects';
 import {map, mergeMap, tap} from 'rxjs/operators';
-import {from, of} from 'rxjs';
+import {from} from 'rxjs';
 import * as ScheduleActions from '../actions/schedule.actions';
 import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
@@ -53,7 +53,6 @@ export class ScheduleEffects {
 
   $createdSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.createSchedule),
-    tap(action => this.scheduleService.scheduleNotification(action.schedule))
   ), {dispatch: false});
 
   $updateSchedule = createEffect(() => this.actions$.pipe(
@@ -76,9 +75,6 @@ export class ScheduleEffects {
 
   $updatedSchedule = createEffect(() => this.actions$.pipe(
     ofType(ScheduleActions.updateSchedule),
-    tap(action => this.scheduleService.cancelNotification(action.schedule).then(() => {
-      this.scheduleService.scheduleNotification(action.schedule);
-    }))
   ), {dispatch: false});
 
   $deleteSchedule = createEffect(() => this.actions$.pipe(
@@ -89,7 +85,6 @@ export class ScheduleEffects {
       const scheduleDt = DateTime.fromISO(schedule.scheduleTime);
       console.log('Rescheduling...', scheduleDt.toISOTime());
 
-      this.scheduleService.cancelNotification(schedule);
       this.db.remove(schedule);
     }),
     tap(() => this.dbSync())

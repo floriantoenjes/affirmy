@@ -1,16 +1,16 @@
-import {Schedule} from '../shared/models/Schedule';
+import {ScheduleDto} from '../shared/models/ScheduleDto';
 import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
 import {createSchedule, deleteSchedule, loadSchedules, updateSchedule} from '../actions/schedule.actions';
 import {State} from './index';
 
 export interface ScheduleState {
-  schedules: Schedule[];
+  schedules: ScheduleDto[];
 }
 
 export const initialState = {
   schedules: [
     // new Schedule('1', true, ScheduleType.DAILY, [], '18:45')
-  ] as Schedule[]
+  ] as ScheduleDto[]
 };
 
 const scheduleReducer = createReducer(
@@ -42,5 +42,5 @@ export const getSchedules = createSelector(getSchedulesState, (scheduleState: Sc
 
 export const getScheduleById = createSelector(
   getSchedules,
-  (schedules: Schedule[], props: any) => schedules.find(sc => sc.affirmationId === props.id)
+  (schedules: ScheduleDto[], props: any) => schedules.find(sc => sc.affirmationId === props.id)
 );

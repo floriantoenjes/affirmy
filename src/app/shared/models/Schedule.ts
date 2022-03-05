@@ -1,23 +1,15 @@
+import {ScheduleDto} from './ScheduleDto';
 import {DateTime} from 'luxon';
 
-export enum ScheduleType {
-  DAILY,
-  HOURLY
-}
 
-export class Schedule {
-  // tslint:disable-next-line:variable-name
-  _id = new Date().toISOString();
-  // tslint:disable-next-line:variable-name
-  _rev = '';
-  affirmationId: string;
-  scheduleTime: string;
-  scheduleType: ScheduleType;
+export class Schedule extends ScheduleDto {
 
-  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string) {
-    this.scheduleType = scheduleType;
-    this.affirmationId = affirmationId;
-    this.scheduleTime = scheduleTime;
+  constructor(scheduleDto: ScheduleDto) {
+    super(scheduleDto.scheduleType, scheduleDto.affirmationId, scheduleDto.scheduleTime);
+  }
+
+  schedule(): DateTime[] {
+    throw new Error('No implementation');
   }
 
   getTimeFromString(): DateTime {

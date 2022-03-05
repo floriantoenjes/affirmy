@@ -6,7 +6,7 @@ import {State} from '../reducers';
 import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Schedule, ScheduleType} from '../shared/models/Schedule';
+import {ScheduleDto, ScheduleType} from '../shared/models/ScheduleDto';
 import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
 import {Affirmation} from '../shared/models/Affirmation';
@@ -24,7 +24,7 @@ export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<AffirmationDto | undefined>;
   affirmation: AffirmationDto | undefined;
-  schedule: Schedule | undefined;
+  schedule: ScheduleDto | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
@@ -96,7 +96,9 @@ export class ScheduleComponent implements OnInit {
 
         default:
           throw new Error(`Unkown schedule type: ${this.selectedType} !`);
-      }
+    }
+
+    console.error(updatedAffirmation.scheduleModel, 'SCHED DAYS', this.scheduleDays);
 
     this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
     this.router.navigate(['..'], {relativeTo: this.route});
@@ -105,7 +107,7 @@ export class ScheduleComponent implements OnInit {
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
     const weekDays = selectedWeekDays.map(swd => swd.value);
     if (this.schedule) {
-      this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
+      this.schedule = {...this.schedule, scheduleDays: weekDays} as ScheduleDto;
     }
     this.showDaySelect = false;
     this.scheduleDays = weekDays;

@@ -1,15 +1,16 @@
-import {Schedule, ScheduleType} from './Schedule';
+import {ScheduleDto} from './ScheduleDto';
 import {DateTime} from 'luxon';
+import {Schedule} from './Schedule';
 
 export class DailySchedule extends Schedule {
   scheduleDays: string[];
 
-  constructor(affirmationId: string, scheduleTime: string, scheduleDays: string[]) {
-    super(ScheduleType.DAILY, affirmationId, scheduleTime);
+  constructor(scheduleDto: ScheduleDto, scheduleDays: string[]) {
+    super(scheduleDto);
     this.scheduleDays = scheduleDays;
   }
 
-  schedule(): DateTime[] | void {
+  schedule(): DateTime[] {
     const luxonTime = this.getTimeFromString();
 
     const scheduleDays = [];

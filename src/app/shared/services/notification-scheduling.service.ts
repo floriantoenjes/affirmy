@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {take} from 'rxjs/operators';
-import {Schedule, ScheduleType} from '../models/Schedule';
-import {DateTime} from 'luxon';
+import {ScheduleDto, ScheduleType} from '../models/ScheduleDto';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
@@ -10,6 +9,7 @@ import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
 import {DailySchedule} from '../models/DailySchedule';
 import {HourlySchedule} from '../models/HourlySchedule';
+import {Schedule} from '../models/Schedule';
 
 const {LocalNotifications} = Plugins;
 
@@ -38,7 +38,7 @@ export class NotificationSchedulingService {
         console.log('SELECTOR SUBSCRIPTION', affirmations.length);
 
         for (const affirmation of affirmations) {
-          this.scheduleNotification(affirmation);
+          this.scheduleNotification(new Affirmation(affirmation));
         }
       }
     );
@@ -55,7 +55,7 @@ export class NotificationSchedulingService {
           lastCancel = LocalNotifications.cancel({
             notifications: [
               {
-                id: `${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`
+                id: `${this.generateNotificationId(schedule)}${schedule.getWeekdayNumber(weekDay)}`
               }
             ]
           });
@@ -72,7 +72,7 @@ export class NotificationSchedulingService {
     });
   }
 
-  scheduleNotification(affirmation: AffirmationDto): void {
+  scheduleNotification(affirmation: Affirmation): void {
         this.cancelNotification(affirmation).then(() => {
           if (affirmation.scheduled) {
             this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
@@ -99,31 +99,28 @@ export class NotificationSchedulingService {
         });
   }
 
-  scheduleDaily(affirmation: AffirmationDto): void {
-    const schedule = affirmation.scheduleModel as DailySchedule;
-    if (!schedule || schedule.scheduleType !== ScheduleType.DAILY) {
+  scheduleDaily(affirmation: Affirmation): void {
+    if (!affirmation.scheduleModel) {
       return;
     }
 
-    const luxonTime = this.getTimeFromString(schedule);
+    const scheduleModel = new Schedule(affirmation.scheduleModel) as DailySchedule;
+    const scheduleDays = affirmation.scheduleDaily();
 
-    for (const weekDay of schedule.scheduleDays) {
-      let scheduleDate = luxonTime.set({
-        weekday: this.getWeekdayNumber(weekDay),
-      });
+    console.log(scheduleModel.getWeekdayNumber('Monday'));
 
-      if (scheduleDate.toMillis() <= DateTime.local().toMillis()) {
-        scheduleDate = scheduleDate.plus({week: 1});
-      }
+    for (const scheduleDate of scheduleDays) {
 
-      // TODO: Use 'repeat week' here
-      console.log('SCHEDULING DAILY FOR', scheduleDate.toJSDate(), +`${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`);
+      console.log('SCHEDULING DAILY FOR',
+        scheduleDate.toJSDate(),
+        +`${this.generateNotificationId(scheduleModel)}${scheduleModel.getWeekdayNumber(scheduleDate.weekdayLong)}`
+      );
 
       LocalNotifications.schedule({
         notifications: [{
           title: affirmation.title,
           body: affirmation.text,
-          id: +`${this.generateNotificationId(schedule)}${this.getWeekdayNumber(weekDay)}`,
+          id: +`${this.generateNotificationId(scheduleModel)}${scheduleModel.getWeekdayNumber(scheduleDate.weekdayLong)}`,
           schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week', count: 1, repeats: true },
           sound: undefined,
           attachments: undefined,
@@ -134,26 +131,23 @@ export class NotificationSchedulingService {
     }
   }
 
-  scheduleHourly(affirmation: AffirmationDto): void {
-    const schedule = affirmation.scheduleModel as HourlySchedule;
-    if (!schedule || schedule.scheduleType !== ScheduleType.HOURLY) {
+  scheduleHourly(affirmation: Affirmation): void {
+    if (!affirmation.scheduleModel) {
       return;
     }
 
-    let luxonTime = this.getTimeFromString(schedule);
+    const scheduleModel = affirmation.scheduleModel as HourlySchedule;
 
-    if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
-      luxonTime = luxonTime.plus({day: 1});
-    }
+    const luxonTime = affirmation.scheduleHourly()[0];
 
-    console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(schedule));
+    console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));
 
     LocalNotifications.schedule({
       notifications: [{
         title: affirmation.title,
         body: affirmation.text,
-        id: this.generateNotificationId(schedule),
-        schedule: { at: luxonTime.toJSDate(), every: 'hour', count: schedule.hourlyInterval, repeats: true },
+        id: this.generateNotificationId(scheduleModel),
+        schedule: { at: luxonTime.toJSDate(), every: 'hour', count: scheduleModel.hourlyInterval, repeats: true },
         sound: undefined,
         attachments: undefined,
         actionTypeId: '',
@@ -162,39 +156,9 @@ export class NotificationSchedulingService {
     }).then(() => console.log('SCHEDULED'));
   }
 
-  generateNotificationId(schedule: Schedule): number {
+  generateNotificationId(schedule: ScheduleDto): number {
     console.log('LN ID', new Date(schedule._id).getTime());
     return new Date(schedule._id).getTime();
-  }
-
-  getTimeFromString(schedule: Schedule): DateTime {
-    let luxonTime = DateTime.fromFormat(schedule.scheduleTime, 't');
-    if (!luxonTime.isValid) {
-      luxonTime = DateTime.fromFormat(schedule.scheduleTime, 'T');
-    }
-    console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
-    return luxonTime;
-  }
-
-  getWeekdayNumber(weekday: string): number {
-    switch (weekday) {
-      case 'Monday':
-        return 1;
-      case 'Tuesday':
-        return 2;
-      case 'Wednesday':
-        return 3;
-      case 'Thursday':
-        return 4;
-      case 'Friday':
-        return 5;
-      case 'Saturday':
-        return 6;
-      case 'Sunday':
-        return 7;
-      default:
-        return 0;
-    }
   }
 
 }

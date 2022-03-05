@@ -1,4 +1,4 @@
-import {Schedule} from './Schedule';
+import {ScheduleDto} from './ScheduleDto';
 
 export class AffirmationDto {
   // tslint:disable-next-line:variable-name
@@ -8,7 +8,7 @@ export class AffirmationDto {
   title: string;
   text: string;
   scheduled = false;
-  scheduleModel: Schedule | undefined;
+  scheduleModel: ScheduleDto | undefined;
 
   constructor(title: string, text: string) {
     this.title = title;

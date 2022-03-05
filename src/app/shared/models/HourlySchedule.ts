@@ -1,21 +1,22 @@
-import {Schedule, ScheduleType} from './Schedule';
+import {ScheduleDto} from './ScheduleDto';
 import {DateTime} from 'luxon';
+import {Schedule} from './Schedule';
 
 export class HourlySchedule extends Schedule {
-  hourlyInterval: number | undefined;
+  hourlyInterval: number;
 
-  constructor(affirmationId: string, scheduleTime: string, hourlyInterval: number) {
-    super(ScheduleType.HOURLY, affirmationId, scheduleTime);
+  constructor(scheduleDto: ScheduleDto, hourlyInterval: number) {
+    super(scheduleDto);
     this.hourlyInterval = hourlyInterval;
   }
 
-  schedule(): DateTime {
+  schedule(): DateTime[] {
     let luxonTime = this.getTimeFromString();
 
     if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
       luxonTime = luxonTime.plus({day: 1});
     }
 
-    return luxonTime;
+    return [luxonTime];
   }
 }

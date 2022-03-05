@@ -6,7 +6,7 @@ import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {deleteAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
-import {Schedule} from '../shared/models/Schedule';
+import {ScheduleDto} from '../shared/models/ScheduleDto';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {tap} from 'rxjs/operators';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
@@ -21,7 +21,7 @@ import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.c
 export class DetailComponent implements OnInit {
 
   affirmation$: Observable<AffirmationDto | undefined>;
-  schedule$: Observable<Schedule | undefined>;
+  schedule$: Observable<ScheduleDto | undefined>;
 
   constructor(private route: ActivatedRoute, private dialog: MatDialog, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.getCurrentAffirmation();

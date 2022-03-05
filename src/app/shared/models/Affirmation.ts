@@ -1,4 +1,4 @@
-import {Schedule} from './Schedule';
+import {ScheduleDto, ScheduleType} from './ScheduleDto';
 import {AffirmationDto} from './AffirmationDto';
 import {DailySchedule} from './DailySchedule';
 import {HourlySchedule} from './HourlySchedule';
@@ -12,48 +12,88 @@ export class Affirmation extends AffirmationDto{
   title!: string;
   text!: string;
   scheduled = false;
-  scheduleModel: Schedule | undefined;
+  scheduleModel: ScheduleDto | undefined;
 
   constructor(affirmationDto: AffirmationDto) {
     super(affirmationDto.title, affirmationDto.text);
     Object.assign(this, affirmationDto);
   }
 
-  scheduleDaily(time: string, days: string[]): DateTime[] | void {
-    const schedule = new DailySchedule(this._id, time, days);
-    this.scheduleModel = schedule;
+  scheduleDaily(time?: string, days?: string[]): DateTime[] {
+    let schedule = null;
+    if (this.scheduleModel?.scheduleType === ScheduleType.DAILY && !time && !days) {
+      schedule = new DailySchedule(this.scheduleModel, (this.scheduleModel as DailySchedule).scheduleDays);
+    } else if (time && days) {
+      schedule = new DailySchedule(new ScheduleDto(ScheduleType.DAILY, this._id, time), days);
+    } else if (!time || !days) {
+      throw new Error('Time and days on first schedule needed!');
+    } else {
+      schedule = new DailySchedule(new ScheduleDto(ScheduleType.DAILY, this._id, time), days);
+    }
+
     this.scheduled = true;
+    this.scheduleModel = schedule;
 
     return schedule.schedule();
-  }
 
-  scheduleHourly(time: string, hourlyInterval: number): DateTime {
-    const schedule = new HourlySchedule(this._id, time, hourlyInterval);
-    this.scheduleModel = schedule;
+    /*let schedule = null;
+    if (!this.scheduleModel || this.scheduleModel.scheduleType !== ScheduleType.DAILY) {
+      if (!time || !days) {
+        throw new Error('Time and days on first schedule needed!');
+      }
+      schedule = new DailySchedule(new ScheduleDto(ScheduleType.DAILY, this._id, time), days);
+      this.scheduleModel = schedule;
+    } else {
+      schedule = new DailySchedule(this.scheduleModel, (this.scheduleModel as DailySchedule).scheduleDays);
+    }
     this.scheduled = true;
 
+    console.log(schedule);
+
     return schedule.schedule();
+    */
   }
 
-  cancelSchedule(): Schedule | void {
+  scheduleHourly(time?: string, hourlyInterval?: number): DateTime[] {
+    let schedule = null;
+    if (this.scheduleModel?.scheduleType === ScheduleType.HOURLY && !time && !hourlyInterval) {
+      schedule = new HourlySchedule(this.scheduleModel, (this.scheduleModel as HourlySchedule).hourlyInterval);
+    } else if (time && hourlyInterval) {
+      schedule = new HourlySchedule(new ScheduleDto(ScheduleType.HOURLY, this._id, time), hourlyInterval);
+    } else if (!time || !hourlyInterval) {
+      throw new Error('Time and hourly interval on first schedule needed!');
+    } else {
+      schedule = new HourlySchedule(new ScheduleDto(ScheduleType.HOURLY, this._id, time), hourlyInterval);
+    }
+
+    this.scheduled = true;
+    this.scheduleModel = schedule;
+
+    return schedule.schedule();
+
+    /*let schedule = null;
+    if (!this.scheduleModel || this.scheduleModel.scheduleType !== ScheduleType.HOURLY) {
+      if (!time || !hourlyInterval) {
+        throw new Error('Time and hourly interval on first schedule needed!');
+      }
+      schedule = new HourlySchedule(new ScheduleDto(ScheduleType.HOURLY, this._id, time), hourlyInterval);
+      this.scheduleModel = schedule;
+    } else {
+      schedule = new HourlySchedule(this.scheduleModel, (this.scheduleModel as HourlySchedule).hourlyInterval);
+    }
+    this.scheduled = true;
+
+    console.log(schedule);
+
+    return schedule.schedule();
+    */
+  }
+
+  cancelSchedule(): ScheduleDto | void {
     this.scheduled = false;
     if (this.scheduleModel) {
       return this.scheduleModel;
     }
-  }
-
-  generateNotificationId(schedule: Schedule): number {
-    console.log('LN ID', new Date(schedule._id).getTime());
-    return new Date(schedule._id).getTime();
-  }
-
-  getTimeFromString(schedule: Schedule): DateTime {
-    let luxonTime = DateTime.fromFormat(schedule.scheduleTime, 't');
-    if (!luxonTime.isValid) {
-      luxonTime = DateTime.fromFormat(schedule.scheduleTime, 'T');
-    }
-    console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
-    return luxonTime;
   }
 
 }

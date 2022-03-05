@@ -7,11 +7,10 @@ import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
-import {startCreateSchedule, startUpdateSchedule} from '../actions/schedule.actions';
-import {map, mergeMap, tap} from 'rxjs/operators';
-import {getScheduleById} from '../reducers/schedule.reducer';
+import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
 import {Affirmation} from '../shared/models/Affirmation';
+import {startUpdateAffirmation} from '../actions/affirmation.actions';
 
 @Component({
   selector: 'app-schedule',
@@ -45,19 +44,17 @@ export class ScheduleComponent implements OnInit {
     );
 
     this.affirmation$.pipe(
-      mergeMap(affirmation => {
-        return this.store.select(getScheduleById, {id: affirmation?._id});
-      }),
-      map(result => {
-        if (result) {
-          console.log('RESULT', result.scheduleType);
-          this.form.patchValue({time: result.scheduleTime, type: result.scheduleType});
-          this.selectedType = result.scheduleType;
-          this.form.get('hourlyInterval')?.patchValue(result.hourlyInterval);
-          this.scheduleDays = result.scheduleDays;
-          this.originalScheduleDays = result.scheduleDays;
+      tap(affirmation => {
+        const schedule = affirmation?.scheduleModel;
+        if (schedule) {
+          console.log('RESULT', schedule.scheduleType);
+          this.form.patchValue({time: schedule.scheduleTime, type: schedule.scheduleType});
+          this.selectedType = schedule.scheduleType;
+          this.form.get('hourlyInterval')?.patchValue(schedule.hourlyInterval);
+          this.scheduleDays = schedule.scheduleDays;
+          this.originalScheduleDays = schedule.scheduleDays;
         }
-        this.schedule = result;
+        this.schedule = schedule;
       })
     ).subscribe();
   }
@@ -67,7 +64,7 @@ export class ScheduleComponent implements OnInit {
 
   createSchedule(): void {
     console.log('CREATE OR UPDATE', this.schedule?._id);
-    if (this.schedule?._id) {
+    if (this.affirmation?.scheduleModel) {
       console.log('UPDATE SCHEDULE');
       const updatedSchedule = {
         ...this.schedule,
@@ -75,20 +72,26 @@ export class ScheduleComponent implements OnInit {
         scheduleTime: this.form.get('time')?.value,
         hourlyInterval: this.form.get('hourlyInterval')?.value
       } as Schedule;
-      this.store.dispatch(startUpdateSchedule({schedule: updatedSchedule}));
+      // this.store.dispatch(startUpdateSchedule({schedule: updatedSchedule}));
+
+      const updatedAffirmation = {...this.affirmation, scheduleModel: updatedSchedule} as AffirmationDto;
+
+      this.store.dispatch(startUpdateAffirmation({affirmation: updatedAffirmation}));
     } else {
       if (!this.affirmation) {
         return;
       }
       console.log('CREATE SCHEDULE');
       console.log(this.affirmation);
-      const newSchedule = new Affirmation(this.affirmation).schedule(
+      const updatedAffirmation = new Affirmation({...this.affirmation});
+      const newSchedule = updatedAffirmation.schedule(
         this.selectedType,
         this.scheduleDays,
         this.form.get('time')?.value,
       );
       newSchedule.hourlyInterval = this.form.get('hourlyInterval')?.value;
-      this.store.dispatch(startCreateSchedule({schedule: newSchedule}));
+
+      this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
     }
     this.router.navigate(['..'], {relativeTo: this.route});
   }

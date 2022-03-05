@@ -55,9 +55,7 @@ export class DetailComponent implements OnInit {
   }
 
   changeActive($event: MatSlideToggleChange, affirmation: AffirmationDto): void {
-    if ($event.checked) {
-      affirmation.scheduled = true;
-    }
+    affirmation = {...affirmation, scheduled: $event.checked};
     this.store.dispatch(startUpdateAffirmation({affirmation}));
   }
 }

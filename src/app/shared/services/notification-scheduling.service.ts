@@ -90,7 +90,7 @@ export class NotificationSchedulingService {
     }
 
     const scheduleModel = affirmation.scheduleModel;
-    const scheduleDays = scheduleModel.schedule();
+    const scheduleDays = affirmation.schedule();
 
     for (const scheduleDate of scheduleDays) {
       console.log('SCHEDULING DAILY FOR',
@@ -119,7 +119,7 @@ export class NotificationSchedulingService {
     }
 
     const scheduleModel = affirmation.scheduleModel;
-    const luxonTime = scheduleModel.schedule()[0];
+    const luxonTime = affirmation.schedule()[0];
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));
 

@@ -21,23 +21,7 @@ export class Schedule extends ScheduleDto {
   }
 
   getWeekdayNumber(weekday: string): number {
-    switch (weekday) {
-      case 'Monday':
-        return 1;
-      case 'Tuesday':
-        return 2;
-      case 'Wednesday':
-        return 3;
-      case 'Thursday':
-        return 4;
-      case 'Friday':
-        return 5;
-      case 'Saturday':
-        return 6;
-      case 'Sunday':
-        return 7;
-      default:
-        return 0;
-    }
+    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    return weekDays.indexOf(weekday) + 1;
   }
 }

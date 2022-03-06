@@ -10,6 +10,10 @@ export class HourlySchedule extends Schedule {
     this.hourlyInterval = hourlyInterval;
   }
 
+  static fromHourlyScheduleDto(scheduleDto: ScheduleDto): HourlySchedule {
+    return new HourlySchedule(scheduleDto, (scheduleDto as HourlySchedule).hourlyInterval);
+  }
+
   schedule(): DateTime[] {
     let luxonTime = this.getTimeFromString();
 

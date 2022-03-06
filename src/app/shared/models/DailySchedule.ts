@@ -10,6 +10,10 @@ export class DailySchedule extends Schedule {
     this.scheduleDays = scheduleDays;
   }
 
+  static fromDailyScheduleDto(scheduleDto: ScheduleDto): DailySchedule {
+    return new DailySchedule(scheduleDto, (scheduleDto as DailySchedule).scheduleDays);
+  }
+
   schedule(): DateTime[] {
     const luxonTime = this.getTimeFromString();
 

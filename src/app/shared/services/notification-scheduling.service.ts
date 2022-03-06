@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
-import {take} from 'rxjs/operators';
+import {first} from 'rxjs/operators';
 import {ScheduleDto, ScheduleType} from '../models/ScheduleDto';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
-import {getAffirmationById, getAffirmations} from '../../reducers/affirmation.reducer';
+import {getAffirmations} from '../../reducers/affirmation.reducer';
 import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
 import {DailySchedule} from '../models/DailySchedule';
@@ -25,21 +25,19 @@ export class NotificationSchedulingService {
     if (pending.notifications.length > 0) {
       LocalNotifications.cancel(pending).then(() => this.initScheduleNotifications());
     } else {
-      this.initScheduleNotifications();
+      await this.initScheduleNotifications();
     }
   }
 
-  initScheduleNotifications(): void {
+  async initScheduleNotifications(): Promise<void> {
     console.log('INIT SCHEDULING');
 
-    this.store.select(getAffirmations).pipe(take(1)).subscribe(affirmations => {
-        console.log('SELECTOR SUBSCRIPTION', affirmations.length);
+    const affirmations = await this.store.select(getAffirmations).pipe(first()).toPromise();
+    console.log('SELECTOR SUBSCRIPTION', affirmations.length);
 
-        for (const affirmation of affirmations) {
-          this.scheduleNotification(new Affirmation(affirmation));
-        }
-      }
-    );
+    for (const affirmation of affirmations) {
+      await this.scheduleNotification(new Affirmation(affirmation));
+    }
   }
 
   cancelNotification(affirmation: AffirmationDto): Promise<void> {
@@ -51,49 +49,38 @@ export class NotificationSchedulingService {
       let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
           lastCancel = LocalNotifications.cancel({
-            notifications: [
-              {
+            notifications: [{
                 id: `${this.generateNotificationId(schedule)}${schedule.getWeekdayNumber(weekDay)}`
-              }
-            ]
+              }]
           });
         }
       return lastCancel;
     }
 
     return LocalNotifications.cancel({
-      notifications: [
-        {
+      notifications: [{
           id: this.generateNotificationId(schedule).toString()
-        }
-      ]
+        }]
     });
   }
 
   async scheduleNotification(affirmation: Affirmation): Promise<void> {
     await this.cancelNotification(affirmation);
-    if (affirmation.scheduled) {
-        this.store.select(getAffirmationById, {id: affirmation._id}).pipe(take(1)).subscribe(
-          (aff) => {
-            if (!aff?.scheduleModel) {
-              return;
-            }
 
-            switch (aff.scheduleModel.scheduleType) {
-              case ScheduleType.DAILY:
-                this.scheduleDaily(affirmation);
-                break;
+    if (affirmation.scheduled && affirmation?.scheduleModel) {
+      switch (affirmation.scheduleModel.scheduleType) {
+        case ScheduleType.DAILY:
+          this.scheduleDaily(affirmation);
+          break;
 
-              case ScheduleType.HOURLY:
-                this.scheduleHourly(affirmation);
-                break;
+        case ScheduleType.HOURLY:
+          this.scheduleHourly(affirmation);
+          break;
 
-              default:
-                throw new Error(`Unknown schedule type: ${aff.scheduleModel.scheduleType}`);
-            }
-          }
-        );
+        default:
+          throw new Error(`Unknown schedule type: ${affirmation.scheduleModel.scheduleType}`);
       }
+    }
   }
 
   scheduleDaily(affirmation: Affirmation): void {
@@ -131,7 +118,7 @@ export class NotificationSchedulingService {
     }
 
     const scheduleModel = affirmation.scheduleModel as HourlySchedule;
-    const luxonTime = affirmation.scheduleHourly()[0];
+    const luxonTime = affirmation.scheduleHourly();
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));
 

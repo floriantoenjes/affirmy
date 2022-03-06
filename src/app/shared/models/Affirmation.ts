@@ -3,16 +3,9 @@ import {AffirmationDto} from './AffirmationDto';
 import {DailySchedule} from './DailySchedule';
 import {HourlySchedule} from './HourlySchedule';
 import {DateTime} from 'luxon';
+import {Schedule} from './Schedule';
 
 export class Affirmation extends AffirmationDto{
-  // tslint:disable-next-line:variable-name
-  _id = new Date().toISOString();
-  // tslint:disable-next-line:variable-name
-  _rev = '';
-  title!: string;
-  text!: string;
-  scheduled = false;
-  scheduleModel: ScheduleDto | undefined;
 
   constructor(affirmationDto: AffirmationDto) {
     super(affirmationDto.title, affirmationDto.text);
@@ -29,13 +22,10 @@ export class Affirmation extends AffirmationDto{
       schedule = new DailySchedule(new ScheduleDto(ScheduleType.DAILY, this._id, time), days);
     }
 
-    this.scheduled = true;
-    this.scheduleModel = schedule;
-
-    return schedule.schedule();
+    return this.scheduleAffirmation(schedule);
   }
 
-  scheduleHourly(time?: string, hourlyInterval?: number): DateTime[] {
+  scheduleHourly(time?: string, hourlyInterval?: number): DateTime {
     let schedule = null;
     if (this.scheduleModel?.scheduleType === ScheduleType.HOURLY && !time && !hourlyInterval) {
       schedule = new HourlySchedule(this.scheduleModel, (this.scheduleModel as HourlySchedule).hourlyInterval);
@@ -45,6 +35,10 @@ export class Affirmation extends AffirmationDto{
       schedule = new HourlySchedule(new ScheduleDto(ScheduleType.HOURLY, this._id, time), hourlyInterval);
     }
 
+    return this.scheduleAffirmation(schedule)[0];
+  }
+
+  scheduleAffirmation(schedule: Schedule): DateTime[] {
     this.scheduled = true;
     this.scheduleModel = schedule;
 

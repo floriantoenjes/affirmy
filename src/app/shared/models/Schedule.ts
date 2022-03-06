@@ -1,7 +1,6 @@
 import {ScheduleDto} from './ScheduleDto';
 import {DateTime} from 'luxon';
 
-
 export class Schedule extends ScheduleDto {
 
   constructor(scheduleDto: ScheduleDto) {

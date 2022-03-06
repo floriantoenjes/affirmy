@@ -98,8 +98,6 @@ export class ScheduleComponent implements OnInit {
           throw new Error(`Unkown schedule type: ${this.selectedType} !`);
     }
 
-    console.error(updatedAffirmation.scheduleModel, 'SCHED DAYS', this.scheduleDays);
-
     this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
     this.router.navigate(['..'], {relativeTo: this.route});
   }

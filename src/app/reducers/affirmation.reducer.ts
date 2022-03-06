@@ -3,6 +3,9 @@ import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmatio
 import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {State} from './index';
 import {Affirmation} from '../shared/models/Affirmation';
+import {ScheduleType} from '../shared/models/ScheduleDto';
+import {DailySchedule} from '../shared/models/DailySchedule';
+import {HourlySchedule} from '../shared/models/HourlySchedule';
 
 export interface AffirmationState {
   affirmations: AffirmationDto[];
@@ -40,7 +43,25 @@ export function reducer(state: AffirmationState | undefined, action: Action): Af
 export const getAffirmationsState = createFeatureSelector<State, AffirmationState>('affirmationsFeature');
 
 export const getAffirmations = createSelector(getAffirmationsState, (affirmationState: AffirmationState) => {
-  return affirmationState.affirmations as Affirmation[];
+  return affirmationState.affirmations.map(aff => {
+    let schedule = null;
+
+    const affirmation = new Affirmation(aff);
+
+    switch (aff.scheduleDto?.scheduleType) {
+      case ScheduleType.DAILY:
+        schedule = aff.scheduleDto as DailySchedule;
+        schedule = new DailySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleDays);
+        affirmation.scheduleModel = schedule;
+        break;
+      case ScheduleType.HOURLY:
+        schedule = aff.scheduleDto as HourlySchedule;
+        schedule = new HourlySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.hourlyInterval);
+        affirmation.scheduleModel = schedule;
+        break;
+    }
+    return affirmation;
+  }) as Affirmation[];
 });
 
 export const getAffirmationById = createSelector(

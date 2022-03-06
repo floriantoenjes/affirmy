@@ -16,6 +16,7 @@ export class Affirmation extends AffirmationDto{
   }
 
   schedule(schedule?: Schedule): DateTime[] {
+    this.scheduled = true;
     if (this.scheduleModel && !schedule) {
       return this.scheduleModel.schedule();
     } else if (schedule) {
@@ -25,13 +26,6 @@ export class Affirmation extends AffirmationDto{
       return this.scheduleModel.schedule();
     }
     throw new Error('A schedule model needs to be present!');
-  }
-
-  scheduleAffirmation(schedule: Schedule): DateTime[] {
-    this.scheduled = true;
-    this.scheduleDto = schedule;
-
-    return schedule.schedule();
   }
 
   cancelSchedule(): ScheduleDto | void {

@@ -87,7 +87,9 @@ export class NotificationSchedulingService {
       return;
     }
 
-    const scheduleModel = new DailySchedule(affirmation.scheduleDto, (affirmation.scheduleDto as DailySchedule).scheduleDays);
+    const scheduleModel = new DailySchedule(affirmation.scheduleDto,
+      (affirmation.scheduleDto as DailySchedule).scheduleDays
+    );
     const scheduleDays = scheduleModel.schedule();
 
     for (const scheduleDate of scheduleDays) {
@@ -116,7 +118,9 @@ export class NotificationSchedulingService {
       return;
     }
 
-    const scheduleModel = new HourlySchedule(affirmation.scheduleDto, (affirmation.scheduleDto as HourlySchedule).hourlyInterval);
+    const scheduleModel = new HourlySchedule(affirmation.scheduleDto,
+      (affirmation.scheduleDto as HourlySchedule).hourlyInterval
+    );
     const luxonTime = scheduleModel.schedule()[0];
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));

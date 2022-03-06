@@ -1,10 +1,10 @@
-import {ScheduleDto} from './ScheduleDto';
+import {ScheduleDto, ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 
 export class Schedule extends ScheduleDto {
 
-  constructor(scheduleDto: ScheduleDto) {
-    super(scheduleDto.scheduleType, scheduleDto.affirmationId, scheduleDto.scheduleTime);
+  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string) {
+    super(scheduleType, affirmationId, scheduleTime);
   }
 
   schedule(): DateTime[] {

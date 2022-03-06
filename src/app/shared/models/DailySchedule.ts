@@ -1,21 +1,13 @@
-import {ScheduleDto} from './ScheduleDto';
+import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
 
 export class DailySchedule extends Schedule {
   scheduleDays: string[];
 
-  constructor(scheduleDto: ScheduleDto, scheduleDays: string[]) {
-    super(scheduleDto);
+  constructor(affirmationId: string, time: string, scheduleDays: string[]) {
+    super(ScheduleType.DAILY, affirmationId, time);
     this.scheduleDays = scheduleDays;
-  }
-
-  static fromDailyScheduleDto(scheduleDto: ScheduleDto): DailySchedule {
-    const scheduleDays = (scheduleDto as DailySchedule).scheduleDays;
-    if (!scheduleDays) {
-      throw new Error('Needs to be a DailyScheduleDto!');
-    }
-    return new DailySchedule(scheduleDto, scheduleDays);
   }
 
   schedule(): DateTime[] {

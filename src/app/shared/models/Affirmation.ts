@@ -10,9 +10,6 @@ export class Affirmation extends AffirmationDto{
   constructor(affirmationDto: AffirmationDto) {
     super(affirmationDto.title, affirmationDto.text);
     Object.assign(this, affirmationDto);
-    if (this.scheduleDto) {
-      this.scheduleModel = new Schedule(this.scheduleDto);
-    }
   }
 
   schedule(schedule?: Schedule): DateTime[] {

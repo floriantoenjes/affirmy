@@ -2,6 +2,7 @@ import {Action, createFeatureSelector, createReducer, createSelector, on} from '
 import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmation} from '../actions/affirmation.actions';
 import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {State} from './index';
+import {Affirmation} from '../shared/models/Affirmation';
 
 export interface AffirmationState {
   affirmations: AffirmationDto[];
@@ -39,11 +40,11 @@ export function reducer(state: AffirmationState | undefined, action: Action): Af
 export const getAffirmationsState = createFeatureSelector<State, AffirmationState>('affirmationsFeature');
 
 export const getAffirmations = createSelector(getAffirmationsState, (affirmationState: AffirmationState) => {
-  return affirmationState.affirmations;
+  return affirmationState.affirmations as Affirmation[];
 });
 
 export const getAffirmationById = createSelector(
   getAffirmations,
-  (affirmations: AffirmationDto[], props: any) => affirmations.find(af => af._id === props.id)
+  (affirmations: Affirmation[], props: any) => affirmations.find(af => af._id === props.id) as Affirmation
 );
 

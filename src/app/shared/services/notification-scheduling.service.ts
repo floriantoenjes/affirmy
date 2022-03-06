@@ -83,11 +83,11 @@ export class NotificationSchedulingService {
   }
 
   scheduleDaily(affirmation: Affirmation): void {
-    if (!affirmation.scheduleDto) {
+    if (!(affirmation.scheduleModel instanceof DailySchedule)) {
       return;
     }
 
-    const scheduleModel = DailySchedule.fromDailyScheduleDto(affirmation.scheduleDto);
+    const scheduleModel = affirmation.scheduleModel;
     const scheduleDays = scheduleModel.schedule();
 
     for (const scheduleDate of scheduleDays) {
@@ -112,11 +112,11 @@ export class NotificationSchedulingService {
   }
 
   scheduleHourly(affirmation: Affirmation): void {
-    if (!affirmation.scheduleDto) {
+    if (!(affirmation.scheduleModel instanceof HourlySchedule)) {
       return;
     }
 
-    const scheduleModel = HourlySchedule.fromHourlyScheduleDto(affirmation.scheduleDto);
+    const scheduleModel = affirmation.scheduleModel;
     const luxonTime = scheduleModel.schedule()[0];
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));

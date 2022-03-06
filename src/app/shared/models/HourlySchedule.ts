@@ -1,21 +1,13 @@
-import {ScheduleDto} from './ScheduleDto';
+import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
 
 export class HourlySchedule extends Schedule {
   hourlyInterval: number;
 
-  constructor(scheduleDto: ScheduleDto, hourlyInterval: number) {
-    super(scheduleDto);
+  constructor(affirmationId: string, time: string, hourlyInterval: number) {
+    super(ScheduleType.HOURLY, affirmationId, time);
     this.hourlyInterval = hourlyInterval;
-  }
-
-  static fromHourlyScheduleDto(scheduleDto: ScheduleDto): HourlySchedule {
-    const hourlyInterval = (scheduleDto as HourlySchedule).hourlyInterval;
-    if (!hourlyInterval) {
-      throw new Error('Needs to be a HourlyScheduleDto!');
-    }
-    return new HourlySchedule(scheduleDto, hourlyInterval);
   }
 
   schedule(): DateTime[] {

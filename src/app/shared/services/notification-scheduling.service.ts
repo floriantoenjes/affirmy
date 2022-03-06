@@ -9,7 +9,6 @@ import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
 import {DailySchedule} from '../models/DailySchedule';
 import {HourlySchedule} from '../models/HourlySchedule';
-import {Schedule} from '../models/Schedule';
 
 const {LocalNotifications} = Plugins;
 
@@ -67,8 +66,8 @@ export class NotificationSchedulingService {
   async scheduleNotification(affirmation: Affirmation): Promise<void> {
     await this.cancelNotification(affirmation);
 
-    if (affirmation.scheduled && affirmation?.scheduleModel) {
-      switch (affirmation.scheduleModel.scheduleType) {
+    if (affirmation.scheduled && affirmation?.scheduleDto) {
+      switch (affirmation.scheduleDto.scheduleType) {
         case ScheduleType.DAILY:
           this.scheduleDaily(affirmation);
           break;
@@ -78,18 +77,18 @@ export class NotificationSchedulingService {
           break;
 
         default:
-          throw new Error(`Unknown schedule type: ${affirmation.scheduleModel.scheduleType}`);
+          throw new Error(`Unknown schedule type: ${affirmation.scheduleDto.scheduleType}`);
       }
     }
   }
 
   scheduleDaily(affirmation: Affirmation): void {
-    if (!affirmation.scheduleModel) {
+    if (!affirmation.scheduleDto) {
       return;
     }
 
-    const scheduleModel = new Schedule(affirmation.scheduleModel) as DailySchedule;
-    const scheduleDays = affirmation.scheduleDaily();
+    const scheduleModel = new DailySchedule(affirmation.scheduleDto, (affirmation.scheduleDto as DailySchedule).scheduleDays);
+    const scheduleDays = scheduleModel.schedule();
 
     for (const scheduleDate of scheduleDays) {
       console.log('SCHEDULING DAILY FOR',
@@ -113,12 +112,12 @@ export class NotificationSchedulingService {
   }
 
   scheduleHourly(affirmation: Affirmation): void {
-    if (!affirmation.scheduleModel) {
+    if (!affirmation.scheduleDto) {
       return;
     }
 
-    const scheduleModel = affirmation.scheduleModel as HourlySchedule;
-    const luxonTime = affirmation.scheduleHourly();
+    const scheduleModel = new HourlySchedule(affirmation.scheduleDto, (affirmation.scheduleDto as HourlySchedule).hourlyInterval);
+    const luxonTime = scheduleModel.schedule()[0];
 
     console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));
 

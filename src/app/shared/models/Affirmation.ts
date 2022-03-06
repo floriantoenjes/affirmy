@@ -1,54 +1,44 @@
-import {ScheduleDto, ScheduleType} from './ScheduleDto';
+import {ScheduleDto} from './ScheduleDto';
 import {AffirmationDto} from './AffirmationDto';
-import {DailySchedule} from './DailySchedule';
-import {HourlySchedule} from './HourlySchedule';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
 
 export class Affirmation extends AffirmationDto{
 
+  scheduleModel?: Schedule;
+
   constructor(affirmationDto: AffirmationDto) {
     super(affirmationDto.title, affirmationDto.text);
     Object.assign(this, affirmationDto);
+    if (this.scheduleDto) {
+      this.scheduleModel = new Schedule(this.scheduleDto);
+    }
   }
 
-  scheduleDaily(time?: string, days?: string[]): DateTime[] {
-    let schedule = null;
-    if (this.scheduleModel?.scheduleType === ScheduleType.DAILY && !time && !days) {
-      schedule = new DailySchedule(this.scheduleModel, (this.scheduleModel as DailySchedule).scheduleDays);
-    } else if (!time || !days) {
-      throw new Error('Time and days on first schedule needed!');
-    } else {
-      schedule = new DailySchedule(new ScheduleDto(ScheduleType.DAILY, this._id, time), days);
+  schedule(schedule?: Schedule): DateTime[] {
+    if (this.scheduleModel && !schedule) {
+      return this.scheduleModel.schedule();
+    } else if (schedule) {
+      this.scheduleModel = schedule;
+      this.scheduleDto = schedule;
+
+      return this.scheduleModel.schedule();
     }
-
-    return this.scheduleAffirmation(schedule);
-  }
-
-  scheduleHourly(time?: string, hourlyInterval?: number): DateTime {
-    let schedule = null;
-    if (this.scheduleModel?.scheduleType === ScheduleType.HOURLY && !time && !hourlyInterval) {
-      schedule = new HourlySchedule(this.scheduleModel, (this.scheduleModel as HourlySchedule).hourlyInterval);
-    } else if (!time || !hourlyInterval) {
-      throw new Error('Time and hourly interval on first schedule needed!');
-    } else {
-      schedule = new HourlySchedule(new ScheduleDto(ScheduleType.HOURLY, this._id, time), hourlyInterval);
-    }
-
-    return this.scheduleAffirmation(schedule)[0];
+    throw new Error('A schedule model needs to be present!');
   }
 
   scheduleAffirmation(schedule: Schedule): DateTime[] {
     this.scheduled = true;
-    this.scheduleModel = schedule;
+    this.scheduleDto = schedule;
 
     return schedule.schedule();
   }
 
   cancelSchedule(): ScheduleDto | void {
     this.scheduled = false;
-    if (this.scheduleModel) {
-      return this.scheduleModel;
+
+    if (this.scheduleDto) {
+      return this.scheduleDto;
     }
   }
 

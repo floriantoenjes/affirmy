@@ -37,7 +37,7 @@ export class AffirmationEffects {
   $createAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.startCreateAffirmation),
     mergeMap(action => {
-      const responseObs = from(this.db.put({...action.affirmation}));
+      const responseObs = from(this.db.put({...action.affirmation, scheduleModel: undefined}));
       return responseObs.pipe(
         map(response => {
           return createAffirmation({affirmation: {...action.affirmation, _rev: response.rev} as AffirmationDto});
@@ -50,7 +50,7 @@ export class AffirmationEffects {
   $updateAffirmation = createEffect(() => this.actions$.pipe(
     ofType(AffirmationActions.startUpdateAffirmation),
     mergeMap(action => {
-      const responseObs = from(this.db.put(action.affirmation));
+      const responseObs = from(this.db.put({...action.affirmation, scheduleModel: undefined}));
       return responseObs.pipe(
         map(response => {
           const rev = response.rev;

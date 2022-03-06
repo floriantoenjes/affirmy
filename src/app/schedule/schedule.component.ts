@@ -47,21 +47,23 @@ export class ScheduleComponent implements OnInit {
 
     this.affirmation$.pipe(
       tap(affirmation => {
-        if (affirmation?.scheduleModel) {
-          this.form.patchValue({time: affirmation.scheduleModel.scheduleTime});
+        console.log(affirmation?.scheduleDto);
 
-          if (affirmation?.scheduleModel?.scheduleType === ScheduleType.DAILY) {
-            const schedule = affirmation.scheduleModel as DailySchedule;
+        if (affirmation?.scheduleDto) {
+          this.form.patchValue({time: affirmation.scheduleDto.scheduleTime});
+
+          if (affirmation?.scheduleDto?.scheduleType === ScheduleType.DAILY) {
+            const schedule = affirmation.scheduleDto as DailySchedule;
             this.selectedType = ScheduleType.DAILY;
             this.scheduleDays = schedule.scheduleDays;
             this.originalScheduleDays = schedule.scheduleDays;
-          } else if (affirmation.scheduleModel.scheduleType === ScheduleType.HOURLY) {
-            const schedule = affirmation.scheduleModel as HourlySchedule;
+          } else if (affirmation.scheduleDto.scheduleType === ScheduleType.HOURLY) {
+            const schedule = affirmation.scheduleDto as HourlySchedule;
             this.selectedType = ScheduleType.HOURLY;
             this.form.get('hourlyInterval')?.patchValue(schedule.hourlyInterval);
           }
         }
-        this.schedule = affirmation?.scheduleModel;
+        this.schedule = affirmation?.scheduleDto;
       })
     ).subscribe();
   }
@@ -77,25 +79,28 @@ export class ScheduleComponent implements OnInit {
     }
 
     let updatedAffirmation;
+
     switch (this.selectedType) {
-        case ScheduleType.DAILY:
-          updatedAffirmation = new Affirmation({...this.affirmation});
-          updatedAffirmation.scheduleDaily(
-            this.form.get('time')?.value,
-            this.scheduleDays
-          );
-          break;
+      case ScheduleType.DAILY:
+        updatedAffirmation = new Affirmation({...this.affirmation});
+        updatedAffirmation.schedule(
+          new DailySchedule(
+            new ScheduleDto(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value),
+            this.scheduleDays)
+        );
+        break;
 
-        case ScheduleType.HOURLY:
-           updatedAffirmation = new Affirmation({...this.affirmation});
-           updatedAffirmation.scheduleHourly(
-            this.form.get('time')?.value,
-            this.form.get('hourlyInterval')?.value
-           );
-           break;
+      case ScheduleType.HOURLY:
+        updatedAffirmation = new Affirmation({...this.affirmation});
+        updatedAffirmation.schedule(
+          new HourlySchedule(
+            new ScheduleDto(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value),
+            this.form.get('hourlyInterval')?.value)
+        );
+        break;
 
-        default:
-          throw new Error(`Unkown schedule type: ${this.selectedType} !`);
+      default:
+        throw new Error(`Unknown schedule type: ${this.selectedType} !`);
     }
 
     this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));

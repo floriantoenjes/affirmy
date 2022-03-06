@@ -17,7 +17,7 @@
           <mat-icon>delete</mat-icon>
         </button>
         <div class="ml-auto">
-          <mat-slide-toggle (change)="changeActive($event, affirmation)" *ngIf="affirmation.scheduleModel"
+          <mat-slide-toggle (change)="changeActive($event, affirmation)" *ngIf="affirmation.scheduleDto"
                             class="text-xl mr-1" [checked]="affirmation.scheduled">Active
           </mat-slide-toggle>
 

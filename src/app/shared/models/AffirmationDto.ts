@@ -8,7 +8,7 @@ export class AffirmationDto {
   title: string;
   text: string;
   scheduled = false;
-  scheduleModel: ScheduleDto | undefined;
+  scheduleDto: ScheduleDto | undefined;
 
   constructor(title: string, text: string) {
     this.title = title;

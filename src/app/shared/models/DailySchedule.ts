@@ -11,7 +11,11 @@ export class DailySchedule extends Schedule {
   }
 
   static fromDailyScheduleDto(scheduleDto: ScheduleDto): DailySchedule {
-    return new DailySchedule(scheduleDto, (scheduleDto as DailySchedule).scheduleDays);
+    const scheduleDays = (scheduleDto as DailySchedule).scheduleDays;
+    if (!scheduleDays) {
+      throw new Error('Needs to be a DailyScheduleDto!');
+    }
+    return new DailySchedule(scheduleDto, scheduleDays);
   }
 
   schedule(): DateTime[] {

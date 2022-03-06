@@ -11,7 +11,11 @@ export class HourlySchedule extends Schedule {
   }
 
   static fromHourlyScheduleDto(scheduleDto: ScheduleDto): HourlySchedule {
-    return new HourlySchedule(scheduleDto, (scheduleDto as HourlySchedule).hourlyInterval);
+    const hourlyInterval = (scheduleDto as HourlySchedule).hourlyInterval;
+    if (!hourlyInterval) {
+      throw new Error('Needs to be a HourlyScheduleDto!');
+    }
+    return new HourlySchedule(scheduleDto, hourlyInterval);
   }
 
   schedule(): DateTime[] {

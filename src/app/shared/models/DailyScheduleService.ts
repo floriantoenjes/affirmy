@@ -2,8 +2,10 @@ import {Schedule} from './Schedule';
 import {DateTime} from 'luxon';
 import {ScheduleService} from './ScheduleService';
 import {Notification} from './Notification';
+import {Injectable} from '@angular/core';
 
-export class DailySchedule extends ScheduleService {
+@Injectable({providedIn: 'root'})
+export class DailyScheduleService extends ScheduleService {
 
   schedule(scheduleDto: Schedule): Notification[] {
     const luxonTime = this.getTimeFromString(scheduleDto);

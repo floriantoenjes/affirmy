@@ -14,7 +14,7 @@ const {LocalNotifications} = Plugins;
 })
 export class NotificationSchedulingService {
 
-  constructor(private store: Store<State>) { }
+  constructor(private store: Store<State>, private affirmationService: AffirmationService) { }
 
   async clearAndInitNotifications(): Promise<void> {
     setTimeout(async () => {
@@ -44,7 +44,7 @@ export class NotificationSchedulingService {
   cancelNotification(affirmationDto: Affirmation): Promise<void> {
     console.log('CANCELING');
 
-    const schedule = new AffirmationService().cancelSchedule(affirmationDto);
+    const schedule = this.affirmationService.cancelSchedule(affirmationDto);
 
     if (schedule) {
       let lastCancel = new Promise<void>((resolve) => resolve());
@@ -62,7 +62,7 @@ export class NotificationSchedulingService {
   }
 
   schedule(affirmationDto: Affirmation): void {
-    const notifications = new AffirmationService().schedule(affirmationDto);
+    const notifications = this.affirmationService.schedule(affirmationDto);
 
     for (const notification of notifications) {
       console.log(`SCHEDULING ${notification.every}ly FOR`,

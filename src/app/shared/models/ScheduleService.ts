@@ -1,7 +1,9 @@
 import {Schedule} from './Schedule';
 import {DateTime} from 'luxon';
 import {Notification} from './Notification';
+import {Injectable} from '@angular/core';
 
+@Injectable({providedIn: 'root'})
 export abstract class ScheduleService {
 
   abstract schedule(scheduleDto: Schedule): Notification[];

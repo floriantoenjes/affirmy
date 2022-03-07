@@ -2,7 +2,9 @@ import {Schedule} from './Schedule';
 import {Affirmation} from './Affirmation';
 import {Notification} from './Notification';
 import {ScheduleClasses} from './ScheduleClasses';
+import {Injectable} from '@angular/core';
 
+@Injectable({providedIn: 'root'})
 export class AffirmationService {
 
   schedule(affirmationDto: Affirmation, scheduleDto?: Schedule): Notification[] {

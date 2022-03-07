@@ -11,7 +11,7 @@ import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
 import {AffirmationService} from '../shared/models/AffirmationService';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
-import {DailySchedule} from '../shared/models/DailySchedule';
+import {DailyScheduleService} from '../shared/models/DailyScheduleService';
 import {ScheduleOptions} from '../shared/models/ScheduleOptions';
 
 @Component({
@@ -35,7 +35,7 @@ export class ScheduleComponent implements OnInit {
   changed = false;
 
   form: FormGroup = new FormGroup({
-    type: new FormControl(typeof DailySchedule),
+    type: new FormControl(typeof DailyScheduleService),
     time: new FormControl(),
     hourlyInterval: new FormControl(),
   });

@@ -4,7 +4,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {startCreateAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 
 @Component({
   selector: 'app-create',
@@ -17,7 +17,7 @@ export class CreateComponent implements OnInit {
   edit = false;
 
   @Input()
-  affirmation: AffirmationDto | undefined;
+  affirmation: Affirmation | undefined;
 
   changed = false;
 
@@ -43,7 +43,7 @@ export class CreateComponent implements OnInit {
 
   createAffirmation(): void {
     if (this.form.valid) {
-      const newAffirmation = new AffirmationDto(
+      const newAffirmation = new Affirmation(
         this.form.get('title')?.value,
         this.form.get('text')?.value
       );

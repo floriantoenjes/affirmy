@@ -1,31 +1,21 @@
-import {ScheduleDto} from './ScheduleDto';
-import {AffirmationDto} from './AffirmationDto';
+import {Schedule} from './Schedule';
 import {Notification} from './Notification';
-import {ScheduleClasses} from './ScheduleClasses';
 
 export class Affirmation {
+  // tslint:disable-next-line:variable-name
+  _id = new Date().toISOString();
+  // tslint:disable-next-line:variable-name
+  _rev = '';
+  title: string;
+  text: string;
+  scheduled = false;
+  scheduleDto: Schedule | undefined;
 
-  schedule(affirmationDto: AffirmationDto, scheduleDto?: ScheduleDto): Notification[] {
-    affirmationDto = {...affirmationDto, scheduled: true};
-    if (affirmationDto.scheduleDto && !scheduleDto) {
-      return new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(affirmationDto.scheduleDto);
-    } else if (scheduleDto) {
-      affirmationDto.scheduleDto = scheduleDto;
+  notifications: Notification[] = [];
 
-      const notifications = new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(scheduleDto);
-      affirmationDto.notifications = notifications;
-
-      return notifications;
-    }
-    throw new Error('A schedule model needs to be present!');
-  }
-
-  cancelSchedule(affirmationDto: AffirmationDto): ScheduleDto | void {
-    affirmationDto = {...affirmationDto, scheduled: false};
-
-    if (affirmationDto.scheduleDto) {
-      return affirmationDto.scheduleDto;
-    }
+  constructor(title: string, text: string) {
+    this.title = title;
+    this.text = text;
   }
 
 }

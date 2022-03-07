@@ -1,11 +1,11 @@
-import {ScheduleDto} from './ScheduleDto';
-import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
+import {DateTime} from 'luxon';
+import {ScheduleService} from './ScheduleService';
 import {Notification} from './Notification';
 
-export class HourlySchedule extends Schedule {
+export class HourlySchedule extends ScheduleService {
 
-  schedule(scheduleDto: ScheduleDto): Notification[] {
+  schedule(scheduleDto: Schedule): Notification[] {
     let luxonTime = this.getTimeFromString(scheduleDto);
 
     if (luxonTime.toMillis() <= DateTime.local().toMillis()) {

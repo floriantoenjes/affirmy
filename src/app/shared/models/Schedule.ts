@@ -1,23 +1,24 @@
-import {ScheduleDto} from './ScheduleDto';
-import {DateTime} from 'luxon';
-import {Notification} from './Notification';
+import {ScheduleOptions} from './ScheduleOptions';
 
-export abstract class Schedule {
+export enum ScheduleType {
+  DAILY,
+  HOURLY
+}
 
-  abstract schedule(scheduleDto: ScheduleDto): Notification[];
+export class Schedule {
+  // tslint:disable-next-line:variable-name
+  _id = new Date().toISOString();
+  // tslint:disable-next-line:variable-name
+  _rev = '';
+  affirmationId: string;
+  scheduleTime: string;
+  scheduleType: ScheduleType;
+  scheduleOptions: ScheduleOptions;
 
-  protected getTimeFromString(scheduleDto: ScheduleDto): DateTime {
-    let luxonTime = DateTime.fromFormat(scheduleDto.scheduleTime, 't');
-    if (!luxonTime.isValid) {
-      luxonTime = DateTime.fromFormat(scheduleDto.scheduleTime, 'T');
-    }
-    console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
-    return luxonTime;
+  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string, scheduleOptions: ScheduleOptions) {
+    this.scheduleType = scheduleType;
+    this.affirmationId = affirmationId;
+    this.scheduleTime = scheduleTime;
+    this.scheduleOptions = scheduleOptions;
   }
-
-  protected generateNotificationId(scheduleDto: ScheduleDto): number {
-    console.log('LN ID', new Date(scheduleDto._id).getTime());
-    return new Date(scheduleDto._id).getTime();
-  }
-
 }

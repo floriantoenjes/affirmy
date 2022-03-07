@@ -1,11 +1,11 @@
-import {ScheduleDto} from './ScheduleDto';
-import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
+import {DateTime} from 'luxon';
+import {ScheduleService} from './ScheduleService';
 import {Notification} from './Notification';
 
-export class DailySchedule extends Schedule {
+export class DailySchedule extends ScheduleService {
 
-  schedule(scheduleDto: ScheduleDto): Notification[] {
+  schedule(scheduleDto: Schedule): Notification[] {
     const luxonTime = this.getTimeFromString(scheduleDto);
 
     const notifications: Notification[] = [];

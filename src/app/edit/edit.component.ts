@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 import {select, Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {getAffirmations} from '../reducers/affirmation.reducer';
@@ -14,13 +14,13 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class EditComponent implements OnInit {
 
-  affirmation$: Observable<AffirmationDto | undefined>;
+  affirmation$: Observable<Affirmation | undefined>;
 
   constructor(private route: ActivatedRoute, private store: Store<State>) {
     this.affirmation$ = store.pipe(
       select(getAffirmations),
       mergeMap(af => af),
-      find((af: AffirmationDto) => {
+      find((af: Affirmation) => {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
           return af._id === id;

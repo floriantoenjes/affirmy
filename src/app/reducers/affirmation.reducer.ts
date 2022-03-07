@@ -1,10 +1,10 @@
 import {Action, createFeatureSelector, createReducer, createSelector, on} from '@ngrx/store';
 import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmation} from '../actions/affirmation.actions';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 import {State} from './index';
 
 export interface AffirmationState {
-  affirmations: AffirmationDto[];
+  affirmations: Affirmation[];
 }
 
 export const initialState = {
@@ -12,7 +12,7 @@ export const initialState = {
     // new Affirmation( 'Do the Dishes', 'Das Geschirr aufräumen'),
     // new Affirmation( 'Walk the Dog', 'Mit dem Hund rausgehen'),
     // new Affirmation( 'Rede nur', 'Ich rede nur, wenn ich auch etwas zu sagen habe.')
-  ] as AffirmationDto[]
+  ] as Affirmation[]
 };
 
 const affirmationReducer = createReducer(
@@ -46,6 +46,6 @@ export const getAffirmations = createSelector(getAffirmationsState, (affirmation
 
 export const getAffirmationById = createSelector(
   getAffirmations,
-  (affirmations: AffirmationDto[], props: any) => affirmations.find(af => af._id === props.id)
+  (affirmations: Affirmation[], props: any) => affirmations.find(af => af._id === props.id)
 );
 

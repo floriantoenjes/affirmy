@@ -4,8 +4,8 @@ import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
 import {getAffirmations} from '../../reducers/affirmation.reducer';
-import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
+import {AffirmationService} from '../models/AffirmationService';
 
 const {LocalNotifications} = Plugins;
 
@@ -41,10 +41,10 @@ export class NotificationSchedulingService {
     }
   }
 
-  cancelNotification(affirmationDto: AffirmationDto): Promise<void> {
+  cancelNotification(affirmationDto: Affirmation): Promise<void> {
     console.log('CANCELING');
 
-    const schedule = new Affirmation().cancelSchedule(affirmationDto);
+    const schedule = new AffirmationService().cancelSchedule(affirmationDto);
 
     if (schedule) {
       let lastCancel = new Promise<void>((resolve) => resolve());
@@ -61,8 +61,8 @@ export class NotificationSchedulingService {
     return new Promise((resolve) => resolve());
   }
 
-  schedule(affirmationDto: AffirmationDto): void {
-    const notifications = new Affirmation().schedule(affirmationDto);
+  schedule(affirmationDto: Affirmation): void {
+    const notifications = new AffirmationService().schedule(affirmationDto);
 
     for (const notification of notifications) {
       console.log(`SCHEDULING ${notification.every}ly FOR`,

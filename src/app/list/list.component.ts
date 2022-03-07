@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {State} from '../reducers';
@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 })
 export class ListComponent implements OnInit {
 
-  affirmations$: Observable<AffirmationDto[]>;
+  affirmations$: Observable<Affirmation[]>;
 
   constructor(public router: Router, store: Store<State>) {
     this.affirmations$ = store.select(getAffirmations);

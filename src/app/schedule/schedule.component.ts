@@ -1,15 +1,15 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 import {State} from '../reducers';
 import {Store} from '@ngrx/store';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {FormControl, FormGroup} from '@angular/forms';
-import {ScheduleDto, ScheduleType} from '../shared/models/ScheduleDto';
+import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
-import {Affirmation} from '../shared/models/Affirmation';
+import {AffirmationService} from '../shared/models/AffirmationService';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
 import {DailySchedule} from '../shared/models/DailySchedule';
 import {ScheduleOptions} from '../shared/models/ScheduleOptions';
@@ -22,9 +22,9 @@ import {ScheduleOptions} from '../shared/models/ScheduleOptions';
 })
 export class ScheduleComponent implements OnInit {
 
-  affirmation$: Observable<AffirmationDto | undefined>;
-  affirmation: AffirmationDto | undefined;
-  schedule: ScheduleDto | undefined;
+  affirmation$: Observable<Affirmation | undefined>;
+  affirmation: Affirmation | undefined;
+  schedule: Schedule | undefined;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
@@ -84,19 +84,19 @@ export class ScheduleComponent implements OnInit {
 
     switch (this.selectedType) {
       case ScheduleType.DAILY:
-        updatedAffirmation = {...this.affirmation} as AffirmationDto;
-        new Affirmation().schedule(
+        updatedAffirmation = {...this.affirmation} as Affirmation;
+        new AffirmationService().schedule(
           updatedAffirmation,
-          new ScheduleDto(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
+          new Schedule(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
             {days: this.scheduleDays} as ScheduleOptions)
         );
         break;
 
       case ScheduleType.HOURLY:
-        updatedAffirmation = {...this.affirmation} as AffirmationDto;
-        new Affirmation().schedule(
+        updatedAffirmation = {...this.affirmation} as Affirmation;
+        new AffirmationService().schedule(
           updatedAffirmation,
-          new ScheduleDto(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
+          new Schedule(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
             {count: this.form.get('hourlyInterval')?.value} as ScheduleOptions)
         );
         break;
@@ -112,7 +112,7 @@ export class ScheduleComponent implements OnInit {
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
     const weekDays = selectedWeekDays.map(swd => this.days.indexOf(swd.value) + 1);
     if (this.schedule) {
-      this.schedule = {...this.schedule, scheduleDays: weekDays} as ScheduleDto;
+      this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
     }
     this.showDaySelect = false;
     this.scheduleDays = weekDays;

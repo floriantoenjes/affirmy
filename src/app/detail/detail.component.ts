@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AffirmationDto} from '../shared/models/AffirmationDto';
+import {Affirmation} from '../shared/models/Affirmation';
 import {Observable, of} from 'rxjs';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {deleteAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
-import {ScheduleDto} from '../shared/models/ScheduleDto';
+import {Schedule} from '../shared/models/Schedule';
 import {getScheduleById} from '../reducers/schedule.reducer';
 import {tap} from 'rxjs/operators';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
@@ -20,8 +20,8 @@ import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.c
 })
 export class DetailComponent implements OnInit {
 
-  affirmation$: Observable<AffirmationDto | undefined>;
-  schedule$: Observable<ScheduleDto | undefined>;
+  affirmation$: Observable<Affirmation | undefined>;
+  schedule$: Observable<Schedule | undefined>;
 
   constructor(private route: ActivatedRoute, private dialog: MatDialog, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.getCurrentAffirmation();
@@ -31,7 +31,7 @@ export class DetailComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  private getCurrentAffirmation(): Observable<AffirmationDto | undefined> {
+  private getCurrentAffirmation(): Observable<Affirmation | undefined> {
     return this.store.select(getAffirmationById, {id: this.route.snapshot.paramMap.get('id')}).pipe(
       tap(af => this.schedule$ = this.store.select(getScheduleById, {id: af?._id}))
     );
@@ -45,7 +45,7 @@ export class DetailComponent implements OnInit {
     this.router.navigate(['schedule'], {relativeTo: this.route});
   }
 
-  delete(affirmation: AffirmationDto): void {
+  delete(affirmation: Affirmation): void {
     this.dialog.open(ConfirmDialogComponent, {width: '300px'}).afterClosed().subscribe(result => {
       if (result === true) {
         this.store.dispatch(deleteAffirmation({affirmation}));
@@ -54,7 +54,7 @@ export class DetailComponent implements OnInit {
     });
   }
 
-  changeActive($event: MatSlideToggleChange, affirmation: AffirmationDto): void {
+  changeActive($event: MatSlideToggleChange, affirmation: Affirmation): void {
     affirmation = {...affirmation, scheduled: $event.checked};
     this.store.dispatch(startUpdateAffirmation({affirmation}));
   }

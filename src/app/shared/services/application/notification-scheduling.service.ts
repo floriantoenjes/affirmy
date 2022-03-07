@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {first} from 'rxjs/operators';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
-import {State} from '../../reducers';
-import {getAffirmations} from '../../reducers/affirmation.reducer';
-import {Affirmation} from '../models/Affirmation';
-import {AffirmationService} from './AffirmationService';
+import {State} from '../../../reducers';
+import {getAffirmations} from '../../../reducers/affirmation.reducer';
+import {Affirmation} from '../../models/Affirmation';
+import {AffirmationService} from '../domain/AffirmationService';
 
 const {LocalNotifications} = Plugins;
 

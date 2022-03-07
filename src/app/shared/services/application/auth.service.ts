@@ -1,9 +1,9 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Subject, throwError} from 'rxjs';
-import {SpinnerService} from './spinner.service';
+import {SpinnerService} from '../gui/spinner.service';
 import {catchError, timeout} from 'rxjs/operators';
-import {environment} from '../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

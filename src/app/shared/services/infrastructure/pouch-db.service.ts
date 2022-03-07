@@ -1,7 +1,7 @@
 import {Injectable, isDevMode} from '@angular/core';
-import {AuthService} from './auth.service';
-import {environment} from '../../../environments/environment';
-import {ProgressBarService} from './progress-bar.service';
+import {AuthService} from '../application/auth.service';
+import {environment} from '../../../../environments/environment';
+import {ProgressBarService} from '../gui/progress-bar.service';
 
 @Injectable({
   providedIn: 'root'

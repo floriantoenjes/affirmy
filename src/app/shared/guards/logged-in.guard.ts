@@ -1,7 +1,7 @@
 import {Injectable, isDevMode} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
 import { Observable } from 'rxjs';
-import {AuthService} from '../services/auth.service';
+import {AuthService} from '../services/application/auth.service';
 import {DateTime} from 'luxon';
 
 @Injectable({

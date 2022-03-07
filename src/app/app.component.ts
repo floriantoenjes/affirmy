@@ -4,14 +4,14 @@ import {State} from './reducers';
 import {Store} from '@ngrx/store';
 import {fetchAffirmations} from './actions/affirmation.actions';
 import {fetchSchedules} from './actions/schedule.actions';
-import {AuthService} from './shared/services/auth.service';
+import {AuthService} from './shared/services/application/auth.service';
 import {Router} from '@angular/router';
-import {PouchDbService} from './shared/services/pouch-db.service';
-import {SpinnerService} from './shared/services/spinner.service';
+import {PouchDbService} from './shared/services/infrastructure/pouch-db.service';
+import {SpinnerService} from './shared/services/gui/spinner.service';
 import {MatSidenav} from '@angular/material/sidenav';
-import {NavbarService} from './shared/services/navbar.service';
+import {NavbarService} from './shared/services/gui/navbar.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {NotificationSchedulingService} from './shared/services/notification-scheduling.service';
+import {NotificationSchedulingService} from './shared/services/application/notification-scheduling.service';
 
 
 

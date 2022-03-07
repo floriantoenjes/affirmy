@@ -1,7 +1,7 @@
-import {Schedule} from '../models/Schedule';
-import {Affirmation} from '../models/Affirmation';
-import {Notification} from '../models/Notification';
-import {ScheduleClasses} from '../models/ScheduleClasses';
+import {Schedule} from '../../models/Schedule';
+import {Affirmation} from '../../models/Affirmation';
+import {Notification} from '../../models/Notification';
+import {ScheduleClasses} from '../../models/ScheduleClasses';
 import {Injectable, Injector} from '@angular/core';
 
 @Injectable({providedIn: 'root'})

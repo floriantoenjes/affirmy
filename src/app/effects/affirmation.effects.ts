@@ -7,9 +7,9 @@ import {from} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Store} from '@ngrx/store';
 import {State} from '../reducers';
-import {PouchDbService} from '../shared/services/pouch-db.service';
+import {PouchDbService} from '../shared/services/infrastructure/pouch-db.service';
 import {Affirmation} from '../shared/models/Affirmation';
-import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
+import {NotificationSchedulingService} from '../shared/services/application/notification-scheduling.service';
 
 @Injectable()
 export class AffirmationEffects {

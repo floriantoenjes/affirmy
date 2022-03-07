@@ -9,9 +9,9 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {Schedule, ScheduleType} from '../shared/models/Schedule';
 import {tap} from 'rxjs/operators';
 import {MatListOption} from '@angular/material/list';
-import {AffirmationService} from '../shared/services/AffirmationService';
+import {AffirmationService} from '../shared/services/domain/AffirmationService';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
-import {DailyScheduleService} from '../shared/services/DailyScheduleService';
+import {DailyScheduleService} from '../shared/services/domain/DailyScheduleService';
 import {ScheduleOptions} from '../shared/models/ScheduleOptions';
 
 @Component({

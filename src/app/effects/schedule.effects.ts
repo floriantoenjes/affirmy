@@ -6,8 +6,8 @@ import * as ScheduleActions from '../actions/schedule.actions';
 import {DateTime} from 'luxon';
 import {environment} from '../../environments/environment';
 import {createSchedule, updateSchedule} from '../actions/schedule.actions';
-import {PouchDbService} from '../shared/services/pouch-db.service';
-import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
+import {PouchDbService} from '../shared/services/infrastructure/pouch-db.service';
+import {NotificationSchedulingService} from '../shared/services/application/notification-scheduling.service';
 
 @Injectable()
 export class ScheduleEffects {

@@ -1,7 +1,7 @@
-import {Schedule} from '../models/Schedule';
+import {Schedule} from '../../models/Schedule';
 import {DateTime} from 'luxon';
 import {ScheduleService} from './ScheduleService';
-import {Notification} from '../models/Notification';
+import {Notification} from '../../models/Notification';
 import {Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})

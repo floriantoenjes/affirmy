@@ -38,7 +38,7 @@ export class NotificationSchedulingService {
     for (const affirmation of affirmations) {
       await this.cancelNotification(affirmation);
       if (affirmation.scheduled) {
-        await this.scheduleNotification(new Affirmation(affirmation));
+        await this.schedule(new Affirmation(affirmation));
       }
     }
   }
@@ -67,10 +67,6 @@ export class NotificationSchedulingService {
     }
 
     return new Promise((resolve) => resolve());
-  }
-
-  async scheduleNotification(affirmation: Affirmation): Promise<void> {
-    this.schedule(affirmation);
   }
 
   schedule(affirmation: Affirmation): void {

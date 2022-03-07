@@ -1,4 +1,4 @@
-import {ScheduleOptions} from './Schedule';
+import {ScheduleOptions} from './ScheduleOptions';
 
 export enum ScheduleType {
   DAILY,

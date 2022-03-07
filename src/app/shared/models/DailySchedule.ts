@@ -1,7 +1,8 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
-import {Schedule, ScheduleOptions} from './Schedule';
+import {Schedule} from './Schedule';
 import {Notification} from './Notification';
+import {ScheduleOptions} from './ScheduleOptions';
 
 export class DailySchedule extends Schedule {
   scheduleDays = [0];
@@ -28,7 +29,7 @@ export class DailySchedule extends Schedule {
 
       const id = this.generateNotificationId() + scheduleDate.weekday;
 
-      notifications.push(new Notification(ScheduleType.DAILY, id, scheduleDate, 'week', 1));
+      notifications.push(new Notification(id, scheduleDate, 'week', 1));
     }
 
     return notifications;

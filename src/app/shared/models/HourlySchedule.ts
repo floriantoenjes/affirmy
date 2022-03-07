@@ -1,7 +1,8 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
-import {Schedule, ScheduleOptions} from './Schedule';
+import {Schedule} from './Schedule';
 import {Notification} from './Notification';
+import {ScheduleOptions} from './ScheduleOptions';
 
 export class HourlySchedule extends Schedule {
   hourlyInterval = 1;
@@ -20,6 +21,6 @@ export class HourlySchedule extends Schedule {
       luxonTime = luxonTime.plus({day: 1});
     }
 
-    return [new Notification(ScheduleType.HOURLY, this.generateNotificationId(), luxonTime, 'hour', this.hourlyInterval)];
+    return [new Notification(this.generateNotificationId(), luxonTime, 'hour', this.hourlyInterval)];
   }
 }

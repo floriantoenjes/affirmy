@@ -1,11 +1,7 @@
 import {ScheduleDto, ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Notification} from './Notification';
-
-export class ScheduleOptions {
-  count?: number;
-  days?: number[];
-}
+import {ScheduleOptions} from './ScheduleOptions';
 
 export class Schedule extends ScheduleDto {
 

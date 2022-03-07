@@ -3,9 +3,7 @@ import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmatio
 import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {State} from './index';
 import {Affirmation} from '../shared/models/Affirmation';
-import {ScheduleType} from '../shared/models/ScheduleDto';
-import {DailySchedule} from '../shared/models/DailySchedule';
-import {HourlySchedule} from '../shared/models/HourlySchedule';
+import {ScheduleClasses} from '../shared/models/ScheduleClasses';
 
 export interface AffirmationState {
   affirmations: AffirmationDto[];
@@ -48,18 +46,12 @@ export const getAffirmations = createSelector(getAffirmationsState, (affirmation
 
     const affirmation = new Affirmation(aff);
 
-    switch (aff.scheduleDto?.scheduleType) {
-      case ScheduleType.DAILY:
-        schedule = aff.scheduleDto as DailySchedule;
-        schedule = new DailySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
-        affirmation.scheduleModel = schedule;
-        break;
-      case ScheduleType.HOURLY:
-        schedule = aff.scheduleDto as HourlySchedule;
-        schedule = new HourlySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
-        affirmation.scheduleModel = schedule;
-        break;
+    if (aff.scheduleDto) {
+      schedule = aff.scheduleDto;
+      schedule = new ScheduleClasses[schedule.scheduleType](schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
+      affirmation.scheduleModel = schedule;
     }
+
     return affirmation;
   }) as Affirmation[];
 });

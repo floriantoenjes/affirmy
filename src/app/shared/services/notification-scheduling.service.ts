@@ -6,8 +6,6 @@ import {State} from '../../reducers';
 import {getAffirmations} from '../../reducers/affirmation.reducer';
 import {AffirmationDto} from '../models/AffirmationDto';
 import {Affirmation} from '../models/Affirmation';
-import {DailySchedule} from '../models/DailySchedule';
-import {HourlySchedule} from '../models/HourlySchedule';
 
 const {LocalNotifications} = Plugins;
 
@@ -48,28 +46,22 @@ export class NotificationSchedulingService {
 
     const schedule = new Affirmation(affirmation).cancelSchedule();
 
-    if (schedule instanceof DailySchedule) {
-      let lastCancel = new Promise<void>(() => {});
-      for (const weekDay of schedule.scheduleDays) {
-          lastCancel = LocalNotifications.cancel({
-            notifications: [{
-                id: schedule.generateNotificationId().toString()
-              }]
-          });
-        }
+    if (schedule) {
+      let lastCancel = new Promise<void>((resolve) => resolve());
+      for (const notification of affirmation.notifications) {
+        lastCancel = LocalNotifications.cancel({
+          notifications: [{
+            id: notification.id.toString()
+          }]
+        });
+      }
       return lastCancel;
-    } else if (schedule instanceof HourlySchedule) {
-      return LocalNotifications.cancel({
-        notifications: [{
-          id: schedule.toString()
-        }]
-      });
     }
 
     return new Promise((resolve) => resolve());
   }
 
-  schedule(affirmation: Affirmation): void {
+schedule(affirmation: Affirmation): void {
     const notifications = affirmation.schedule();
 
     for (const notification of notifications) {

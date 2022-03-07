@@ -20,7 +20,10 @@ export class Affirmation extends AffirmationDto{
       this.scheduleModel = schedule;
       this.scheduleDto = schedule;
 
-      return this.scheduleModel.schedule();
+      const notifications = this.scheduleModel.schedule();
+      this.notifications = notifications;
+
+      return notifications;
     }
     throw new Error('A schedule model needs to be present!');
   }

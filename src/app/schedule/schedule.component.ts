@@ -91,7 +91,7 @@ export class ScheduleComponent implements OnInit {
       case ScheduleType.HOURLY:
         updatedAffirmation = new Affirmation({...this.affirmation});
         updatedAffirmation.schedule(
-          new HourlySchedule(updatedAffirmation._id, this.form.get('time')?.value, this.form.get('hourlyInterval')?.value)
+          new HourlySchedule(updatedAffirmation._id, this.form.get('time')?.value, {count: this.form.get('hourlyInterval')?.value})
         );
         break;
 

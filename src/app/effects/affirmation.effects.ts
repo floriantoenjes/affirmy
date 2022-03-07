@@ -56,7 +56,11 @@ export class AffirmationEffects {
           const rev = response.rev;
           const updatedAffirmation = {...action.affirmation, _rev: rev} as AffirmationDto;
 
-          this.scheduleService.scheduleNotification(new Affirmation(updatedAffirmation));
+          if (updatedAffirmation.scheduled) {
+            this.scheduleService.scheduleNotification(new Affirmation(updatedAffirmation));
+          } else {
+            this.scheduleService.cancelNotification(new Affirmation(updatedAffirmation));
+          }
 
           return updateAffirmation({affirmation: updatedAffirmation});
         })

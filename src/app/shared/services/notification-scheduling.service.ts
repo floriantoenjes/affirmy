@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {first} from 'rxjs/operators';
-import {ScheduleType} from '../models/ScheduleDto';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
@@ -37,11 +36,16 @@ export class NotificationSchedulingService {
     console.log('SELECTOR SUBSCRIPTION', affirmations.length);
 
     for (const affirmation of affirmations) {
-      await this.scheduleNotification(new Affirmation(affirmation));
+      await this.cancelNotification(affirmation);
+      if (affirmation.scheduled) {
+        await this.scheduleNotification(new Affirmation(affirmation));
+      }
     }
   }
 
   cancelNotification(affirmation: AffirmationDto): Promise<void> {
+    console.log('CANCELING');
+
     const schedule = new Affirmation(affirmation).cancelSchedule();
 
     if (schedule instanceof DailySchedule) {
@@ -62,33 +66,18 @@ export class NotificationSchedulingService {
       });
     }
 
-    return new Promise(() => {});
+    return new Promise((resolve) => resolve());
   }
 
   async scheduleNotification(affirmation: Affirmation): Promise<void> {
-    await this.cancelNotification(affirmation);
-
-    if (affirmation.scheduled && affirmation?.scheduleDto) {
-      switch (affirmation.scheduleDto.scheduleType) {
-        case ScheduleType.DAILY:
-          this.scheduleDaily(affirmation);
-          break;
-
-        case ScheduleType.HOURLY:
-          this.scheduleHourly(affirmation);
-          break;
-
-        default:
-          throw new Error(`Unknown schedule type: ${affirmation.scheduleDto.scheduleType}`);
-      }
-    }
+    this.schedule(affirmation);
   }
 
-  scheduleDaily(affirmation: Affirmation): void {
+  schedule(affirmation: Affirmation): void {
     const notifications = affirmation.schedule();
 
     for (const notification of notifications) {
-      console.log('SCHEDULING DAILY FOR',
+      console.log(`SCHEDULING ${notification.every}ly FOR`,
         notification.dateTime.toJSDate(),
         notification.id
       );
@@ -106,24 +95,5 @@ export class NotificationSchedulingService {
         }]
       }).then(() => console.log('SCHEDULED'));
     }
-  }
-
-  scheduleHourly(affirmation: Affirmation): void {
-    const notification = affirmation.schedule()[0];
-
-    console.log('SCHEDULING HOURLY FOR', notification.dateTime.toUTC().toJSDate(), notification.id);
-
-    LocalNotifications.schedule({
-      notifications: [{
-        title: affirmation.title,
-        body: affirmation.text,
-        id: notification.id,
-        schedule: { at: notification.dateTime.toJSDate(), every: notification.every, count: notification.count, repeats: true },
-        sound: undefined,
-        attachments: undefined,
-        actionTypeId: '',
-        extra: null
-      }]
-    }).then(() => console.log('SCHEDULED'));
   }
 }

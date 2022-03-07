@@ -1,24 +1,15 @@
-import {ScheduleType} from './ScheduleDto';
+import {ScheduleDto} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
 import {Notification} from './Notification';
-import {ScheduleOptions} from './ScheduleOptions';
 
 export class DailySchedule extends Schedule {
-  scheduleDays = [0];
 
-  constructor(affirmationId: string, time: string, scheduleOptions: ScheduleOptions) {
-    super(ScheduleType.DAILY, affirmationId, time, scheduleOptions);
-    if (scheduleOptions.days) {
-      this.scheduleDays = scheduleOptions.days;
-    }
-  }
-
-  schedule(): Notification[] {
-    const luxonTime = this.getTimeFromString();
+  schedule(scheduleDto: ScheduleDto): Notification[] {
+    const luxonTime = this.getTimeFromString(scheduleDto);
 
     const notifications: Notification[] = [];
-    for (const weekDay of this.scheduleDays) {
+    for (const weekDay of scheduleDto.scheduleOptions.days) {
       let scheduleDate = luxonTime.set({
         weekday: weekDay
       });
@@ -27,7 +18,7 @@ export class DailySchedule extends Schedule {
         scheduleDate = scheduleDate.plus({week: 1});
       }
 
-      const id = this.generateNotificationId() + scheduleDate.weekday;
+      const id = this.generateNotificationId(scheduleDto) + scheduleDate.weekday;
 
       notifications.push(new Notification(id, scheduleDate, 'week', 1));
     }

@@ -30,25 +30,25 @@ export class NotificationSchedulingService {
   async initScheduleNotifications(): Promise<void> {
     console.log('INIT SCHEDULING');
 
-    const affirmations = await this.store.select(getAffirmations).pipe(first()).toPromise();
-    console.log('SELECTOR SUBSCRIPTION', affirmations.length);
+    const affirmationDtos = await this.store.select(getAffirmations).pipe(first()).toPromise();
+    console.log('SELECTOR SUBSCRIPTION', affirmationDtos.length);
 
-    for (const affirmation of affirmations) {
+    for (const affirmation of affirmationDtos) {
       await this.cancelNotification(affirmation);
       if (affirmation.scheduled) {
-        await this.schedule(new Affirmation(affirmation));
+        await this.schedule(affirmation);
       }
     }
   }
 
-  cancelNotification(affirmation: AffirmationDto): Promise<void> {
+  cancelNotification(affirmationDto: AffirmationDto): Promise<void> {
     console.log('CANCELING');
 
-    const schedule = new Affirmation(affirmation).cancelSchedule();
+    const schedule = new Affirmation().cancelSchedule(affirmationDto);
 
     if (schedule) {
       let lastCancel = new Promise<void>((resolve) => resolve());
-      for (const notification of affirmation.notifications) {
+      for (const notification of affirmationDto.notifications) {
         lastCancel = LocalNotifications.cancel({
           notifications: [{
             id: notification.id.toString()
@@ -61,8 +61,8 @@ export class NotificationSchedulingService {
     return new Promise((resolve) => resolve());
   }
 
-  schedule(affirmation: Affirmation): void {
-    const notifications = affirmation.schedule();
+  schedule(affirmationDto: AffirmationDto): void {
+    const notifications = new Affirmation().schedule(affirmationDto);
 
     for (const notification of notifications) {
       console.log(`SCHEDULING ${notification.every}ly FOR`,
@@ -72,8 +72,8 @@ export class NotificationSchedulingService {
 
       LocalNotifications.schedule({
         notifications: [{
-          title: affirmation.title,
-          body: affirmation.text,
+          title: affirmationDto.title,
+          body: affirmationDto.text,
           id: notification.id,
           schedule: { at: notification.dateTime.toUTC().toJSDate(), every: notification.every, count: notification.count, repeats: true },
           sound: undefined,

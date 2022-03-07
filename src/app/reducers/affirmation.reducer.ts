@@ -2,8 +2,6 @@ import {Action, createFeatureSelector, createReducer, createSelector, on} from '
 import {createAffirmation, deleteAffirmation, loadAffirmations, updateAffirmation} from '../actions/affirmation.actions';
 import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {State} from './index';
-import {Affirmation} from '../shared/models/Affirmation';
-import {ScheduleClasses} from '../shared/models/ScheduleClasses';
 
 export interface AffirmationState {
   affirmations: AffirmationDto[];
@@ -42,22 +40,12 @@ export const getAffirmationsState = createFeatureSelector<State, AffirmationStat
 
 export const getAffirmations = createSelector(getAffirmationsState, (affirmationState: AffirmationState) => {
   return affirmationState.affirmations.map(aff => {
-    let schedule = null;
-
-    const affirmation = new Affirmation(aff);
-
-    if (aff.scheduleDto) {
-      schedule = aff.scheduleDto;
-      schedule = new ScheduleClasses[schedule.scheduleType](schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
-      affirmation.scheduleModel = schedule;
-    }
-
-    return affirmation;
-  }) as Affirmation[];
+    return aff;
+  });
 });
 
 export const getAffirmationById = createSelector(
   getAffirmations,
-  (affirmations: Affirmation[], props: any) => affirmations.find(af => af._id === props.id) as Affirmation
+  (affirmations: AffirmationDto[], props: any) => affirmations.find(af => af._id === props.id)
 );
 

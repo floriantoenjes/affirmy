@@ -12,7 +12,7 @@ import {MatListOption} from '@angular/material/list';
 import {Affirmation} from '../shared/models/Affirmation';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
 import {DailySchedule} from '../shared/models/DailySchedule';
-import {HourlySchedule} from '../shared/models/HourlySchedule';
+import {ScheduleOptions} from '../shared/models/ScheduleOptions';
 
 @Component({
   selector: 'app-schedule',
@@ -55,14 +55,14 @@ export class ScheduleComponent implements OnInit {
           this.form.patchValue({time: affirmation.scheduleDto.scheduleTime});
 
           if (affirmation?.scheduleDto?.scheduleType === ScheduleType.DAILY) {
-            const schedule = affirmation.scheduleDto as DailySchedule;
+            const schedule = affirmation.scheduleDto;
             this.selectedType = ScheduleType.DAILY;
-            this.scheduleDays = schedule.scheduleDays;
-            this.originalScheduleDays = schedule.scheduleDays;
+            this.scheduleDays = schedule.scheduleOptions.days;
+            this.originalScheduleDays = schedule.scheduleOptions.days;
           } else if (affirmation.scheduleDto.scheduleType === ScheduleType.HOURLY) {
-            const schedule = affirmation.scheduleDto as HourlySchedule;
+            const schedule = affirmation.scheduleDto;
             this.selectedType = ScheduleType.HOURLY;
-            this.form.get('hourlyInterval')?.patchValue(schedule.hourlyInterval);
+            this.form.get('hourlyInterval')?.patchValue(schedule.scheduleOptions.count);
           }
         }
         this.schedule = affirmation?.scheduleDto;
@@ -84,16 +84,20 @@ export class ScheduleComponent implements OnInit {
 
     switch (this.selectedType) {
       case ScheduleType.DAILY:
-        updatedAffirmation = new Affirmation({...this.affirmation});
-        updatedAffirmation.schedule(
-          new DailySchedule(updatedAffirmation._id, this.form.get('time')?.value, {days: this.scheduleDays})
+        updatedAffirmation = {...this.affirmation} as AffirmationDto;
+        new Affirmation().schedule(
+          updatedAffirmation,
+          new ScheduleDto(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
+            {days: this.scheduleDays} as ScheduleOptions)
         );
         break;
 
       case ScheduleType.HOURLY:
-        updatedAffirmation = new Affirmation({...this.affirmation});
-        updatedAffirmation.schedule(
-          new HourlySchedule(updatedAffirmation._id, this.form.get('time')?.value, {count: this.form.get('hourlyInterval')?.value})
+        updatedAffirmation = {...this.affirmation} as AffirmationDto;
+        new Affirmation().schedule(
+          updatedAffirmation,
+          new ScheduleDto(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
+            {count: this.form.get('hourlyInterval')?.value} as ScheduleOptions)
         );
         break;
 
@@ -117,8 +121,8 @@ export class ScheduleComponent implements OnInit {
   }
 
   isSelected(weekday: string): boolean {
-    if (this.schedule instanceof DailySchedule) {
-      return !!this.schedule?.scheduleDays.some(d => d === this.days.indexOf(weekday) + 1);
+    if (this.schedule?.scheduleType === ScheduleType.DAILY) {
+      return !!this.schedule?.scheduleOptions.days.some(d => d === this.days.indexOf(weekday) + 1);
     }
     return false;
   }
@@ -155,9 +159,9 @@ export class ScheduleComponent implements OnInit {
     if (formValue.type !== typeof this.schedule
       || formValue.time !== this.schedule?.scheduleTime
       || (formValue.type === ScheduleType.HOURLY &&
-        this.schedule instanceof HourlySchedule && formValue.hourlyInterval !== this.schedule?.hourlyInterval)
+         formValue.hourlyInterval !== this.schedule?.scheduleOptions.count)
       || (formValue.type === ScheduleType.DAILY &&
-        this.schedule instanceof DailySchedule && !this.arraysEqual(this.schedule?.scheduleDays, this.originalScheduleDays))) {
+         !this.arraysEqual(this.schedule?.scheduleOptions.days, this.originalScheduleDays))) {
       this.changed = true;
       console.log('CHANGED');
     } else {

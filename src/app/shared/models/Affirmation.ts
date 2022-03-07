@@ -1,38 +1,30 @@
 import {ScheduleDto} from './ScheduleDto';
 import {AffirmationDto} from './AffirmationDto';
-import {Schedule} from './Schedule';
 import {Notification} from './Notification';
+import {ScheduleClasses} from './ScheduleClasses';
 
-export class Affirmation extends AffirmationDto{
+export class Affirmation {
 
-  scheduleModel?: Schedule;
+  schedule(affirmationDto: AffirmationDto, scheduleDto?: ScheduleDto): Notification[] {
+    affirmationDto = {...affirmationDto, scheduled: true};
+    if (affirmationDto.scheduleDto && !scheduleDto) {
+      return new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(affirmationDto.scheduleDto);
+    } else if (scheduleDto) {
+      affirmationDto.scheduleDto = scheduleDto;
 
-  constructor(affirmationDto: AffirmationDto) {
-    super(affirmationDto.title, affirmationDto.text);
-    Object.assign(this, affirmationDto);
-  }
-
-  schedule(schedule?: Schedule): Notification[] {
-    this.scheduled = true;
-    if (this.scheduleModel && !schedule) {
-      return this.scheduleModel.schedule();
-    } else if (schedule) {
-      this.scheduleModel = schedule;
-      this.scheduleDto = schedule;
-
-      const notifications = this.scheduleModel.schedule();
-      this.notifications = notifications;
+      const notifications = new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(scheduleDto);
+      affirmationDto.notifications = notifications;
 
       return notifications;
     }
     throw new Error('A schedule model needs to be present!');
   }
 
-  cancelSchedule(): ScheduleDto | void {
-    this.scheduled = false;
+  cancelSchedule(affirmationDto: AffirmationDto): ScheduleDto | void {
+    affirmationDto = {...affirmationDto, scheduled: false};
 
-    if (this.scheduleDto) {
-      return this.scheduleDto;
+    if (affirmationDto.scheduleDto) {
+      return affirmationDto.scheduleDto;
     }
   }
 

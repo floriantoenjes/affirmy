@@ -10,7 +10,6 @@ import {State} from '../reducers';
 import {PouchDbService} from '../shared/services/pouch-db.service';
 import {AffirmationDto} from '../shared/models/AffirmationDto';
 import {NotificationSchedulingService} from '../shared/services/notification-scheduling.service';
-import {Affirmation} from '../shared/models/Affirmation';
 
 @Injectable()
 export class AffirmationEffects {
@@ -57,9 +56,9 @@ export class AffirmationEffects {
           const updatedAffirmation = {...action.affirmation, _rev: rev} as AffirmationDto;
 
           if (updatedAffirmation.scheduled) {
-            this.scheduleService.schedule(new Affirmation(updatedAffirmation));
+            this.scheduleService.schedule(updatedAffirmation);
           } else {
-            this.scheduleService.cancelNotification(new Affirmation(updatedAffirmation));
+            this.scheduleService.cancelNotification(updatedAffirmation);
           }
 
           return updateAffirmation({affirmation: updatedAffirmation});

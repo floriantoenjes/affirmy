@@ -1,4 +1,7 @@
 export class ScheduleOptions {
-  count?: number;
-  days?: number[];
+  count = 1;
+  days = [0];
+
+  constructor() {
+  }
 }

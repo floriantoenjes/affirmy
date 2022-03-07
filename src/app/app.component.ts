@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import * as PouchDb from 'pouchdb-browser';
 import {State} from './reducers';
 import {Store} from '@ngrx/store';
@@ -18,7 +18,8 @@ import {NotificationSchedulingService} from './shared/services/application/notif
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit {
   title = 'affirmy';

@@ -42,7 +42,8 @@ export class ScheduleComponent implements OnInit {
 
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
+  constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>,
+              private affirmationService: AffirmationService) {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
       tap(af => this.affirmation = af)
     );
@@ -85,7 +86,7 @@ export class ScheduleComponent implements OnInit {
     switch (this.selectedType) {
       case ScheduleType.DAILY:
         updatedAffirmation = {...this.affirmation} as Affirmation;
-        new AffirmationService().schedule(
+        this.affirmationService.schedule(
           updatedAffirmation,
           new Schedule(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
             {days: this.scheduleDays} as ScheduleOptions)
@@ -94,7 +95,7 @@ export class ScheduleComponent implements OnInit {
 
       case ScheduleType.HOURLY:
         updatedAffirmation = {...this.affirmation} as Affirmation;
-        new AffirmationService().schedule(
+        this.affirmationService.schedule(
           updatedAffirmation,
           new Schedule(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
             {count: this.form.get('hourlyInterval')?.value} as ScheduleOptions)

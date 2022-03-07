@@ -1,14 +1,16 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
-import {Schedule} from './Schedule';
+import {Schedule, ScheduleOptions} from './Schedule';
 import {Notification} from './Notification';
 
 export class HourlySchedule extends Schedule {
-  hourlyInterval: number;
+  hourlyInterval = 1;
 
-  constructor(affirmationId: string, time: string, hourlyInterval: number) {
-    super(ScheduleType.HOURLY, affirmationId, time);
-    this.hourlyInterval = hourlyInterval;
+  constructor(affirmationId: string, time: string, scheduleOptions: ScheduleOptions) {
+    super(ScheduleType.HOURLY, affirmationId, time, scheduleOptions);
+    if (scheduleOptions.count) {
+      this.hourlyInterval = scheduleOptions.count;
+    }
   }
 
   schedule(): Notification[] {

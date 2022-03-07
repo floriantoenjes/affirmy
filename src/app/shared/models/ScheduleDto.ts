@@ -1,3 +1,4 @@
+import {ScheduleOptions} from './Schedule';
 
 export enum ScheduleType {
   DAILY,
@@ -12,10 +13,12 @@ export class ScheduleDto {
   affirmationId: string;
   scheduleTime: string;
   scheduleType: ScheduleType;
+  scheduleOptions: ScheduleOptions;
 
-  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string) {
+  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string, scheduleOptions: ScheduleOptions) {
     this.scheduleType = scheduleType;
     this.affirmationId = affirmationId;
     this.scheduleTime = scheduleTime;
+    this.scheduleOptions = scheduleOptions;
   }
 }

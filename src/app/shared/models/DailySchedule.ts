@@ -1,14 +1,16 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
-import {Schedule} from './Schedule';
+import {Schedule, ScheduleOptions} from './Schedule';
 import {Notification} from './Notification';
 
 export class DailySchedule extends Schedule {
-  scheduleDays: string[];
+  scheduleDays = ['Monday'];
 
-  constructor(affirmationId: string, time: string, scheduleDays: string[]) {
-    super(ScheduleType.DAILY, affirmationId, time);
-    this.scheduleDays = scheduleDays;
+  constructor(affirmationId: string, time: string, scheduleOptions: ScheduleOptions) {
+    super(ScheduleType.DAILY, affirmationId, time, scheduleOptions);
+    if (scheduleOptions.days) {
+      this.scheduleDays = scheduleOptions.days;
+    }
   }
 
   schedule(): Notification[] {

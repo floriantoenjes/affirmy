@@ -84,7 +84,7 @@ export class ScheduleComponent implements OnInit {
       case ScheduleType.DAILY:
         updatedAffirmation = new Affirmation({...this.affirmation});
         updatedAffirmation.schedule(
-          new DailySchedule(updatedAffirmation._id, this.form.get('time')?.value, this.scheduleDays)
+          new DailySchedule(updatedAffirmation._id, this.form.get('time')?.value, {days: this.scheduleDays})
         );
         break;
 

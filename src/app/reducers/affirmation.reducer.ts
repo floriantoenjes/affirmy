@@ -51,12 +51,12 @@ export const getAffirmations = createSelector(getAffirmationsState, (affirmation
     switch (aff.scheduleDto?.scheduleType) {
       case ScheduleType.DAILY:
         schedule = aff.scheduleDto as DailySchedule;
-        schedule = new DailySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleDays);
+        schedule = new DailySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
         affirmation.scheduleModel = schedule;
         break;
       case ScheduleType.HOURLY:
         schedule = aff.scheduleDto as HourlySchedule;
-        schedule = new HourlySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.hourlyInterval);
+        schedule = new HourlySchedule(schedule.affirmationId, schedule.scheduleTime, schedule.scheduleOptions);
         affirmation.scheduleModel = schedule;
         break;
     }

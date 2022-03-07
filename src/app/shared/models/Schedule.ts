@@ -2,10 +2,15 @@ import {ScheduleDto, ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Notification} from './Notification';
 
+export class ScheduleOptions {
+  count?: number;
+  days?: string[];
+}
+
 export class Schedule extends ScheduleDto {
 
-  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string) {
-    super(scheduleType, affirmationId, scheduleTime);
+  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string, scheduleOptions: ScheduleOptions) {
+    super(scheduleType, affirmationId, scheduleTime, scheduleOptions);
   }
 
   schedule(): Notification[] {

@@ -3,17 +3,15 @@ import {DateTime} from 'luxon';
 import {Notification} from './Notification';
 import {ScheduleOptions} from './ScheduleOptions';
 
-export class Schedule extends ScheduleDto {
+export abstract class Schedule extends ScheduleDto {
 
-  constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string, scheduleOptions: ScheduleOptions) {
+  protected constructor(scheduleType: ScheduleType, affirmationId: string, scheduleTime: string, scheduleOptions: ScheduleOptions) {
     super(scheduleType, affirmationId, scheduleTime, scheduleOptions);
   }
 
-  schedule(): Notification[] {
-    throw new Error('No implementation');
-  }
+  abstract schedule(): Notification[];
 
-  getTimeFromString(): DateTime {
+  protected getTimeFromString(): DateTime {
     let luxonTime = DateTime.fromFormat(this.scheduleTime, 't');
     if (!luxonTime.isValid) {
       luxonTime = DateTime.fromFormat(this.scheduleTime, 'T');
@@ -22,7 +20,7 @@ export class Schedule extends ScheduleDto {
     return luxonTime;
   }
 
-  generateNotificationId(): number {
+  protected generateNotificationId(): number {
     console.log('LN ID', new Date(this._id).getTime());
     return new Date(this._id).getTime();
   }

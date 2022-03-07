@@ -61,7 +61,7 @@ export class NotificationSchedulingService {
     return new Promise((resolve) => resolve());
   }
 
-schedule(affirmation: Affirmation): void {
+  schedule(affirmation: Affirmation): void {
     const notifications = affirmation.schedule();
 
     for (const notification of notifications) {

@@ -40,6 +40,8 @@ export class ScheduleComponent implements OnInit {
     hourlyInterval: new FormControl(),
   });
 
+  days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
   constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>) {
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
       tap(af => this.affirmation = af)
@@ -104,8 +106,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const weekDays = selectedWeekDays.map(swd => days.indexOf(swd.value) + 1);
+    const weekDays = selectedWeekDays.map(swd => this.days.indexOf(swd.value) + 1);
     if (this.schedule) {
       this.schedule = {...this.schedule, scheduleDays: weekDays} as ScheduleDto;
     }
@@ -116,15 +117,14 @@ export class ScheduleComponent implements OnInit {
   }
 
   isSelected(weekday: string): boolean {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     if (this.schedule instanceof DailySchedule) {
-      return !!this.schedule?.scheduleDays.some(d => d === days.indexOf(weekday) + 1);
+      return !!this.schedule?.scheduleDays.some(d => d === this.days.indexOf(weekday) + 1);
     }
     return false;
   }
 
   selectedWeekDaysAsString(): string | undefined {
-    return this.scheduleDays.join(', ');
+    return this.scheduleDays.map(dayIndex => this.days[dayIndex - 1]).join(', ');
   }
 
   switchType(): void {

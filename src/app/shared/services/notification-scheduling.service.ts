@@ -43,6 +43,9 @@ export class NotificationSchedulingService {
 
   cancelNotification(affirmation: AffirmationDto): Promise<void> {
     console.log('CANCELING');
+    if (!affirmation.scheduled) {
+      return new Promise((resolve => resolve()));
+    }
 
     const schedule = new Affirmation(affirmation).cancelSchedule();
 

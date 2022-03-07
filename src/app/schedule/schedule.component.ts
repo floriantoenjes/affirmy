@@ -86,20 +86,20 @@ export class ScheduleComponent implements OnInit {
     switch (this.selectedType) {
       case ScheduleType.DAILY:
         updatedAffirmation = {...this.affirmation} as Affirmation;
-        this.affirmationService.schedule(
+        updatedAffirmation = this.affirmationService.schedule(
           updatedAffirmation,
           new Schedule(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
             {days: this.scheduleDays} as ScheduleOptions)
-        );
+        )[0];
         break;
 
       case ScheduleType.HOURLY:
         updatedAffirmation = {...this.affirmation} as Affirmation;
-        this.affirmationService.schedule(
+        updatedAffirmation = this.affirmationService.schedule(
           updatedAffirmation,
           new Schedule(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
             {count: this.form.get('hourlyInterval')?.value} as ScheduleOptions)
-        );
+        )[0];
         break;
 
       default:

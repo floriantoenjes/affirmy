@@ -7,17 +7,17 @@ import {Injectable} from '@angular/core';
 @Injectable({providedIn: 'root'})
 export class AffirmationService {
 
-  schedule(affirmationDto: Affirmation, scheduleDto?: Schedule): Notification[] {
+  schedule(affirmationDto: Affirmation, scheduleDto?: Schedule): [Affirmation, Notification[]] {
     affirmationDto = {...affirmationDto, scheduled: true};
     if (affirmationDto.scheduleDto && !scheduleDto) {
-      return new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(affirmationDto.scheduleDto);
+      return [affirmationDto, new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(affirmationDto.scheduleDto)];
     } else if (scheduleDto) {
       affirmationDto.scheduleDto = scheduleDto;
 
       const notifications = new ScheduleClasses[affirmationDto.scheduleDto.scheduleType]().schedule(scheduleDto);
       affirmationDto.notifications = notifications;
 
-      return notifications;
+      return [affirmationDto, notifications];
     }
     throw new Error('A schedule model needs to be present!');
   }

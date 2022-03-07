@@ -62,7 +62,7 @@ export class NotificationSchedulingService {
   }
 
   schedule(affirmationDto: Affirmation): void {
-    const notifications = this.affirmationService.schedule(affirmationDto);
+    const notifications = this.affirmationService.schedule(affirmationDto)[1];
 
     for (const notification of notifications) {
       console.log(`SCHEDULING ${notification.every}ly FOR`,

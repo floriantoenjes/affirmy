@@ -1,5 +1,5 @@
-import {DailyScheduleService} from './DailyScheduleService';
-import {HourlyScheduleService} from './HourlyScheduleService';
+import {DailyScheduleService} from '../services/DailyScheduleService';
+import {HourlyScheduleService} from '../services/HourlyScheduleService';
 
 export const ScheduleClasses = {
   0: DailyScheduleService,

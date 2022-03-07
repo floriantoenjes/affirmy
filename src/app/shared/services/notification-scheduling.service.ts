@@ -5,7 +5,7 @@ import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
 import {getAffirmations} from '../../reducers/affirmation.reducer';
 import {Affirmation} from '../models/Affirmation';
-import {AffirmationService} from '../models/AffirmationService';
+import {AffirmationService} from './AffirmationService';
 
 const {LocalNotifications} = Plugins;
 

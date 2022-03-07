@@ -1,7 +1,7 @@
 import {ScheduleDto} from './ScheduleDto';
 import {AffirmationDto} from './AffirmationDto';
-import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
+import {Notification} from './Notification';
 
 export class Affirmation extends AffirmationDto{
 
@@ -12,7 +12,7 @@ export class Affirmation extends AffirmationDto{
     Object.assign(this, affirmationDto);
   }
 
-  schedule(schedule?: Schedule): DateTime[] {
+  schedule(schedule?: Schedule): Notification[] {
     this.scheduled = true;
     if (this.scheduleModel && !schedule) {
       return this.scheduleModel.schedule();

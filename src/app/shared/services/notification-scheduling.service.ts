@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {first} from 'rxjs/operators';
-import {ScheduleDto, ScheduleType} from '../models/ScheduleDto';
+import {ScheduleType} from '../models/ScheduleDto';
 import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../reducers';
@@ -43,26 +43,26 @@ export class NotificationSchedulingService {
 
   cancelNotification(affirmation: AffirmationDto): Promise<void> {
     const schedule = new Affirmation(affirmation).cancelSchedule();
-    if (!schedule) {
-      return new Promise(() => {});
-    }
+
     if (schedule instanceof DailySchedule) {
       let lastCancel = new Promise<void>(() => {});
       for (const weekDay of schedule.scheduleDays) {
           lastCancel = LocalNotifications.cancel({
             notifications: [{
-                id: `${this.generateNotificationId(schedule)}${schedule.getWeekdayNumber(weekDay)}`
+                id: schedule.generateNotificationId().toString()
               }]
           });
         }
       return lastCancel;
+    } else if (schedule instanceof HourlySchedule) {
+      return LocalNotifications.cancel({
+        notifications: [{
+          id: schedule.toString()
+        }]
+      });
     }
 
-    return LocalNotifications.cancel({
-      notifications: [{
-          id: this.generateNotificationId(schedule).toString()
-        }]
-    });
+    return new Promise(() => {});
   }
 
   async scheduleNotification(affirmation: Affirmation): Promise<void> {
@@ -85,25 +85,20 @@ export class NotificationSchedulingService {
   }
 
   scheduleDaily(affirmation: Affirmation): void {
-    if (!(affirmation.scheduleModel instanceof DailySchedule)) {
-      return;
-    }
+    const notifications = affirmation.schedule();
 
-    const scheduleModel = affirmation.scheduleModel;
-    const scheduleDays = affirmation.schedule();
-
-    for (const scheduleDate of scheduleDays) {
+    for (const notification of notifications) {
       console.log('SCHEDULING DAILY FOR',
-        scheduleDate.toJSDate(),
-        +`${this.generateNotificationId(scheduleModel)}${scheduleModel.getWeekdayNumber(scheduleDate.weekdayLong)}`
+        notification.dateTime.toJSDate(),
+        notification.id
       );
 
       LocalNotifications.schedule({
         notifications: [{
           title: affirmation.title,
           body: affirmation.text,
-          id: +`${this.generateNotificationId(scheduleModel)}${scheduleModel.getWeekdayNumber(scheduleDate.weekdayLong)}`,
-          schedule: { at: scheduleDate.toUTC().toJSDate(), every: 'week', count: 1, repeats: true },
+          id: notification.id,
+          schedule: { at: notification.dateTime.toUTC().toJSDate(), every: notification.every, count: notification.count, repeats: true },
           sound: undefined,
           attachments: undefined,
           actionTypeId: '',
@@ -114,21 +109,16 @@ export class NotificationSchedulingService {
   }
 
   scheduleHourly(affirmation: Affirmation): void {
-    if (!(affirmation.scheduleModel instanceof HourlySchedule)) {
-      return;
-    }
+    const notification = affirmation.schedule()[0];
 
-    const scheduleModel = affirmation.scheduleModel;
-    const luxonTime = affirmation.schedule()[0];
-
-    console.log('SCHEDULING HOURLY FOR', luxonTime.toUTC().toJSDate(), this.generateNotificationId(scheduleModel));
+    console.log('SCHEDULING HOURLY FOR', notification.dateTime.toUTC().toJSDate(), notification.id);
 
     LocalNotifications.schedule({
       notifications: [{
         title: affirmation.title,
         body: affirmation.text,
-        id: this.generateNotificationId(scheduleModel),
-        schedule: { at: luxonTime.toJSDate(), every: 'hour', count: scheduleModel.hourlyInterval, repeats: true },
+        id: notification.id,
+        schedule: { at: notification.dateTime.toJSDate(), every: notification.every, count: notification.count, repeats: true },
         sound: undefined,
         attachments: undefined,
         actionTypeId: '',
@@ -136,10 +126,4 @@ export class NotificationSchedulingService {
       }]
     }).then(() => console.log('SCHEDULED'));
   }
-
-  generateNotificationId(schedule: ScheduleDto): number {
-    console.log('LN ID', new Date(schedule._id).getTime());
-    return new Date(schedule._id).getTime();
-  }
-
 }

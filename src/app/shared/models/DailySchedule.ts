@@ -1,6 +1,7 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
+import {Notification} from './Notification';
 
 export class DailySchedule extends Schedule {
   scheduleDays: string[];
@@ -10,10 +11,10 @@ export class DailySchedule extends Schedule {
     this.scheduleDays = scheduleDays;
   }
 
-  schedule(): DateTime[] {
+  schedule(): Notification[] {
     const luxonTime = this.getTimeFromString();
 
-    const scheduleDays = [];
+    const notifications: Notification[] = [];
     for (const weekDay of this.scheduleDays) {
       let scheduleDate = luxonTime.set({
         weekday: this.getWeekdayNumber(weekDay),
@@ -23,9 +24,11 @@ export class DailySchedule extends Schedule {
         scheduleDate = scheduleDate.plus({week: 1});
       }
 
-      scheduleDays.push(scheduleDate);
+      const id = this.generateNotificationId() + this.getWeekdayNumber(scheduleDate.weekdayLong);
+
+      notifications.push(new Notification(ScheduleType.DAILY, id, scheduleDate, 'week', 1));
     }
 
-    return scheduleDays;
+    return notifications;
   }
 }

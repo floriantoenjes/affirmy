@@ -1,5 +1,6 @@
 import {ScheduleDto, ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
+import {Notification} from './Notification';
 
 export class Schedule extends ScheduleDto {
 
@@ -7,7 +8,7 @@ export class Schedule extends ScheduleDto {
     super(scheduleType, affirmationId, scheduleTime);
   }
 
-  schedule(): DateTime[] {
+  schedule(): Notification[] {
     throw new Error('No implementation');
   }
 
@@ -19,6 +20,12 @@ export class Schedule extends ScheduleDto {
     console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
     return luxonTime;
   }
+
+  generateNotificationId(): number {
+    console.log('LN ID', new Date(this._id).getTime());
+    return new Date(this._id).getTime();
+  }
+
 
   getWeekdayNumber(weekday: string): number {
     const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

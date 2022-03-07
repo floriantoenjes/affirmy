@@ -1,6 +1,7 @@
 import {ScheduleType} from './ScheduleDto';
 import {DateTime} from 'luxon';
 import {Schedule} from './Schedule';
+import {Notification} from './Notification';
 
 export class HourlySchedule extends Schedule {
   hourlyInterval: number;
@@ -10,13 +11,13 @@ export class HourlySchedule extends Schedule {
     this.hourlyInterval = hourlyInterval;
   }
 
-  schedule(): DateTime[] {
+  schedule(): Notification[] {
     let luxonTime = this.getTimeFromString();
 
     if (luxonTime.toMillis() <= DateTime.local().toMillis()) {
       luxonTime = luxonTime.plus({day: 1});
     }
 
-    return [luxonTime];
+    return [new Notification(ScheduleType.HOURLY, this.generateNotificationId(), luxonTime, 'hour', this.hourlyInterval)];
   }
 }

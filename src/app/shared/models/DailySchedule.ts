@@ -4,7 +4,7 @@ import {Schedule, ScheduleOptions} from './Schedule';
 import {Notification} from './Notification';
 
 export class DailySchedule extends Schedule {
-  scheduleDays = ['Monday'];
+  scheduleDays = [0];
 
   constructor(affirmationId: string, time: string, scheduleOptions: ScheduleOptions) {
     super(ScheduleType.DAILY, affirmationId, time, scheduleOptions);
@@ -19,14 +19,14 @@ export class DailySchedule extends Schedule {
     const notifications: Notification[] = [];
     for (const weekDay of this.scheduleDays) {
       let scheduleDate = luxonTime.set({
-        weekday: this.getWeekdayNumber(weekDay),
+        weekday: weekDay
       });
 
       if (scheduleDate.toMillis() <= DateTime.local().toMillis()) {
         scheduleDate = scheduleDate.plus({week: 1});
       }
 
-      const id = this.generateNotificationId() + this.getWeekdayNumber(scheduleDate.weekdayLong);
+      const id = this.generateNotificationId() + scheduleDate.weekday;
 
       notifications.push(new Notification(ScheduleType.DAILY, id, scheduleDate, 'week', 1));
     }

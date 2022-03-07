@@ -4,7 +4,7 @@ import {Notification} from './Notification';
 
 export class ScheduleOptions {
   count?: number;
-  days?: string[];
+  days?: number[];
 }
 
 export class Schedule extends ScheduleDto {
@@ -31,9 +31,4 @@ export class Schedule extends ScheduleDto {
     return new Date(this._id).getTime();
   }
 
-
-  getWeekdayNumber(weekday: string): number {
-    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    return weekDays.indexOf(weekday) + 1;
-  }
 }

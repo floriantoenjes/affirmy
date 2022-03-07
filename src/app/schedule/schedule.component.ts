@@ -29,8 +29,8 @@ export class ScheduleComponent implements OnInit {
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
 
-  originalScheduleDays: string[] = [];
-  scheduleDays: string[] = [];
+  originalScheduleDays: number[] = [];
+  scheduleDays: number[] = [];
 
   changed = false;
 
@@ -104,7 +104,8 @@ export class ScheduleComponent implements OnInit {
   }
 
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
-    const weekDays = selectedWeekDays.map(swd => swd.value);
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const weekDays = selectedWeekDays.map(swd => days.indexOf(swd.value) + 1);
     if (this.schedule) {
       this.schedule = {...this.schedule, scheduleDays: weekDays} as ScheduleDto;
     }
@@ -115,8 +116,9 @@ export class ScheduleComponent implements OnInit {
   }
 
   isSelected(weekday: string): boolean {
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     if (this.schedule instanceof DailySchedule) {
-      return !!this.schedule?.scheduleDays.some(d => d === weekday);
+      return !!this.schedule?.scheduleDays.some(d => d === days.indexOf(weekday) + 1);
     }
     return false;
   }
@@ -168,7 +170,7 @@ export class ScheduleComponent implements OnInit {
     this.router.navigate(['..'], {relativeTo: this.route});
   }
 
-  arraysEqual(a1: Array<string> | undefined, a2: Array<string> | undefined): boolean {
+  arraysEqual(a1: Array<number> | undefined, a2: Array<number> | undefined): boolean {
     console.log(a1, a2);
 
     if (!a1 || !a2) {

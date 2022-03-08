@@ -7,8 +7,6 @@ import {State} from '../reducers';
 import {getAffirmationById} from '../reducers/affirmation.reducer';
 import {deleteAffirmation, startUpdateAffirmation} from '../actions/affirmation.actions';
 import {Schedule} from '../shared/models/Schedule';
-import {getScheduleById} from '../reducers/schedule.reducer';
-import {tap} from 'rxjs/operators';
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../dialogs/confirm-dialog/confirm-dialog.component';
@@ -32,9 +30,7 @@ export class DetailComponent implements OnInit {
   }
 
   private getCurrentAffirmation(): Observable<Affirmation | undefined> {
-    return this.store.select(getAffirmationById, {id: this.route.snapshot.paramMap.get('id')}).pipe(
-      tap(af => this.schedule$ = this.store.select(getScheduleById, {id: af?._id}))
-    );
+    return this.store.select(getAffirmationById, {id: this.route.snapshot.paramMap.get('id')});
   }
 
   navigateToEdit(): void {

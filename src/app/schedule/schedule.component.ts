@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Injector, OnInit, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {Affirmation} from '../shared/models/Affirmation';
@@ -13,6 +13,8 @@ import {AffirmationService} from '../shared/services/domain/AffirmationService';
 import {startUpdateAffirmation} from '../actions/affirmation.actions';
 import {DailyScheduleService} from '../shared/services/domain/DailyScheduleService';
 import {ScheduleOptions} from '../shared/models/ScheduleOptions';
+import {ScheduleService} from '../shared/services/domain/ScheduleService';
+import {ScheduleClasses} from '../shared/models/ScheduleClasses';
 
 @Component({
   selector: 'app-schedule',
@@ -34,6 +36,8 @@ export class ScheduleComponent implements OnInit {
 
   changed = false;
 
+  scheduleService: ScheduleService;
+
   form: FormGroup = new FormGroup({
     type: new FormControl(typeof DailyScheduleService),
     time: new FormControl(),
@@ -42,8 +46,14 @@ export class ScheduleComponent implements OnInit {
 
   days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  constructor(public route: ActivatedRoute, public router: Router, private store: Store<State>,
+  constructor(public route: ActivatedRoute,
+              public router: Router,
+              private store: Store<State>,
+              private injector: Injector,
               private affirmationService: AffirmationService) {
+
+    this.scheduleService = this.injector.get(ScheduleClasses[this.selectedType]);
+
     this.affirmation$ = this.store.select(getAffirmationById, {id: route.snapshot.paramMap.get('id')}).pipe(
       tap(af => this.affirmation = af)
     );
@@ -67,6 +77,7 @@ export class ScheduleComponent implements OnInit {
           }
         }
         this.schedule = affirmation?.scheduleDto;
+        this.scheduleService = this.injector.get(ScheduleClasses[this.selectedType]);
       })
     ).subscribe();
   }
@@ -83,28 +94,13 @@ export class ScheduleComponent implements OnInit {
 
     let updatedAffirmation;
 
-    switch (this.selectedType) {
-      case ScheduleType.DAILY:
-        updatedAffirmation = {...this.affirmation} as Affirmation;
-        updatedAffirmation = this.affirmationService.schedule(
-          updatedAffirmation,
-          new Schedule(ScheduleType.DAILY, updatedAffirmation._id, this.form.get('time')?.value,
-            {days: this.scheduleDays} as ScheduleOptions)
-        )[0];
-        break;
-
-      case ScheduleType.HOURLY:
-        updatedAffirmation = {...this.affirmation} as Affirmation;
-        updatedAffirmation = this.affirmationService.schedule(
-          updatedAffirmation,
-          new Schedule(ScheduleType.HOURLY, updatedAffirmation._id, this.form.get('time')?.value,
-            {count: this.form.get('hourlyInterval')?.value} as ScheduleOptions)
-        )[0];
-        break;
-
-      default:
-        throw new Error(`Unknown schedule type: ${this.selectedType} !`);
-    }
+    updatedAffirmation = {...this.affirmation} as Affirmation;
+    updatedAffirmation = this.affirmationService.schedule(
+      updatedAffirmation,
+      this.scheduleService.createSchedule(this.form.get('time')?.value, {
+        days: this.scheduleDays, count: this.form.get('hourlyInterval')?.value
+      } as ScheduleOptions)
+    )[0];
 
     this.store.dispatch(startUpdateAffirmation({affirmation: {...updatedAffirmation}}));
     this.router.navigate(['..'], {relativeTo: this.route});
@@ -144,6 +140,7 @@ export class ScheduleComponent implements OnInit {
         break;
     }
     this.hasChanges();
+    this.scheduleService = this.injector.get(ScheduleClasses[this.selectedType]);
   }
 
   hasChanges(): void {

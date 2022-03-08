@@ -39,8 +39,3 @@ export const getSchedulesState = createFeatureSelector<State, ScheduleState>('sc
 export const getSchedules = createSelector(getSchedulesState, (scheduleState: ScheduleState) => {
   return scheduleState.schedules;
 });
-
-export const getScheduleById = createSelector(
-  getSchedules,
-  (schedules: Schedule[], props: any) => schedules.find(sc => sc.affirmationId === props.id)
-);

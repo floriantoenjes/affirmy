@@ -2,9 +2,12 @@ import {Schedule} from '../../models/Schedule';
 import {DateTime} from 'luxon';
 import {Notification} from '../../models/Notification';
 import {Injectable} from '@angular/core';
+import {ScheduleOptions} from '../../models/ScheduleOptions';
 
 @Injectable({providedIn: 'root'})
 export abstract class ScheduleService {
+
+  abstract createSchedule(scheduleTime: string, scheduleOptions: ScheduleOptions): Schedule;
 
   abstract schedule(scheduleDto: Schedule): Notification[];
 

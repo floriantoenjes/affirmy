@@ -4,8 +4,12 @@
 <div class="container bg-mat">
   <main class="h-full mt-2">
     <article>
-      <mat-selection-list [multiple]=false>
-        <mat-list-option *ngFor="let affirmation of affirmations$ | async" (click)="router.navigate(['detail', affirmation._id])">
+      <mat-selection-list [multiple]=false cdkDropList (cdkDropListDropped)="drop($event)">
+        <mat-list-option *ngFor="let affirmation of affirmations"
+                         (click)="openAffirmation(affirmation)"
+                         cdkDrag
+                         (cdkDragStarted)="dragStarted()"
+                         class="bg-mat">
           <p class="text-center text-xl">{{affirmation.title}}</p>
           <mat-divider></mat-divider>
         </mat-list-option>

@@ -38,6 +38,7 @@ import { HeaderComponent } from './header/header.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatProgressBarModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    DragDropModule,
   ],
   providers: [
     {

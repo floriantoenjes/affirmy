@@ -7,4 +7,6 @@ export const environment = {
 
   pouchDbAffirmationsPrefix: 'affirmations',
   pouchDbSchedulesPrefix: 'schedules',
+
+  dbSyncTimeoutInMs: 10000
 };

@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {first} from 'rxjs/operators';
-import {Plugins} from '@capacitor/core';
 import {Store} from '@ngrx/store';
 import {State} from '../../../reducers';
 import {getAffirmations} from '../../../reducers/affirmation.reducer';
 import {Affirmation} from '../../models/Affirmation';
 import {AffirmationService} from '../domain/AffirmationService';
-
-const {LocalNotifications} = Plugins;
+import {LocalNotifications} from '@capacitor/local-notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +49,7 @@ export class NotificationSchedulingService {
       for (const notification of affirmationDto.notifications) {
         lastCancel = LocalNotifications.cancel({
           notifications: [{
-            id: notification.id.toString()
+            id: notification.id
           }]
         });
       }

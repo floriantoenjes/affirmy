@@ -12,10 +12,16 @@ export abstract class ScheduleService {
   abstract schedule(scheduleDto: Schedule): Notification[];
 
   protected getTimeFromString(scheduleDto: Schedule): DateTime {
-    let luxonTime = DateTime.fromFormat(scheduleDto.scheduleTime, 't');
-    if (!luxonTime.isValid) {
+    let luxonTime;
+    try {
+      luxonTime = DateTime.fromFormat(scheduleDto.scheduleTime, 't');
+      if (!luxonTime.isValid) {
+        throw new Error();
+      }
+    } catch (err) {
       luxonTime = DateTime.fromFormat(scheduleDto.scheduleTime, 'T');
     }
+
     console.log('LUXON TIME', luxonTime.toString(), DateTime.local().toString());
     return luxonTime;
   }

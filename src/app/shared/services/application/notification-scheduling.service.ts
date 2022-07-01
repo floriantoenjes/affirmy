@@ -5,14 +5,15 @@ import {State} from '../../../reducers';
 import {getAffirmations} from '../../../reducers/affirmation.reducer';
 import {Affirmation} from '../../models/Affirmation';
 import {AffirmationService} from '../domain/AffirmationService';
-import {LocalNotifications} from '@capacitor/local-notifications';
+import {LocalNotifications, LocalNotificationSchema, Schedule} from '@capacitor/local-notifications';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationSchedulingService {
 
-  constructor(private store: Store<State>, private affirmationService: AffirmationService) { }
+  constructor(private store: Store<State>, private affirmationService: AffirmationService) {
+  }
 
   async clearAndInitNotifications(): Promise<void> {
     setTimeout(async () => {
@@ -34,7 +35,7 @@ export class NotificationSchedulingService {
     for (const affirmation of affirmationDtos) {
       await this.cancelNotification(affirmation);
       if (affirmation.scheduled) {
-        await this.schedule(affirmation);
+        this.schedule(affirmation);
       }
     }
   }
@@ -68,18 +69,18 @@ export class NotificationSchedulingService {
         notification.id
       );
 
-      LocalNotifications.schedule({
-        notifications: [{
-          title: affirmationDto.title,
-          body: affirmationDto.text,
-          id: notification.id,
-          schedule: { at: notification.dateTime.toUTC().toJSDate(), every: notification.every, count: notification.count, repeats: true },
-          sound: undefined,
-          attachments: undefined,
-          actionTypeId: '',
-          extra: null
-        }]
-      }).then(() => console.log('SCHEDULED'));
+      LocalNotifications.requestPermissions().then(() => {
+
+        LocalNotifications.schedule({
+          notifications: [{
+            title: affirmationDto.title,
+            body: affirmationDto.text,
+            id: notification.id,
+            schedule: { at: notification.dateTime.toUTC().toJSDate(), every: notification.every, count: notification.count } as Schedule,
+          } as LocalNotificationSchema],
+        }).then(() => console.log('SCHEDULED'));
+
+      });
     }
   }
 }

@@ -17,7 +17,7 @@ export class CreateComponent implements OnInit {
   edit = false;
 
   @Input()
-  affirmation: Affirmation | undefined;
+  affirmation?: Affirmation;
 
   changed = false;
 
@@ -29,11 +29,21 @@ export class CreateComponent implements OnInit {
     text: new FormControl()
   });
 
+
+  get titleValue(): string {
+    return this.form.get('title')?.value;
+  }
+
+  get textValue(): string {
+    return this.form.get('text')?.value;
+  }
+
   constructor(
     private route: ActivatedRoute,
     public router: Router,
     private store: Store<State>
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.affirmation) {
@@ -44,11 +54,12 @@ export class CreateComponent implements OnInit {
   createAffirmation(): void {
     if (this.form.valid) {
       const newAffirmation = new Affirmation(
-        this.form.get('title')?.value,
-        this.form.get('text')?.value
+        this.titleValue,
+        this.textValue
       );
-      this.store.dispatch(startCreateAffirmation({ affirmation: newAffirmation}));
-      this.router.navigate(['detail', newAffirmation._id]); // TODO: Navigate later
+      this.store.dispatch(startCreateAffirmation({affirmation: newAffirmation}));
+
+      this.router.navigate(['detail', newAffirmation._id]).then(); // TODO: Navigate later
     }
   }
 
@@ -56,32 +67,31 @@ export class CreateComponent implements OnInit {
     if (this.form.valid) {
       const updatedAffirmation = {...this.affirmation, ...this.form.getRawValue()};
       this.store.dispatch(startUpdateAffirmation({affirmation: updatedAffirmation}));
-      this.router.navigate(['detail', this.affirmation?._id]);
+
+      this.router.navigate(['detail', this.affirmation?._id]).then();
     }
   }
 
   hasChanges(): void {
-    const titleValue = this.form.get('title')?.value?.trim();
-    const textValue = this.form.get('text')?.value?.trim();
+    const titleValue = this.titleValue?.trim();
+    const textValue = this.textValue?.trim();
 
     const titleValueInvalid = titleValue === '' || titleValue === undefined;
     const textValueInvalid = textValue === '' || textValue === undefined;
 
-    if (!this.edit) {
-      if ( titleValueInvalid || textValueInvalid ) {
-        this.changed = false;
-        return;
-      }
+    if (titleValueInvalid || textValueInvalid) {
+      this.changed = false;
+      return;
     }
 
-    if ((!titleValueInvalid && !textValueInvalid) && titleValue !== this.affirmation?.title || textValue !== this.affirmation?.text) {
-      this.changed = true;
-    } else {
-      this.changed = false;
-    }
+    this.changed = this.titleOrTextHaveChanges(titleValue, textValue);
+  }
+
+  private titleOrTextHaveChanges(titleValue: string, textValue: string): boolean {
+    return titleValue !== this.affirmation?.title || textValue !== this.affirmation?.text;
   }
 
   navigateBack(): void {
-    this.router.navigate(['..'], {relativeTo: this.route});
+    this.router.navigate(['..'], {relativeTo: this.route}).then();
   }
 }

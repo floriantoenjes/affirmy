@@ -18,7 +18,7 @@ const scheduleReducer = createReducer(
   on(createSchedule, (state, {schedule}) => ({schedules: [...state.schedules, schedule]})),
 
   on(updateSchedule, (state, {schedule}) => ({
-    schedules: [...state.schedules.filter(s => s._id !== schedule._id), schedule]
+    schedules: [...schedulesWithoutOne(state, schedule), schedule],
   })),
 
   on(loadSchedules, (state, {schedules}) => {
@@ -26,12 +26,16 @@ const scheduleReducer = createReducer(
   }),
 
   on(deleteSchedule, (state, {schedule}) => ({
-    schedules: state.schedules.filter(sc => sc._id !== schedule._id)
+    schedules: schedulesWithoutOne(state, schedule),
   }))
 );
 
 export function reducer(state: ScheduleState | undefined, action: Action): ScheduleState {
   return scheduleReducer(state, action);
+}
+
+function schedulesWithoutOne(state: ScheduleState, schedule: Schedule): Schedule[] {
+  return state.schedules.filter(s => s._id !== schedule._id);
 }
 
 export const getSchedulesState = createFeatureSelector<State, ScheduleState>('schedulesFeature');

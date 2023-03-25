@@ -25,8 +25,8 @@ import {ScheduleClasses} from '../shared/models/ScheduleClasses';
 export class ScheduleComponent implements OnInit {
 
   affirmation$: Observable<Affirmation | undefined>;
-  affirmation: Affirmation | undefined;
-  schedule: Schedule | undefined;
+  affirmation?: Affirmation;
+  schedule?: Schedule;
   showDaySelect = false;
   selectedType: ScheduleType = ScheduleType.DAILY;
   types = ScheduleType;
@@ -44,7 +44,7 @@ export class ScheduleComponent implements OnInit {
     hourlyInterval: new FormControl(),
   });
 
-  days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  readonly DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
   constructor(public route: ActivatedRoute,
               public router: Router,
@@ -63,17 +63,21 @@ export class ScheduleComponent implements OnInit {
         console.log(affirmation?.scheduleDto);
 
         if (affirmation?.scheduleDto) {
-          this.form.patchValue({time: affirmation.scheduleDto.scheduleTime});
+          const schedule = affirmation.scheduleDto;
+          this.form.patchValue({time: schedule.scheduleTime});
 
-          if (affirmation?.scheduleDto?.scheduleType === ScheduleType.DAILY) {
-            const schedule = affirmation.scheduleDto;
-            this.selectedType = ScheduleType.DAILY;
-            this.scheduleDays = schedule.scheduleOptions.days;
-            this.originalScheduleDays = schedule.scheduleOptions.days;
-          } else if (affirmation.scheduleDto.scheduleType === ScheduleType.HOURLY) {
-            const schedule = affirmation.scheduleDto;
-            this.selectedType = ScheduleType.HOURLY;
-            this.form.get('hourlyInterval')?.patchValue(schedule.scheduleOptions.count);
+          switch (affirmation.scheduleDto.scheduleType) {
+
+            case ScheduleType.DAILY:
+              this.selectedType = ScheduleType.DAILY;
+              this.scheduleDays = schedule.scheduleOptions.days;
+              this.originalScheduleDays = schedule.scheduleOptions.days;
+              break;
+
+            case ScheduleType.HOURLY:
+              this.selectedType = ScheduleType.HOURLY;
+              this.form.get('hourlyInterval')?.patchValue(schedule.scheduleOptions.count);
+              break;
           }
         }
         this.schedule = affirmation?.scheduleDto;
@@ -107,7 +111,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   selectWeekDays(selectedWeekDays: MatListOption[]): void {
-    const weekDays = selectedWeekDays.map(swd => this.days.indexOf(swd.value) + 1);
+    const weekDays = selectedWeekDays.map(swd => this.DAYS.indexOf(swd.value) + 1);
     if (this.schedule) {
       this.schedule = {...this.schedule, scheduleDays: weekDays} as Schedule;
     }
@@ -119,24 +123,25 @@ export class ScheduleComponent implements OnInit {
 
   isSelected(weekday: string): boolean {
     if (this.schedule?.scheduleType === ScheduleType.DAILY) {
-      return !!this.schedule?.scheduleOptions.days.some(d => d === this.days.indexOf(weekday) + 1);
+      return !!this.schedule?.scheduleOptions.days.some(d => d === this.DAYS.indexOf(weekday) + 1);
     }
     return false;
   }
 
   selectedWeekDaysAsString(): string | undefined {
-    return this.scheduleDays.map(dayIndex => this.days[dayIndex - 1]).join(', ');
+    return this.scheduleDays.map(dayIndex => this.DAYS[dayIndex - 1]).join(', ');
   }
 
   switchType(): void {
-    switch (this.form.get('type')?.value) {
+    const typeControl = this.form.get('type');
+    switch (typeControl?.value) {
       case 0:
         this.selectedType = ScheduleType.DAILY;
-        this.form.get('type')?.patchValue(0);
+        typeControl?.patchValue(0);
         break;
       case 1:
         this.selectedType = ScheduleType.HOURLY;
-        this.form.get('type')?.patchValue(1);
+        typeControl?.patchValue(1);
         break;
     }
     this.hasChanges();
@@ -148,18 +153,12 @@ export class ScheduleComponent implements OnInit {
 
     const formValue = this.form.value;
 
-    if (formValue.time === '' || formValue.time === null || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)
-      || (formValue.type === ScheduleType.DAILY && this.scheduleDays.length === 0)) {
+    if (this.hasNoTimeOrDoesNotMeetScheduleTypeRequirements(formValue)) {
       this.changed = false;
       return;
     }
 
-    if (formValue.type !== typeof this.schedule
-      || formValue.time !== this.schedule?.scheduleTime
-      || (formValue.type === ScheduleType.HOURLY &&
-         formValue.hourlyInterval !== this.schedule?.scheduleOptions.count)
-      || (formValue.type === ScheduleType.DAILY &&
-         !this.arraysEqual(this.schedule?.scheduleOptions.days, this.originalScheduleDays))) {
+    if (this.hastFormValueChanged(formValue)) {
       this.changed = true;
       console.log('CHANGED');
     } else {
@@ -168,8 +167,22 @@ export class ScheduleComponent implements OnInit {
     }
   }
 
+  private hastFormValueChanged(formValue: any): boolean {
+    return formValue.type !== typeof this.schedule
+      || formValue.time !== this.schedule?.scheduleTime
+      || (formValue.type === ScheduleType.HOURLY &&
+        formValue.hourlyInterval !== this.schedule?.scheduleOptions.count)
+      || (formValue.type === ScheduleType.DAILY &&
+        !this.arraysEqual(this.schedule?.scheduleOptions.days, this.originalScheduleDays));
+  }
+
+  private hasNoTimeOrDoesNotMeetScheduleTypeRequirements(formValue: any): boolean {
+    return formValue.time === '' || formValue.time === null || (formValue.type === ScheduleType.HOURLY && !formValue.hourlyInterval)
+      || (formValue.type === ScheduleType.DAILY && this.scheduleDays.length === 0);
+  }
+
   navigateBack(): void {
-    this.router.navigate(['..'], {relativeTo: this.route});
+    this.router.navigate(['..'], {relativeTo: this.route}).then();
   }
 
   arraysEqual(a1: Array<number> | undefined, a2: Array<number> | undefined): boolean {

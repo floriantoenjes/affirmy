@@ -18,12 +18,24 @@ export class LoginComponent implements OnInit {
     confirmPassword: new FormControl('')
   });
 
+  get email(): string {
+    return this.form.get('email')?.value;
+  }
+
+  get password(): string {
+    return this.form.get('password')?.value;
+  }
+
+  get confirmPassword(): string {
+    return this.form.get('confirmPassword')?.value;
+  }
+
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.authService.loggedInSubject$.subscribe(loggedIn => {
       if (loggedIn) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/']).then();
       }
     });
   }
@@ -32,8 +44,7 @@ export class LoginComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    const formValue = this.form.value;
-    this.authService.login(formValue.email, formValue.password);
+    this.authService.login(this.email, this.password);
   }
 
   register(): void {
@@ -41,30 +52,31 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    const formValue = this.form.value;
-    if (formValue.password !== formValue.confirmPassword) {
+    if (this.password !== this.confirmPassword) {
       return;
     }
-    this.authService.register(formValue.email, formValue.password);
+    this.authService.register(this.email, this.password);
   }
 
   switchMode(): void {
+    const confirmPasswordControl = this.form.get('confirmPassword');
+
     if (!this.showRegistration) {
-      this.form.get('confirmPassword')?.setValidators(Validators.required);
+      confirmPasswordControl?.setValidators(Validators.required);
       this.form.setValidators(this.confirmPasswordValidator());
-      this.form.get('confirmPassword')?.updateValueAndValidity();
+      confirmPasswordControl?.updateValueAndValidity();
       this.showRegistration = true;
     } else {
-      this.form.get('confirmPassword')?.clearValidators();
+      confirmPasswordControl?.clearValidators();
       this.form.clearValidators();
-      this.form.get('confirmPassword')?.updateValueAndValidity();
+      confirmPasswordControl?.updateValueAndValidity();
       this.showRegistration = false;
     }
   }
 
   confirmPasswordValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
-      if (this.form.get('password')?.value === this.form.get('confirmPassword')?.value) {
+      if (this.password === this.confirmPassword) {
         return null;
       }
       return {passwordsDontMatch: true};

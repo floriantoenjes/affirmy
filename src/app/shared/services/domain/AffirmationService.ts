@@ -13,6 +13,7 @@ export class AffirmationService {
   schedule(affirmationDto: Affirmation, scheduleDto?: Schedule): [Affirmation, Notification[]] {
 
     affirmationDto = {...affirmationDto, scheduled: true};
+
     if (affirmationDto.scheduleDto && !scheduleDto) {
       return [affirmationDto,
         this.injector.get(ScheduleClasses[affirmationDto.scheduleDto.scheduleType]).schedule(affirmationDto.scheduleDto)];
@@ -25,6 +26,7 @@ export class AffirmationService {
 
       return [affirmationDto, notifications];
     }
+
     throw new Error('A schedule model needs to be present!');
   }
 

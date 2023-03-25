@@ -8,8 +8,8 @@ import {ProgressBarService} from '../gui/progress-bar.service';
 })
 export class PouchDbService {
 
-  affirmationDb = new PouchDB(`${environment.pouchDbAffirmationsPrefix}-${this.getDbName()}`);
-  schedulesDb = new PouchDB(`${environment.pouchDbSchedulesPrefix}-${this.getDbName()}`);
+  readonly affirmationDb = new PouchDB(`${environment.pouchDbAffirmationsPrefix}-${this.getDbName()}`);
+  readonly schedulesDb = new PouchDB(`${environment.pouchDbSchedulesPrefix}-${this.getDbName()}`);
 
   constructor(
     private authService: AuthService,

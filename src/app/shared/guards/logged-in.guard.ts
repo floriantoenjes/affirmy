@@ -25,13 +25,13 @@ export class LoggedInGuard implements CanActivate {
       jwt = this.authService.decodeJwt(jwt);
       if (!jwt?.exp || +jwt.exp < DateTime.local().toSeconds()) {
         this.authService.logout();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login']).then();
         return false;
       }
     }
 
     if (!loggedIn) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']).then();
       return false;
     }
 

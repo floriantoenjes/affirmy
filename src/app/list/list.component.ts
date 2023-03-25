@@ -40,10 +40,11 @@ export class ListComponent implements OnInit, OnDestroy {
 
   openAffirmation(affirmation: Affirmation): void {
     if (!this.dragging) {
-      this.router.navigate(['detail', affirmation._id]);
-    } else {
-      this.dragging = false;
+      this.router.navigate(['detail', affirmation._id]).then();
+      return;
     }
+
+    this.dragging = false;
   }
 
   ngOnDestroy(): void {

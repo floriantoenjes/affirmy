@@ -20,7 +20,7 @@ const affirmationReducer = createReducer(
   on(createAffirmation, (state, {affirmation}) => ({affirmations: [affirmation, ...state.affirmations]})),
 
   on(updateAffirmation, (state, {affirmation}) => (
-    {affirmations: [affirmation, ...state.affirmations.filter(af => af._id !== affirmation._id)]})),
+    {affirmations: [affirmation, ...affirmationsWithoutOne(state, affirmation)]})),
 
   on(loadAffirmations, (state, {affirmations}) => {
     console.log('AFFIRMATIONS', affirmations);
@@ -28,11 +28,15 @@ const affirmationReducer = createReducer(
   }),
 
   on(deleteAffirmation, (state, {affirmation}) => (
-    {affirmations: [...state.affirmations.filter(af => af._id !== affirmation._id)]})),
+    {affirmations: [...affirmationsWithoutOne(state, affirmation)]})),
 );
 
 export function reducer(state: AffirmationState | undefined, action: Action): AffirmationState {
   return affirmationReducer(state, action);
+}
+
+function affirmationsWithoutOne(state: AffirmationState, affirmation: Affirmation): Affirmation[] {
+  return state.affirmations.filter((af: Affirmation) => af._id !== affirmation._id);
 }
 
 

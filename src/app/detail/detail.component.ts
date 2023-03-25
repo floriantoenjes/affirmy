@@ -45,6 +45,7 @@ export class DetailComponent implements OnInit {
     this.dialog.open(ConfirmDialogComponent, {width: '300px'}).afterClosed().subscribe(result => {
       if (result === true) {
         this.store.dispatch(deleteAffirmation({affirmation}));
+
         this.router.navigate(['..']);
       }
     });

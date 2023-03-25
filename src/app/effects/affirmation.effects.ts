@@ -58,7 +58,7 @@ export class AffirmationEffects {
           if (updatedAffirmation.scheduled) {
             this.scheduleService.schedule(updatedAffirmation);
           } else {
-            this.scheduleService.cancelNotification(updatedAffirmation);
+            this.scheduleService.cancelNotification(updatedAffirmation).then();
           }
 
           return updateAffirmation({affirmation: updatedAffirmation});
@@ -72,10 +72,10 @@ export class AffirmationEffects {
     ofType(AffirmationActions.deleteAffirmation),
     map(action => action.affirmation),
     tap((affirmation: Affirmation) => {
-      this.db.remove(affirmation);
+      this.db.remove(affirmation).then();
       if (affirmation.scheduled) {
         console.log('REMOVING SCHEDULE');
-        this.scheduleService.cancelNotification(affirmation);
+        this.scheduleService.cancelNotification(affirmation).then();
       }
       this.dbSync();
     }),

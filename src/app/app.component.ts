@@ -48,9 +48,10 @@ export class AppComponent implements OnInit {
       console.log('LOGGED IN SUBJECT', loggedIn);
       if (loggedIn) {
         this.syncDbs();
-      } else {
-        this.router.navigate(['/login']);
+        return;
       }
+
+      this.router.navigate(['/login']).then();
     });
 
     this.navbarService.navbarToggled.subscribe(() => this.snav?.toggle());

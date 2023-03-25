@@ -20,9 +20,10 @@ export class NotificationSchedulingService {
       const pending = await LocalNotifications.getPending();
       if (pending.notifications.length > 0) {
         LocalNotifications.cancel(pending).then(() => this.initScheduleNotifications());
-      } else {
-        await this.initScheduleNotifications();
+        return;
       }
+
+      await this.initScheduleNotifications();
     });
   }
 

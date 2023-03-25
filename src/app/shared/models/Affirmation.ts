@@ -9,7 +9,7 @@ export class Affirmation {
   title: string;
   text: string;
   scheduled = false;
-  scheduleDto: Schedule | undefined;
+  scheduleDto?: Schedule;
 
   notifications: Notification[] = [];
 

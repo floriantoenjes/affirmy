@@ -24,15 +24,10 @@ ngrx-store.
 The backend...
 * Has an authorization server written in .NET 5.0 using the Identity Framework.
 * Uses a CouchDb server to synchronize the local PouchDb database with the offline storage on the device.
+* I used this app's backend to apply DDD principles after I read the book Domain Driven Design by Eric Evans.
 
 Deployment...
 * Of the App is cross-platform, which is done by using the CapacitorJS wrapper, to make
   functions of the device, like local notifications available to the app.
 * Of the backend is done on via Docker Compose.
 
-## Screenshots
-![](readme_images/1_list.png)
-![](readme_images/2_edit.png)
-![](readme_images/3_detail.png)
-![](readme_images/4_scheduling.png)
-![](readme_images/5_time.png)
